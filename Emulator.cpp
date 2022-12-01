@@ -4,7 +4,7 @@ MIT License
 0.1  11/29/22  Andy4495  Initial Creation
 */
 
-#define VERSION 0.1
+#define VERSION 0.2
 
 // 1. Read command line and parse arguments parseCommandLine()
 // 2. Read memory file (hex, s-record) loadProgram()
@@ -38,20 +38,11 @@ int main(int argc, char** argv)
 {
 	Z80 z80;
 
-	// Eventually move this to a loadMem() function, pass filename to the function
-	unsigned char data;
-	unsigned int i = 0;
-
-	assert(argc == 2); // binary data filename included in command
-	ifstream memfile(argv[1],iostream::in|ios::binary);
-	assert(memfile); // Check if open successful
-
-	while (memfile >> data) {
-		memory[i++] = data;
-		if (i > MAX_MEMORY - 1) {
-			cout << "Filled memory before reaching end of file." << endl;
-			break;    // Make sure we don't try to load beyond memory space
-		}
+	if (argc == 2) { // Use pathname passed on command line
+		z80.load_memory(argv[1]);
+	}
+	else { // Use default filename
+		z80.load_memory("data.bin");
 	}
 
 	// prints hello world
@@ -63,10 +54,10 @@ int main(int argc, char** argv)
 
 	cout << "Register A: " << (unsigned int) z80.A << endl;
 	cout << "Register B: " << (unsigned int) z80.B << endl;
-	cout << "Memory[3]: " << (unsigned int) memory[3] << endl;
+	cout << "Memory[3]: " << (unsigned int) z80.memory[3] << endl;
 
-	memory[65535] = 254;
-	cout << "Memory[65535]: "   << (unsigned int) memory[65535] << endl;
+	z80.memory[65535] = 254;
+	cout << "Memory[65535]: "   << (unsigned int) z80.memory[65535] << endl;
 
 	return 0;
 }

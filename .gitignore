@@ -1,3 +1,5 @@
 .vscode/
 a.out
+emulator
 data.bin
+*.o

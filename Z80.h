@@ -5,12 +5,11 @@
 #define MAX_MEMORY 65536
 #define MAX_IO 256
 
-unsigned char memory[MAX_MEMORY] = {0};
-
-unsigned char io[MAX_IO] = {0};
-
 class Z80 {
     public:
+        unsigned char memory[MAX_MEMORY] = {0};
+        unsigned char io[MAX_IO] = {0};
+
         // Main register set
         // Accumulator 
         unsigned char A;
@@ -38,6 +37,17 @@ class Z80 {
         unsigned short SP;
         // Program counter
         unsigned short PC;
+
+        // Instruction Register
+        // Not a user-accessible register, but integral to fetch-decode-execute cycle
+        unsigned char IR; 
+
+        void load_memory(const char* fname);
+        void cold_reset();
+        void warm_reset();
+        void run_from_address(unsigned short addr);
+        void fetch();
+        void decode();
 
     private:
 
