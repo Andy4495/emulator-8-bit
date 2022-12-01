@@ -35,21 +35,33 @@ class Z80 {
         unsigned short IX, IY;
         // Stack pointer
         unsigned short SP;
+
+        // *** Other Registers and States, not directly accessible to the programmer ***
         // Program counter
         unsigned short PC;
-
         // Instruction Register
-        // Not a user-accessible register, but integral to fetch-decode-execute cycle
         unsigned char IR; 
+        unsigned char IFF1;
+        unsigned char IFF2;
+        // Interrupt Mode
+        unsigned char INT_MODE;
 
+        Z80(unsigned short ramstart=0x8000, unsigned short ramend=0xffff, unsigned short romstart=0x0000, unsigned short romend=0x7fff);
         void load_memory(const char* fname);
         void cold_reset();
         void warm_reset();
         void run_from_address(unsigned short addr);
         void fetch();
+        unsigned char get_next_byte();
         void decode();
 
     private:
+        unsigned short _ramstart;
+        unsigned short _ramend;
+        unsigned short _romstart;
+        unsigned short _romend;
+
+        void clear_registers();
 
 };
 #endif

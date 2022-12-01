@@ -4,7 +4,7 @@ MIT License
 0.1  11/29/22  Andy4495  Initial Creation
 */
 
-#define VERSION 0.2
+#define VERSION 0.3
 
 // 1. Read command line and parse arguments parseCommandLine()
 // 2. Read memory file (hex, s-record) loadProgram()
@@ -36,28 +36,80 @@ using namespace std;
 // Main() function: where the execution of program begins
 int main(int argc, char** argv)
 {
-	Z80 z80;
-
-	if (argc == 2) { // Use pathname passed on command line
-		z80.load_memory(argv[1]);
-	}
-	else { // Use default filename
-		z80.load_memory("data.bin");
-	}
 
 	// prints hello world
-	cout << "Z80 Emulator" << endl;
-    cout << "Version " << VERSION << endl;
+	cout << "Z80 Emulator Version: " << VERSION << endl;
 
-    z80.A = 1;
-	z80.B = 2;
+	/// Use default values for rom and ram definitions for now
+	Z80 cpu;
 
-	cout << "Register A: " << (unsigned int) z80.A << endl;
-	cout << "Register B: " << (unsigned int) z80.B << endl;
-	cout << "Memory[3]: " << (unsigned int) z80.memory[3] << endl;
+	int choice = 0;
+	unsigned short addr;
 
-	z80.memory[65535] = 254;
-	cout << "Memory[65535]: "   << (unsigned int) z80.memory[65535] << endl;
+    cout << "Loading Memory...";
+	if (argc == 2) { // Use pathname passed on command line
+		cpu.load_memory(argv[1]);
+	}
+	else { // Use default filename
+		cpu.load_memory("data.bin");
+	}
+	cout << "DONE." << endl;
+
+    while (choice == 0) {
+		cout << "Select an option:" << endl;
+		cout << "1. Cold reset and run from $0000." << endl;
+		cout << "2. Warm reset and run from $0000." << endl;
+		cout << "3. Run from specific address." << endl;
+		cout << "4. Set breakpoint." << endl;
+
+		cin >> choice;
+
+		switch (choice) {
+			case 1: // Cold restart
+				cpu.cold_reset();
+				break;
+
+			case 2: // Warm restart
+				cpu.warm_reset();
+				break;
+
+			case 3: // Run from address
+				cout << "Enter starting address in hex: 0x";
+				cin >> hex >> addr >> dec;
+				cpu.run_from_address(addr);
+				break;
+
+			case 4: // Set breakpoint
+				// Add code to input address 
+				// Add code to set a breakpoint
+				choice = 0;
+				break;
+
+			default: // Choice outside of range
+			  cout << "Invalid selection. Try again." << endl << endl;
+			  choice = 0;
+			  break;
+
+		}
+	}
+
+	int state = 1;
+	while (state < 10) { // Limit the number if times we fetch and decode
+		cpu.fetch();
+		cpu.decode();
+		// cpu.execute(); /// This probably isn't necessary, since decode will effectively execute the instruction
+		state++;
+	}
+
+    cpu.A = 1;
+	cpu.B = 2;
+
+	cout << "Register A: " << (unsigned int) cpu.A << endl;
+	cout << "Register B: " << (unsigned int) cpu.B << endl;
+	cout << "Memory[3]: " << (unsigned int) cpu.memory[3] << endl;
+
+	cpu.memory[65535] = 254;
+	cout << "Memory[65535]: "   << (unsigned int) cpu.memory[65535] << endl;
 
 	return 0;
 }
