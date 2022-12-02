@@ -4,11 +4,11 @@
 
 This is a simple Z80 CPU emulator that I am working on.
 
-I created as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture for another project I am working on.
+I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture for another project I am working on.
 
-The emulator currently only supports the Z80, I am trying to write it in a way that would make it relatively easy to support other 8-bit CPUs essentially by creating a class for that represents the programmers model (registers and instruction decoding) for that particular CPU.
+The emulator currently only supports the Z80, I am trying to write it in a way that would make it relatively easy to support other 8-bit CPUs essentially by creating a class that represents the programmer's model (registers and instruction decoding) for that particular CPU.
 
-There are many other open source emulators that can be found with a quick search. This emulator is not meant to replace any of those, and likely does not contain any features not already available. It is solely meant as a learning exercise.
+There are many other open source emulators available. This emulator is not meant to replace any of those, and likely does not contain any features not already available. It was solely created as a learning exercise.
 
 ## Usage
 
@@ -16,7 +16,7 @@ There are many other open source emulators that can be found with a quick search
     emulator input-file
 ```
 
-`input-file` is an optional parameter which is the path of a binary file which contains the program code and data. The first byte of the file represents location $0000 in memory, and each successive byte represents the next memory location.
+`input-file` is an optional parameter which is the path of a binary file containing the program code and data. The first byte of the file represents location $0000 in memory, and each successive byte represents the next memory location.
 
 If `input-file` is not specified, then the default name `data.bin` is used.
 
@@ -85,21 +85,28 @@ A key part of the implementation is the definition of the CPU class. This class 
 
 ### Future Functionality
 
-- Support breakpoints
+- Breakpoints
+  - Break at a memory location
+  - Break when a register contains a certain value
+  - Break when a memory location contains a certain value
+  - Break when a certain location/loop is accessed N times
+  - Multiple breakpoints defined
 - Support additional configuration options, possibly with a configuration file and/or command line arguments
 - Allow the configuration of segments of read-only ROM, read/write RAM, overlay areas, and undefined areas
 - Support RAM and/or ROM banking
 - Support additional file formats such as S-Records which would allow specific memory locations to be defined by the file.
+- Interrupts (maskable and non-maskable)
+- Disassembler
 - Support additonal processor types
 
 ## References
 
-CPP references
-Make references
-Makefile [generator][3]
-Z80 user manual
-WSL 2 reference
-Installing latest git reference
+- CPP references
+- Make references
+- Makefile [generator][3]
+- Z80 user manual
+- WSL 2 reference
+- Installing latest git reference
 
 - Reference1 [reference text][1]
 - Reference2 [reference text][2]

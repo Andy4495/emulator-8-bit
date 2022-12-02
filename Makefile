@@ -1,5 +1,5 @@
-OBJS	= Emulator.o Z80.o
-SOURCE	= Emulator.cpp Z80.cpp
+OBJS	= Emulator.o Z80.o Z80_decode.o
+SOURCE	= Emulator.cpp Z80.cpp Z80_decode.cpp
 HEADER	= 
 OUT	= emulator
 CC	 = g++
@@ -22,6 +22,9 @@ Emulator.o: Emulator.cpp
 
 Z80.o: Z80.cpp
 	$(CC) $(FLAGS) Z80.cpp 
+
+Z80_decode.o: Z80_decode.cpp
+	$(CC) $(FLAGS) Z80_decode.cpp 
 
 clean:
 	rm -f $(OBJS) $(OUT)

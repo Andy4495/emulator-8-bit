@@ -78,37 +78,3 @@ unsigned char Z80::get_next_byte() {
     cout << "Loading a byte from memory." << endl;
     return memory[PC++];
 }
-
-void Z80::decode() {
-    cout << "Decoding and executing." << endl;
-
-    switch (IR) {
-        case 0x00:
-            cout << "Instruction: 0x" << hex << (unsigned int) IR << dec << endl;
-            break;
-        
-        case 0x31:
-            cout << "Instruction: 0x" << hex << (unsigned int) IR << dec << endl;
-            break;
-        
-        case 0x32:
-            cout << "Instruction: 0x" << hex << (unsigned int) IR << dec << endl;
-            break;
-        
-        case 0x33:
-            cout << "Instruction: 0x" << hex << (unsigned int) IR << dec << endl;
-            break;
-        
-        case 0x34:
-            cout << "Instruction: 0x" << hex << (unsigned int) IR << dec << endl;
-            break;
-        
-        case 0x35:
-            cout << "Instruction: 0x" << hex << (unsigned int) IR << dec << endl;
-            break;
-        
-        default: 
-            cout << "Unimplemented instruction: 0x" << hex << (unsigned int) IR << dec << "!" << endl;
-            break;
-    }
-}
