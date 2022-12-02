@@ -36,6 +36,8 @@ using namespace std;
 // Main() function: where the execution of program begins
 int main(int argc, char** argv)
 {
+	// All CPU class functions use hex (hexadecimal) for cout
+	// Anywhere dec is desired, temporarily switch to dec and then swtich back to hex when done writing to cout
 
 	// prints hello world
 	cout << "Z80 Emulator Version: " << VERSION << endl;
@@ -101,15 +103,12 @@ int main(int argc, char** argv)
 		state++;
 	}
 
-    cpu.A = 1;
-	cpu.B = 2;
+	cout << "Register A: " << hex << (unsigned int) cpu.A << endl;
+	cout << "Register B: " << hex << (unsigned int) cpu.B << endl;
+	cout << "Memory[3]: " << hex << (unsigned int) cpu.memory[3] << endl;
 
-	cout << "Register A: " << (unsigned int) cpu.A << endl;
-	cout << "Register B: " << (unsigned int) cpu.B << endl;
-	cout << "Memory[3]: " << (unsigned int) cpu.memory[3] << endl;
-
-	cpu.memory[65535] = 254;
-	cout << "Memory[65535]: "   << (unsigned int) cpu.memory[65535] << endl;
+	cpu.memory[0xffff] = 254;
+	cout << "Memory[0xffff]: "   << (unsigned int) cpu.memory[0xffff] << endl;
 
 	return 0;
 }

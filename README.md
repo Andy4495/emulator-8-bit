@@ -97,7 +97,20 @@ A key part of the implementation is the definition of the CPU class. This class 
 - Support additional file formats such as S-Records which would allow specific memory locations to be defined by the file.
 - Interrupts (maskable and non-maskable)
 - Disassembler
+- Automated test suite
 - Support additonal processor types
+
+## Observations
+
+While I have been keeping up with my C++ skills for the past several years by writing Arduino programs, there are certain aspects of C++ programming that I had gotten a little rusty at. Part of that has to do with the ease-of-use features inherent with Arduino pre-processing (e.g. automatic prototype generation and hiding main()). But other areas that I had lost practice in are inherent in the differences in programming in an embedded system versus an application written to run on an OS (Linux/Unix).
+
+In particular:
+
+- Streams (files, `cin`, `cout`)
+  - Including cases where variables need to be casted to print properly when using `cout`
+- Choosing the proper variable type and size
+  - I am pretty good at this with Arduino, but it caused me some headaches when trying to switch from thinking "small embedded 8-bit" to "large linux 64-bit"
+- Using Makefiles and the myriad options available with the compiler and linker, compared to Arduino where most of that is hidden from the user
 
 ## References
 
@@ -105,6 +118,7 @@ A key part of the implementation is the definition of the CPU class. This class 
 - Make references
 - Makefile [generator][3]
 - Z80 user manual
+- Z80 opcode [table][4]
 - WSL 2 reference
 - Installing latest git reference
 
@@ -118,6 +132,7 @@ The software and other files in this repository are released under what is commo
 [1]: https://en.cppreference.com/
 [2]: https://www.gnu.org/software/make/manual/make.html
 [3]: https://solver.assistedcoding.eu/makefilegen
+[4]: https://clrhome.org/table/
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/8-bit-emulator)

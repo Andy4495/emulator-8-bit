@@ -65,12 +65,12 @@ void Z80::clear_registers() {
 
 void Z80::run_from_address(unsigned short addr) {
     // Keep RAM and registers intact, start from addr passed into function
-    cout << "Starting execution from address: 0x" << hex << addr << dec << endl;
+    cout << "Starting execution from address: 0x" << hex << addr << endl;
     PC = addr;
 }
 
 void Z80::fetch() {
-    cout << "Fetching instruction at address: 0x" << hex << (unsigned short) PC << dec << endl;
+    cout << "Fetching instruction at address: 0x" << hex << PC << endl;
     IR = memory[PC++];
 }
 
