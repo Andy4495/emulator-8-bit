@@ -47,7 +47,12 @@ void Z80::warm_reset() {
 
 void Z80::clear_registers() {
     A = 0;
-    F = 0;
+    F.S = 0;
+    F.Z = 0;
+    F.H = 0;
+    F.PV = 0;
+    F.N = 0;
+    F.C = 0;
     B = 0; C = 0; D = 0; E = 0; H = 0; L = 0;
     Aprime = 0;
     Fprime = 0;

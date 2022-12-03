@@ -103,8 +103,24 @@ int main(int argc, char** argv)
 		state++;
 	}
 
-	cout << "Register A: " << hex << (unsigned int) cpu.A << endl;
-	cout << "Register B: " << hex << (unsigned int) cpu.B << endl;
+	cout << hex << "A: " << (unsigned int) cpu.A 
+	<< " B: " << (unsigned int) cpu.B 
+	<< " C: " << (unsigned int) cpu.C
+	<< " D: " << (unsigned int) cpu.D
+	<< " E: " << (unsigned int) cpu.E
+	<< " H: " << (unsigned int) cpu.H
+	<< " L: " << (unsigned int) cpu.L << endl;
+	cout << "SZXH XPNC: "
+	<< (unsigned int) cpu.F.S 
+	<< (unsigned int) cpu.F.Z 
+	<< (unsigned int) cpu.F.X1 
+	<< (unsigned int) cpu.F.H 
+	<< " "
+	<< (unsigned int) cpu.F.X2 
+	<< (unsigned int) cpu.F.PV
+	<< (unsigned int) cpu.F.N 
+	<< (unsigned int) cpu.F.C 
+	<< endl;
 
 	return 0;
 }

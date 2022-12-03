@@ -13,8 +13,10 @@ class Z80 {
         // Main register set
         // Accumulator 
         unsigned char A;
-        // Flags
-        unsigned char F;
+        // Flags (X1 and X2 are unused by the Z80)
+        struct Flags {
+            unsigned char S:1, Z:1, X1:1, H:1, X2:1, PV:1, N:1, C:1;
+        } F;
         // General purpose registers
         unsigned char B, C, D, E, H, L;
 
