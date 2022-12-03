@@ -1,19 +1,19 @@
 # 8-bit Emulator
 
-[![Check Markdown Links](https://github.com/Andy4495/8-bit-emulator/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/8-bit-emulator/actions/workflows/CheckMarkdownLinks.yml)
+[![Check Markdown Links](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/8-bit-emulator/actions/workflows/CheckMarkdownLinks.yml)
 
 This is a simple Z80 CPU emulator that I am working on.
 
 I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture for another project I am working on.
 
-The emulator currently only supports the Z80, I am trying to write it in a way that would make it relatively easy to support other 8-bit CPUs essentially by creating a class that represents the programmer's model (registers and instruction decoding) for that particular CPU.
+The emulator currently only supports the Z80; I am trying to write it in a way that would make it relatively easy to support other 8-bit CPUs essentially by creating a class that represents the programmer's model (registers and instruction decoding) for that particular CPU.
 
 There are many other open source emulators available. This emulator is not meant to replace any of those, and likely does not contain any features not already available. It was solely created as a learning exercise.
 
 ## Usage
 
 ```shell
-    emulator input-file
+    emulator [input-file]
 ```
 
 `input-file` is an optional parameter which is the path of a binary file containing the program code and data. The first byte of the file represents location $0000 in memory, and each successive byte represents the next memory location.
@@ -26,7 +26,7 @@ No error checking is performed on the input file, except that a maximum of 65536
 
 ## Building
 
-The repositor contains a Makefile to automate the build process. To build the executable, simply run `make` at the command line:
+The repository contains a Makefile to automate the build process. To build the executable, simply run `make` at the command line:
 
 ```shell
     make
@@ -122,9 +122,6 @@ In particular:
 - WSL 2 reference
 - Installing latest git reference
 
-- Reference1 [reference text][1]
-- Reference2 [reference text][2]
-
 ## License
 
 The software and other files in this repository are released under what is commonly called the [MIT License][100]. See the file [`LICENSE.txt`][101] in this repository.
@@ -135,6 +132,6 @@ The software and other files in this repository are released under what is commo
 [4]: https://clrhome.org/table/
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
-[//]: # ([200]: https://github.com/Andy4495/8-bit-emulator)
+[//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)
 
 [//]: # (This is a way to hack a comment in Markdown. This will not be displayed when rendered.)
