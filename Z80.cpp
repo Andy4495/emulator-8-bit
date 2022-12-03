@@ -70,11 +70,11 @@ void Z80::run_from_address(unsigned short addr) {
 }
 
 void Z80::fetch() {
-    cout << "Fetching instruction at address: 0x" << hex << PC << endl;
+    ///cout << "Fetching instruction at address: 0x" << hex << PC << endl;
     IR = memory[PC++];
 }
 
 unsigned char Z80::get_next_byte() {
-    cout << "Loading a byte from memory." << endl;
+    ///cout << "Loading a byte from memory." << endl;
     return memory[PC++];
 }

@@ -4,7 +4,7 @@ MIT License
 0.1  11/29/22  Andy4495  Initial Creation
 */
 
-#define VERSION 0.4
+#define VERSION 0.5
 
 // 1. Read command line and parse arguments parseCommandLine()
 // 2. Read memory file (hex, s-record) loadProgram()
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
 	}
 
 	int state = 1;
-	while (state < 10) { // Limit the number if times we fetch and decode
+	while (state < 8) { // Limit the number if times we fetch and decode
 		cpu.fetch();
 		cpu.decode();
 		// cpu.execute(); /// This probably isn't necessary, since decode will effectively execute the instruction
@@ -105,10 +105,6 @@ int main(int argc, char** argv)
 
 	cout << "Register A: " << hex << (unsigned int) cpu.A << endl;
 	cout << "Register B: " << hex << (unsigned int) cpu.B << endl;
-	cout << "Memory[3]: " << hex << (unsigned int) cpu.memory[3] << endl;
-
-	cpu.memory[0xffff] = 254;
-	cout << "Memory[0xffff]: "   << (unsigned int) cpu.memory[0xffff] << endl;
 
 	return 0;
 }
