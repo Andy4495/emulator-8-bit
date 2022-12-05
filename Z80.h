@@ -4,11 +4,19 @@
 /* Z80 Core Definitions */
 #define MAX_MEMORY 65536
 #define MAX_IO 256
+#define MAX_INSTR_SIZE 4
+
+#define MAX_FETCHED_LENGTH 9
+#define MAX_MNEMONIC_LENGTH 16
+#define MAX_TEXT_LENGTH 64
 
 class Z80 {
     public:
         unsigned char memory[MAX_MEMORY] = {0};
         unsigned char io[MAX_IO] = {0};
+        unsigned int instr_length;
+        char mnemonic[MAX_MNEMONIC_LENGTH];
+        char instr_string[MAX_TEXT_LENGTH];
 
         // Main register set
         // Accumulator 
@@ -16,7 +24,8 @@ class Z80 {
         // Flags (X1 and X2 are unused by the Z80)
         struct Flags {
             unsigned char S:1, Z:1, X1:1, H:1, X2:1, PV:1, N:1, C:1;
-        } F;
+        };
+        Flags F;
         // General purpose registers
         unsigned char B, C, D, E, H, L;
 
@@ -24,7 +33,7 @@ class Z80 {
         // Accumulator 
         unsigned char Aprime;
         // Flags
-        unsigned char Fprime;
+        Flags Fprime;
         // General purpose registers
         unsigned char Bprime, Cprime, Dprime, Eprime, Hprime, Lprime;
 
@@ -42,7 +51,11 @@ class Z80 {
         // Program counter
         unsigned short PC;
         // Instruction Register
-        unsigned char IR; 
+        // This is a one-byte register in the physical Z80, 
+        // but define it here as 4-bytes (max instruction size) 
+        // for ease of implementation
+        unsigned char IR[MAX_INSTR_SIZE]; 
+        // Interrupt enable flip-flops
         unsigned char IFF1;
         unsigned char IFF2;
         // Interrupt Mode
@@ -53,17 +66,18 @@ class Z80 {
         void cold_reset();
         void warm_reset();
         void run_from_address(unsigned short addr);
-        void fetch();
+        void fetch_and_decode();
         unsigned char get_next_byte();
-        void decode();
+        void execute();
+        void print_fetched_instruction();
 
     private:
         unsigned short _ramstart;
         unsigned short _ramend;
         unsigned short _romstart;
         unsigned short _romend;
+        char fetched[MAX_FETCHED_LENGTH];
 
         void clear_registers();
-
 };
 #endif

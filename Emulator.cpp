@@ -48,7 +48,6 @@ int main(int argc, char** argv)
 	int choice = 0;
 	unsigned short addr;
 
-    cout << "Loading Memory...";
 	if (argc == 2) { // Use pathname passed on command line
 		cpu.load_memory(argv[1]);
 	}
@@ -96,10 +95,11 @@ int main(int argc, char** argv)
 	}
 
 	int state = 1;
-	while (state < 8) { // Limit the number if times we fetch and decode
-		cpu.fetch();
-		cpu.decode();
-		// cpu.execute(); /// This probably isn't necessary, since decode will effectively execute the instruction
+	while (state < 10) { // Limit the number if times we fetch and decode
+	///    cout << "State: " << state << " PC: " << hex << cpu.PC << endl; /// debug
+		cpu.fetch_and_decode();
+		cpu.execute();
+		cpu.print_fetched_instruction();
 		state++;
 	}
 

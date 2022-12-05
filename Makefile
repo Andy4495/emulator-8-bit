@@ -1,6 +1,6 @@
-OBJS	= Emulator.o Z80.o Z80_decode.o
-SOURCE	= Emulator.cpp Z80.cpp Z80_decode.cpp
-HEADER	= 
+OBJS	= Emulator.o Z80.o Z80_execute.o
+SOURCE	= Emulator.cpp Z80.cpp Z80_execute.cpp
+HEADER	= Z80_opcodes.h Z80.h
 OUT	= emulator
 CC	 = g++
 FLAGS	 = -c -Wall
@@ -17,14 +17,14 @@ verbose: FLAGS += --verbose
 verbose: LFLAGS += --verbose
 verbose: all
 
-Emulator.o: Emulator.cpp
+Emulator.o: $(SOURCE) $(HEADER)
 	$(CC) $(FLAGS) Emulator.cpp 
 
-Z80.o: Z80.cpp
+Z80.o: Z80.cpp Z80.h Z80_opcodes.h
 	$(CC) $(FLAGS) Z80.cpp 
 
-Z80_decode.o: Z80_decode.cpp
-	$(CC) $(FLAGS) Z80_decode.cpp 
+Z80_execute.o: Z80_execute.cpp Z80.h
+	$(CC) $(FLAGS) Z80_execute.cpp 
 
 clean:
 	rm -f $(OBJS) $(OUT)
