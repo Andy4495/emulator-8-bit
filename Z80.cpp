@@ -111,3 +111,104 @@ void Z80::print_fetched_instruction() {
     snprintf(instr_string, MAX_TEXT_LENGTH, "%04x  %-s  %s", PC - instr_length, fetched, mnemonic);  // Same format for every opcode
     cout << instr_string << endl;
 }
+
+// Methods for updating the various bits in the Flags register
+    void Z80::update_C(INST_TYPE t, unsigned char val) {
+        switch (t) {
+            case ADD:
+              break;
+            case SUB:
+              break;
+            case COMP:
+              break;
+            case TEST:
+              break;
+            default:  // NONE - Flag not affected
+              break;
+        }
+    }
+
+    void Z80::update_N(INST_TYPE t) {
+        switch (t) {
+            case ADD:
+              F.N = 0;
+              break;
+            case SUB:
+              F.N = 1;
+              break;
+            case COMP:
+            case TEST:
+            default:  // NONE - Flag not affected
+              break;
+        }
+    }
+    
+    void Z80::update_PV(INST_TYPE t, unsigned char val1, unsigned char val2) {
+        switch (t) {
+            case ADD:
+              if ((val1 && 0x80) != (val2 && 0x80)) F.PV = 0;   // operands are diffent signs, no overflow
+              else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) F.PV = 1;
+              else F.PV = 0;
+              break;
+            case SUB:
+              if ((val1 && 0x80) == (val2 && 0x80)) F.PV = 0;   // operands are same signs, no overflow
+              else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) F.PV = 1;
+              else F.PV = 0;
+              break;
+            case COMP:
+              break;
+            case TEST:
+              break;
+            default:  // NONE - Flag not affected
+              break;
+        }
+    }
+    
+    void Z80::update_H(INST_TYPE t, unsigned char val) {
+        // It is important that the calling function masks val so that it is only a 4-bit value
+        switch (t) {
+            case ADD:
+              if ((val > 0x0f) == 0) H = 1; else H = 0;
+              break;
+            case SUB:
+              if ((val & 0x80) == 1) H = 1; else H = 0;
+              break;
+            case COMP:
+              break;
+            case TEST:
+              break;
+            default:  // NONE - Flag not affected
+              break;
+        }
+    }
+    
+    void Z80::update_Z(INST_TYPE t, unsigned char val) {
+        switch (t) {
+            case ADD:
+            case SUB:
+              if (val == 0) F.Z = 1; else F.Z = 0;
+              break;
+            case COMP:
+              break;
+            case TEST:
+              break;
+            default:  // NONE - Flag not affected
+              break;
+        }
+    }
+    
+    void Z80::update_S(INST_TYPE t, unsigned char val) {
+        switch (t) {
+            case ADD:
+            case SUB:
+              if (val & 0x80) F.S = 1; else F.S = 0;
+              break;
+            case COMP:
+              break;
+            case TEST:
+              break;
+            default:  // NONE - Flag not affected
+              break;
+        }
+    }
+    

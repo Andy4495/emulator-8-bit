@@ -18,6 +18,8 @@ class Z80 {
         char mnemonic[MAX_MNEMONIC_LENGTH];
         char instr_string[MAX_TEXT_LENGTH];
 
+        enum INST_TYPE {ADD, SUB, COMP, TEST, NONE};
+
         // Main register set
         // Accumulator 
         unsigned char A;
@@ -70,6 +72,12 @@ class Z80 {
         unsigned char get_next_byte();
         void execute();
         void print_fetched_instruction();
+        void update_C(INST_TYPE t,  unsigned char val);
+        void update_N(INST_TYPE t);
+        void update_PV(INST_TYPE t, unsigned char val1, unsigned char val2);
+        void update_H(INST_TYPE t,  unsigned char val);
+        void update_Z(INST_TYPE t,  unsigned char val);
+        void update_S(INST_TYPE t,  unsigned char val);
 
     private:
         unsigned short _ramstart;

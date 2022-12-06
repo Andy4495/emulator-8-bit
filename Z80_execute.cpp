@@ -32,21 +32,24 @@ void Z80::execute() {
             if (C == 0) B++;
             break;
         
-        case 0x04:  // INC B -- S, Z, H, P/V
+        case 0x04:  // INC B -- S, Z, H, P/V, N
             B++;
-            if (B & 0x80)        F.S  = 1; else F.S  = 0;
-            if (B == 0)          F.Z  = 1; else F.Z  = 0;
-            if ((B & 0x0F) == 0) F.H  = 1; else F.H  = 0;
-            if (B == 0x80)       F.PV = 1; else F.PV = 0;
+            update_S(ADD,  B);
+            update_Z(ADD,  B);
+            update_H(ADD,  (B & 0xF) + 1);
+            update_PV(ADD, B, 1);
+            update_N(ADD);
+            update_C(NONE, B); // C not affected
             break;
         
         case 0x05:  // DEC B -- S, Z, H, P/V, N
             B--;
-            if (B & 0x80)           F.S  = 1; else F.S  = 0;
-            if (B == 0)             F.Z  = 1; else F.Z  = 0;
-            if ((B & 0x0F) == 0x0F) F.H  = 1; else F.H  = 0;
-            if (B == 0x7F)          F.PV = 1; else F.PV = 0;
-            F.N = 1;
+            update_S(SUB,  B);
+            update_Z(SUB,  B);
+            update_H(SUB,  (B & 0xF) - 1);
+            update_PV(SUB, B, 1);
+            update_N(SUB);
+            update_C(NONE, B); // C not affected
             break;
         
         case 0x06:  // LD B, n -- no flags affected

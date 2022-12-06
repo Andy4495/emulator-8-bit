@@ -3,7 +3,7 @@ SOURCE	= Emulator.cpp Z80.cpp Z80_execute.cpp
 HEADER	= Z80_opcodes.h Z80.h
 OUT	= emulator
 CC	 = g++
-FLAGS	 = -c -Wall
+FLAGS	 = -c -Wall -std=c++11
 LFLAGS	 = 
 
 all: $(OBJS)
