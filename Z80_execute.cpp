@@ -34,22 +34,12 @@ void Z80::execute() {
         
         case 0x04:  // INC B -- S, Z, H, P/V, N
             B++;
-            update_S(ADD,  B);
-            update_Z(ADD,  B);
-            update_H(ADD,  (B & 0xF) + 1);
-            update_PV(ADD, B, 1);
-            update_N(ADD);
-            update_C(NONE, B); // C not affected
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, ADD, B, 1);
             break;
         
         case 0x05:  // DEC B -- S, Z, H, P/V, N
             B--;
-            update_S(SUB,  B);
-            update_Z(SUB,  B);
-            update_H(SUB,  (B & 0xF) - 1);
-            update_PV(SUB, B, 1);
-            update_N(SUB);
-            update_C(NONE, B); // C not affected
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, SUB, B, 1);
             break;
         
         case 0x06:  // LD B, n -- no flags affected
@@ -58,7 +48,7 @@ void Z80::execute() {
             strncat(mnemonic, buffer, 2);
             break;
         
-        case 0x3e:  // LD A, n
+        case 0x3e:  // LD A, n -- no flags affected
             A = IR[1];
             snprintf(buffer, MAX_BUFFER, "%02x", A);
             strncat(mnemonic, buffer, 4);

@@ -112,6 +112,27 @@ void Z80::print_fetched_instruction() {
     cout << instr_string << endl;
 }
 
+void Z80::update_flags(unsigned char f_list, INST_TYPE t, unsigned char val1, unsigned char val2) {
+    if (f_list & S_BIT) {
+        update_S(t, val1);
+    }
+    if (f_list & Z_BIT) {
+        update_Z(t, val1);
+    }
+    if (f_list & H_BIT) {
+        update_H(t, val1, val2);
+    }
+    if (f_list & PV_BIT) {
+        update_PV(t, val1, val2);
+    }
+    if (f_list & N_BIT) {
+        update_N(t);
+    }
+    if (f_list & C_BIT) {
+        update_C(t, val1);
+    }
+}
+
 // Methods for updating the various bits in the Flags register
     void Z80::update_C(INST_TYPE t, unsigned char val) {
         switch (t) {
@@ -164,14 +185,14 @@ void Z80::print_fetched_instruction() {
         }
     }
     
-    void Z80::update_H(INST_TYPE t, unsigned char val) {
+    void Z80::update_H(INST_TYPE t, unsigned char val1, unsigned char val2) {
         // It is important that the calling function masks val so that it is only a 4-bit value
         switch (t) {
             case ADD:
-              if ((val > 0x0f) == 0) H = 1; else H = 0;
+              if (((val1 & 0x0f) + (val2 &0x0f)) > 0x0f) H = 1; else H = 0;
               break;
             case SUB:
-              if ((val & 0x80) == 1) H = 1; else H = 0;
+              if ((val1 & 0xf) < (val2 & 0x0f)) H = 1; else H = 0;
               break;
             case COMP:
               break;

@@ -5,7 +5,7 @@
 #ifndef Z80_OPCODES_H
 #define Z80_OPCODES_H
 
-#define MAX_OPCODE 0x10
+#define MAX_OPCODE 0x40
 
 struct Z80_opcodes {      // The opcode value is implicit in the array index defined below
     unsigned int length;
@@ -79,7 +79,7 @@ Z80_opcodes opcodes[] = {
     {1, "CCF"}, 
     {1, "LD    B, B"},    // 0x40
     {1, "LD    B, C"},
-    
+
 };
 
 #endif

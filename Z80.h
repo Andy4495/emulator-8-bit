@@ -19,14 +19,15 @@ class Z80 {
         char instr_string[MAX_TEXT_LENGTH];
 
         enum INST_TYPE {ADD, SUB, COMP, TEST, NONE};
+        enum FLAGS_BITS { S_BIT = 0x80, Z_BIT = 0x40, H_BIT = 0x10, PV_BIT = 0x04, N_BIT = 0x02, C_BIT = 0x01};
+        struct Flags {  // X1 and X2 are unused by the Z80
+            unsigned char S:1, Z:1, X1:1, H:1, X2:1, PV:1, N:1, C:1;
+        };
 
         // Main register set
         // Accumulator 
         unsigned char A;
-        // Flags (X1 and X2 are unused by the Z80)
-        struct Flags {
-            unsigned char S:1, Z:1, X1:1, H:1, X2:1, PV:1, N:1, C:1;
-        };
+        // Flags
         Flags F;
         // General purpose registers
         unsigned char B, C, D, E, H, L;
@@ -72,10 +73,11 @@ class Z80 {
         unsigned char get_next_byte();
         void execute();
         void print_fetched_instruction();
+        void update_flags(unsigned char f_list, INST_TYPE t, unsigned char val1, unsigned char val2);
         void update_C(INST_TYPE t,  unsigned char val);
         void update_N(INST_TYPE t);
         void update_PV(INST_TYPE t, unsigned char val1, unsigned char val2);
-        void update_H(INST_TYPE t,  unsigned char val);
+        void update_H(INST_TYPE t,  unsigned char val, unsigned char val2);
         void update_Z(INST_TYPE t,  unsigned char val);
         void update_S(INST_TYPE t,  unsigned char val);
 

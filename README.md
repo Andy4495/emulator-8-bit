@@ -4,7 +4,7 @@
 
 This is a simple Z80 CPU emulator that I am working on.
 
-I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture for another project I am working on.
+I created it as a learning exercise to refresh my C++ programming skills (particularly with streams) and to spend some time diving into the Z80 CPU architecture for another project I am working on. I am getting a reminder in the difference in design approaches between limited-resource embedded platform versus a platform with relatively generous resouces and an operating system.
 
 The emulator currently only supports the Z80; I am trying to write it in a way that would make it relatively easy to support other 8-bit CPUs essentially by creating a class that represents the programmer's model (registers and instruction decoding) for that particular CPU.
 
@@ -51,24 +51,26 @@ The emulator was developed using WSL 2 installed with Ubuntu 20.04 and g++ compi
 1. Parse the command line.
 2. Read the input file into an array representing the processor's memory
 3. Display menu and choose operating mode
-4. Loop
-4A. Fetch instruction
-4B. Decode instruction
-4C. Display machine state (depending on configuration and menu choice)
-4D. Continue Loop
+4. Loop:
+    - Fetch and decode instruction
+    - Execute instruction
+    - Display machine state (depending on configuration and menu choice)
+    - Continue Loop until breakpoint reached
 
-### CPU Class
+### Defining the CPU
 
-A key part of the implementation is the definition of the CPU class. This class defines:
+The CPU opcodes are defined by an array of structures which contain the size of the instruction along with the instruction mnemonic. The opcode is represented by the array index.
+
+The Z80 CPU itself is defined by a class. This class contains:
 
 - An array representing the memory (RAM and ROM) available to the processor
   - This is currently defined as a single structure of 65536 bytes (16-bit address space)
-  - Future iterations will allow the configuration of segments of read-only ROM, read/write RAM, overlay areas, and undefined areas
+  - Future iterations may allow the configuration of segments of read-only ROM, read/write RAM, overlay areas, and undefined areas
   - Future iterations may also support RAM and/or ROM banking
 - An array representing the I/O address space (256 bytes)
 - All programmer-accessible processor registers
 - Other internal registers and and flip-flops that aren't directly avaiable to the programmer, but represent the internal state of the processor.
-- Methods representing the CPU operation of:
+- Methods representing various CPU operations, including:
   - Load memory from file
     - Loads ROM and RAM with program and data as defined in the input file
   - Cold restart
@@ -77,9 +79,10 @@ A key part of the implementation is the definition of the CPU class. This class 
     - Internal state information is cleared, but RAM is left as-is
   - Jump to a specific address
     - RAM is left as is, all internal state information is left as-is except for the Program Counter
-  - Fetch
+  - Fetch and decode instruction and data
     - Load byte from memory into Instruction Register and update Program Counter
-  - Decode
+    - Load additional bytes from memory depending on the fetched opcode
+  - Execute
     - Decode and execute Instruction Register, which may include additional reads from memory
     - Update program counter
 
@@ -99,18 +102,6 @@ A key part of the implementation is the definition of the CPU class. This class 
 - Disassembler
 - Automated test suite
 - Support additonal processor types
-
-## Observations
-
-While I have been keeping up with my C++ skills for the past several years by writing Arduino programs, there are certain aspects of C++ programming that I had gotten a little rusty at. Part of that has to do with the ease-of-use features inherent with Arduino pre-processing (e.g. automatic prototype generation and hiding main()). But other areas that I had lost practice in are inherent in the differences in programming in an embedded system versus an application written to run on an OS (Linux/Unix).
-
-In particular:
-
-- Streams (files, `cin`, `cout`)
-  - Including cases where variables need to be casted to print properly when using `cout`
-- Choosing the proper variable type and size
-  - I am pretty good at this with Arduino, but it caused me some headaches when trying to switch from thinking "small embedded 8-bit" to "large linux 64-bit"
-- Using Makefiles and the myriad options available with the compiler and linker, compared to Arduino where most of that is hidden from the user
 
 ## References
 
