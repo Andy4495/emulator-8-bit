@@ -83,6 +83,7 @@ void Z80::run_from_address(unsigned short addr) {
 
 void Z80::fetch_and_decode() {
     unsigned int i;
+    char buffer[16]; // Temporary storage
     ///cout << "Fetching instruction at address: 0x" << hex << PC << endl; /// Debug
     IR[0] = memory[PC++];
     if (IR[0] < MAX_OPCODE) {
@@ -93,7 +94,71 @@ void Z80::fetch_and_decode() {
         if (instr_length == 2) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x    ", IR[0], IR[1]);
         if (instr_length == 3) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x  ", IR[0], IR[1], IR[2]);
         if (instr_length == 4) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x%02x", IR[0], IR[1], IR[2], IR[3]);
-        snprintf(mnemonic, MAX_MNEMONIC_LENGTH, "%s", opcodes[IR[0]].mn);
+        // Now figure out what sort of instruction data we loaded to construct the correct mnemonic string
+        // Most opcodes either load no data, or the additional bytes are extensions to the opcode: these are covered by the "default:" case
+        // Otherwise, we need special handlers for a subset of the opcodes
+        switch (IR[0]) {
+            // Relative Jumps
+            case 0x10:
+            case 0x20:
+            case 0x30:
+            case 0x18:
+            case 0x28:
+            case 0x38:
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[1]+PC-2);
+                break;
+
+            // IX Instructions (0xdd)
+            // For 3-byte instructions, 3rd byte is "n" 
+            // For 4-byte instructions, 3rd and 4th byte are "nn"
+            case 0xdd: 
+                if (instr_length == 3){
+                    snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2]);
+                }
+                else if (instr_length ==4) {
+                    snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[3], IR[2]);
+                }
+                else snprintf(mnemonic, MAX_MNEMONIC_LENGTH, "%s", opcodes[IR[0]].mn);
+                break;
+            
+            // Miscellaneous Instructions (0xed)
+            // For 3-byte intructions, byte 3 is "n"
+            // For 4-byte instructions, bytes 3 and 4 are "nn"
+            // Note: The only 3-byte instructions are Z180 only, which isn't implemented in this emulator
+            // NOTE: This implementation is the same as 0xed. After verifying the instructions, merge these two cases together.
+            case 0xed: 
+                if (instr_length == 3){
+                    snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2]);
+                }
+                else if (instr_length ==4) {
+                    snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[3], IR[2]);
+                }
+                else snprintf(mnemonic, MAX_MNEMONIC_LENGTH, "%s", opcodes[IR[0]].mn);
+                break;
+
+            // IY Instructions (0xfd)
+            // For 3-byte intructions, byte 3 is "n"
+            // For 4-byte instructions, bytes 3 and 4 are "nn" 
+            // EXCEPT: 0xfdcb (IY Bit Instructions) work differently
+            case 0xfd:
+                if (IR[2] == 0xCB) { // These are all 4-byte instructions, where 3rd byte is "n"
+                    snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2]);
+                }
+                else {
+                    if (instr_length == 3){
+                        snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2]);
+                    }
+                    else if (instr_length ==4) {
+                        snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[3], IR[2]);
+                    }
+                    else snprintf(mnemonic, MAX_MNEMONIC_LENGTH, "%s", opcodes[IR[0]].mn);
+                    break;
+                }
+
+            default: // General case, depends on 
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, "%s", opcodes[IR[0]].mn);
+                break;
+        }
     }
     else {
         instr_length = 1;

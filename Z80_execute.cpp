@@ -10,7 +10,6 @@ using namespace std;
 #define MAX_BUFFER 8
 
 void Z80::execute() {
-    char buffer[8];
 
     switch (IR[0]) {
         case 0x00:  // NOP -- no flags affected
@@ -19,8 +18,6 @@ void Z80::execute() {
         case 0x01:  // LD BC, nn -- no flags affected
             C = IR[1];
             B = IR[2];
-            snprintf(buffer, MAX_BUFFER, "%02x%02x", B, C);
-            strncat(mnemonic, buffer, 4);
             break;
         
         case 0x02:  // LD (BC), A -- no flags affected
@@ -44,14 +41,10 @@ void Z80::execute() {
         
         case 0x06:  // LD B, n -- no flags affected
             B = IR[1];
-            snprintf(buffer, MAX_BUFFER, "%02x", B);
-            strncat(mnemonic, buffer, 2);
             break;
         
         case 0x3e:  // LD A, n -- no flags affected
             A = IR[1];
-            snprintf(buffer, MAX_BUFFER, "%02x", A);
-            strncat(mnemonic, buffer, 4);
             break;
         
         default: 
