@@ -4,7 +4,7 @@
 
 This is a simple Z80 CPU emulator that I am working on.
 
-I created it as a learning exercise to refresh my C++ programming skills (particularly with streams) and to spend some time diving into the Z80 CPU architecture for another project I am working on. I am getting a reminder in the difference in design approaches between limited-resource embedded platform versus a platform with relatively generous resouces and an operating system.
+I created it as a learning exercise to refresh my C++ programming skills (particularly with streams) and to spend some time diving into the Z80 CPU architecture for another project I am working on. I am also getting a reminder in the difference in design approaches between limited-resource embedded platform versus a platform with relatively generous resouces and an operating system.
 
 The emulator currently only supports the Z80; I am trying to write it in a way that would make it relatively easy to support other 8-bit CPUs essentially by creating a class that represents the programmer's model (registers and instruction decoding) for that particular CPU.
 

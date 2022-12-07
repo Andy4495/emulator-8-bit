@@ -83,7 +83,6 @@ void Z80::run_from_address(unsigned short addr) {
 
 void Z80::fetch_and_decode() {
     unsigned int i;
-    char buffer[16]; // Temporary storage
     ///cout << "Fetching instruction at address: 0x" << hex << PC << endl; /// Debug
     IR[0] = memory[PC++];
     if (IR[0] < MAX_OPCODE) {
@@ -132,7 +131,7 @@ void Z80::fetch_and_decode() {
                 }
                 else if (instr_length ==4) {
                     snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[3], IR[2]);
-                }
+               }
                 else snprintf(mnemonic, MAX_MNEMONIC_LENGTH, "%s", opcodes[IR[0]].mn);
                 break;
 
@@ -155,8 +154,11 @@ void Z80::fetch_and_decode() {
                     break;
                 }
 
-            default: // General case, depends on 
-                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, "%s", opcodes[IR[0]].mn);
+            default: // General case, depends on length of instruction
+                if (instr_length == 1) strncpy(mnemonic, opcodes[IR[0]].mn, MAX_MNEMONIC_LENGTH);
+                if (instr_length == 2) snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[1]);
+                if (instr_length == 3) snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2], IR[1]);
+                if (instr_length == 4) snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2], IR[1]);
                 break;
         }
     }
@@ -232,12 +234,12 @@ void Z80::update_flags(unsigned char f_list, INST_TYPE t, unsigned char val1, un
     void Z80::update_PV(INST_TYPE t, unsigned char val1, unsigned char val2) {
         switch (t) {
             case ADD:
-              if ((val1 && 0x80) != (val2 && 0x80)) F.PV = 0;   // operands are diffent signs, no overflow
+              if ((val1 & 0x80) != (val2 & 0x80)) F.PV = 0;   // operands are diffent signs, no overflow
               else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) F.PV = 1;
               else F.PV = 0;
               break;
             case SUB:
-              if ((val1 && 0x80) == (val2 && 0x80)) F.PV = 0;   // operands are same signs, no overflow
+              if ((val1 & 0x80) == (val2 & 0x80)) F.PV = 0;   // operands are same signs, no overflow
               else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) F.PV = 1;
               else F.PV = 0;
               break;
