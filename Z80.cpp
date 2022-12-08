@@ -19,20 +19,20 @@ Z80::Z80(unsigned short ramstart, unsigned short ramend, unsigned short romstart
 void Z80::load_memory(const char* fname) {
     // Load memory from filename fname
     unsigned int i = 0;
-	char data;
+    char data;
 
     cout << "Loading memory from file: " << fname << endl;
 
     ifstream memfile(fname,iostream::in|ios::binary);
-	assert(memfile); // Check if open successful
+    assert(memfile); // Check if open successful
 
     while (memfile.read(&data, 1)) {
-		memory[i++] = data;
-		if (i > MAX_MEMORY - 1) {
-			cout << "Filled memory before reaching end of file." << endl;
-			break;    // Make sure we don't try to load beyond memory space
-		}
-	}
+        memory[i++] = data;
+        if (i > MAX_MEMORY - 1) {
+            cout << "Filled memory before reaching end of file." << endl;
+            break;    // Make sure we don't try to load beyond memory space
+        }
+    }
 }
 
 void Z80::cold_reset() {

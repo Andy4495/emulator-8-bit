@@ -36,91 +36,91 @@ using namespace std;
 // Main() function: where the execution of program begins
 int main(int argc, char** argv)
 {
-	// All CPU class functions use hex (hexadecimal) for cout
-	// Anywhere dec is desired, temporarily switch to dec and then swtich back to hex when done writing to cout
+    // All CPU class functions use hex (hexadecimal) for cout
+    // Anywhere dec is desired, temporarily switch to dec and then swtich back to hex when done writing to cout
 
-	// prints hello world
-	cout << "Z80 Emulator Version: " << VERSION << endl;
+    // prints hello world
+    cout << "Z80 Emulator Version: " << VERSION << endl;
 
-	/// Use default values for rom and ram definitions for now
-	Z80 cpu;
+    /// Use default values for rom and ram definitions for now
+    Z80 cpu;
 
-	int choice = 0;
-	unsigned short addr;
+    int choice = 0;
+    unsigned short addr;
 
-	if (argc == 2) { // Use pathname passed on command line
-		cpu.load_memory(argv[1]);
-	}
-	else { // Use default filename
-		cpu.load_memory("data.bin");
-	}
-	cout << "DONE." << endl;
+    if (argc == 2) { // Use pathname passed on command line
+        cpu.load_memory(argv[1]);
+    }
+    else { // Use default filename
+        cpu.load_memory("data.bin");
+    }
+    cout << "DONE." << endl;
 
     while (choice == 0) {
-		cout << "Select an option:" << endl;
-		cout << "1. Cold reset and run from $0000." << endl;
-		cout << "2. Warm reset and run from $0000." << endl;
-		cout << "3. Run from specific address." << endl;
-		cout << "4. Set breakpoint." << endl;
+        cout << "Select an option:" << endl;
+        cout << "1. Cold reset and run from $0000." << endl;
+        cout << "2. Warm reset and run from $0000." << endl;
+        cout << "3. Run from specific address." << endl;
+        cout << "4. Set breakpoint." << endl;
 
-		cin >> choice;
+        cin >> choice;
 
-		switch (choice) {
-			case 1: // Cold restart
-				cpu.cold_reset();
-				break;
+        switch (choice) {
+            case 1: // Cold restart
+                cpu.cold_reset();
+                break;
 
-			case 2: // Warm restart
-				cpu.warm_reset();
-				break;
+            case 2: // Warm restart
+                cpu.warm_reset();
+                break;
 
-			case 3: // Run from address
-				cout << "Enter starting address in hex: 0x";
-				cin >> hex >> addr >> dec;
-				cpu.run_from_address(addr);
-				break;
+            case 3: // Run from address
+                cout << "Enter starting address in hex: 0x";
+                cin >> hex >> addr >> dec;
+                cpu.run_from_address(addr);
+                break;
 
-			case 4: // Set breakpoint
-				// Add code to input address 
-				// Add code to set a breakpoint
-				choice = 0;
-				break;
+            case 4: // Set breakpoint
+                // Add code to input address 
+                // Add code to set a breakpoint
+                choice = 0;
+                break;
 
-			default: // Choice outside of range
-			  cout << "Invalid selection. Try again." << endl << endl;
-			  choice = 0;
-			  break;
+            default: // Choice outside of range
+              cout << "Invalid selection. Try again." << endl << endl;
+              choice = 0;
+              break;
 
-		}
-	}
+        }
+    }
 
-	int state = 1;
-	while (state < 10) { // Limit the number if times we fetch and decode
-	///    cout << "State: " << state << " PC: " << hex << cpu.PC << endl; /// debug
-		cpu.fetch_and_decode();
-		cpu.execute();
-		cpu.print_fetched_instruction();
-		state++;
-	}
+    int state = 1;
+    while (state < 10) { // Limit the number if times we fetch and decode
+    ///    cout << "State: " << state << " PC: " << hex << cpu.PC << endl; /// debug
+        cpu.fetch_and_decode();
+        cpu.execute();
+        cpu.print_fetched_instruction();
+        state++;
+    }
 
-	cout << hex << "A: " << (unsigned int) cpu.A 
-	<< " B: " << (unsigned int) cpu.B 
-	<< " C: " << (unsigned int) cpu.C
-	<< " D: " << (unsigned int) cpu.D
-	<< " E: " << (unsigned int) cpu.E
-	<< " H: " << (unsigned int) cpu.H
-	<< " L: " << (unsigned int) cpu.L << endl;
-	cout << "SZXH XPNC: "
-	<< (unsigned int) cpu.F.S 
-	<< (unsigned int) cpu.F.Z 
-	<< (unsigned int) cpu.F.X1 
-	<< (unsigned int) cpu.F.H 
-	<< " "
-	<< (unsigned int) cpu.F.X2 
-	<< (unsigned int) cpu.F.PV
-	<< (unsigned int) cpu.F.N 
-	<< (unsigned int) cpu.F.C 
-	<< endl;
+    cout << hex << "A: " << (unsigned int) cpu.A 
+    << " B: " << (unsigned int) cpu.B 
+    << " C: " << (unsigned int) cpu.C
+    << " D: " << (unsigned int) cpu.D
+    << " E: " << (unsigned int) cpu.E
+    << " H: " << (unsigned int) cpu.H
+    << " L: " << (unsigned int) cpu.L << endl;
+    cout << "SZXH XPNC: "
+    << (unsigned int) cpu.F.S 
+    << (unsigned int) cpu.F.Z 
+    << (unsigned int) cpu.F.X1 
+    << (unsigned int) cpu.F.H 
+    << " "
+    << (unsigned int) cpu.F.X2 
+    << (unsigned int) cpu.F.PV
+    << (unsigned int) cpu.F.N 
+    << (unsigned int) cpu.F.C 
+    << endl;
 
-	return 0;
+    return 0;
 }

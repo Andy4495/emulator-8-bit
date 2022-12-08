@@ -275,8 +275,7 @@ Z80_opcodes opcodes[] = {
     {3, ONN,  "CALL  M, $%02x%02x"}, 
     {2, OO,   "IY INSTRUCTIONS"},     // 0xFD: IY Instructions; additional decoding required 
     {2, ON,   "CP    $%02x"},
-    {1, O,    "RST   $38"},
-
+    {1, O,    "RST   $38"}
 };
 
 #endif
