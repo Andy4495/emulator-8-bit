@@ -18,7 +18,7 @@ class Z80 {
         char mnemonic[MAX_MNEMONIC_LENGTH + 1];
         char instr_string[MAX_TEXT_LENGTH + 1];
 
-        enum INST_TYPE {ADD, SUB, COMP, TEST, NONE};
+        enum INST_TYPE {ADD, SUB, COMP, TEST, BIT, NONE};
         enum FLAGS_BITS { S_BIT = 0x80, Z_BIT = 0x40, H_BIT = 0x10, PV_BIT = 0x04, N_BIT = 0x02, C_BIT = 0x01};
         struct Flags {  // X1 and X2 are unused by the Z80
             unsigned char S:1, Z:1, X1:1, H:1, X2:1, PV:1, N:1, C:1;
@@ -96,5 +96,12 @@ class Z80 {
         void decode_ix_bit_instruction();
         void decode_iy_instruction();
         void decode_iy_bit_instruction();
+        void execute_main_opcode();
+        void execute_misc_opcode();
+        void execute_bit_opcode();
+        void execute_ix_opcode();
+        void execute_ix_bit_opcode();
+        void execute_iy_opcode();
+        void execute_iy_bit_opcode();
 };
 #endif

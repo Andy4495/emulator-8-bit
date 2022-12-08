@@ -37,14 +37,14 @@ void Z80::load_memory(const char* fname) {
 
 void Z80::cold_reset() {
     // Clear RAM and registers, start from $0000
-    cout << "Cold Reset: clearing RAM, clearing registers and PC set to $0000" << endl;
+    cout << "Cold Reset: clearing RAM, clearing registers, PC set to $0000" << endl;
     for (unsigned long i = _ramstart; i <= _ramend; i++) memory[i] = 0;
     clear_registers();
 }
 
 void Z80::warm_reset() {
     // Keep RAM intact, clear registers, start from $0000
-    cout << "Warm Reset: clearing registers and PC set to $0000" << endl;
+    cout << "Warm Reset: clearing registers, PC set to $0000" << endl;
     clear_registers();
 }
 
@@ -151,6 +151,8 @@ void Z80::update_C(INST_TYPE t, unsigned char val) {
           break;
         case TEST:
           break;
+        case BIT:
+          break;
         default:  // NONE - Flag not affected
           break;
     }
@@ -159,6 +161,7 @@ void Z80::update_C(INST_TYPE t, unsigned char val) {
 void Z80::update_N(INST_TYPE t) {
     switch (t) {
         case ADD:
+        case BIT:
           F.N = 0;
           break;
         case SUB:
@@ -187,6 +190,9 @@ void Z80::update_PV(INST_TYPE t, unsigned char val1, unsigned char val2) {
           break;
         case TEST:
           break;
+        case BIT:
+          /// Implement even/odd parity check
+          break;
         default:  // NONE - Flag not affected
           break;
     }
@@ -196,14 +202,17 @@ void Z80::update_H(INST_TYPE t, unsigned char val1, unsigned char val2) {
     // It is important that the calling function masks val so that it is only a 4-bit value
     switch (t) {
         case ADD:
-          if (((val1 & 0x0f) + (val2 &0x0f)) > 0x0f) H = 1; else H = 0;
+          if (((val1 & 0x0f) + (val2 &0x0f)) > 0x0f) F.H = 1; else F.H = 0;
           break;
         case SUB:
-          if ((val1 & 0xf) < (val2 & 0x0f)) H = 1; else H = 0;
+          if ((val1 & 0xf) < (val2 & 0x0f)) F.H = 1; else F.H = 0;
           break;
         case COMP:
           break;
         case TEST:
+          break;
+        case BIT: 
+          F.H = 0; 
           break;
         default:  // NONE - Flag not affected
           break;
@@ -214,6 +223,7 @@ void Z80::update_Z(INST_TYPE t, unsigned char val) {
     switch (t) {
         case ADD:
         case SUB:
+        case BIT:
           if (val == 0) F.Z = 1; else F.Z = 0;
           break;
         case COMP:
@@ -229,6 +239,7 @@ void Z80::update_S(INST_TYPE t, unsigned char val) {
     switch (t) {
         case ADD:
         case SUB:
+        case BIT:
           if (val & 0x80) F.S = 1; else F.S = 0;
           break;
         case COMP:

@@ -63,7 +63,7 @@ I have not tried it on other platforms, but there is no machine dependent code. 
 
 ### Defining the CPU
 
-The CPU opcodes are defined by an array of structures which contain the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode is represented by the array index.
+The CPU opcodes are defined in several tables (implemented using arrays of structs) for the main and extended opcodes. Each entry in tha tables contain the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode itself is represented by the array index.
 
 The Z80 CPU is defined by a class. This class contains:
 
