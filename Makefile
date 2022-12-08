@@ -17,7 +17,7 @@ verbose: FLAGS += --verbose
 verbose: LFLAGS += --verbose
 verbose: all
 
-Emulator.o: $(SOURCE) $(HEADER)
+Emulator.o: Emulator.cpp Z80.h
 	$(CC) $(FLAGS) Emulator.cpp 
 
 Z80.o: Z80.cpp Z80.h Z80_opcodes.h

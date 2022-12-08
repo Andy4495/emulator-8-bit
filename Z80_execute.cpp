@@ -48,7 +48,7 @@ void Z80::execute() {
             break;
         
         default: 
-            cout << "Unimplemented instruction: 0x" << hex << (unsigned int) IR[0] << "!" << endl;
+            cout << "Execution not defined: 0x" << hex << (unsigned int) IR[0] << endl;
             break;
     }
 }

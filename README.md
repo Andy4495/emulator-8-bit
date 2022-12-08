@@ -59,9 +59,9 @@ The emulator was developed using WSL 2 installed with Ubuntu 20.04 and g++ compi
 
 ### Defining the CPU
 
-The CPU opcodes are defined by an array of structures which contain the size of the instruction along with the instruction mnemonic. The opcode is represented by the array index.
+The CPU opcodes are defined by an array of structures which contain the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode is represented by the array index.
 
-The Z80 CPU itself is defined by a class. This class contains:
+The Z80 CPU is defined by a class. This class contains:
 
 - An array representing the memory (RAM and ROM) available to the processor
   - This is currently defined as a single structure of 65536 bytes (16-bit address space)
@@ -82,9 +82,9 @@ The Z80 CPU itself is defined by a class. This class contains:
   - Fetch and decode instruction and data
     - Load byte from memory into Instruction Register and update Program Counter
     - Load additional bytes from memory depending on the fetched opcode
+    - Generate a string containing the disassembled instruction and data
   - Execute
-    - Decode and execute Instruction Register, which may include additional reads from memory
-    - Update program counter
+    - Execute the actual instruction (load, store, jump, etc.)
 
 ### Future Functionality
 
