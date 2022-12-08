@@ -83,54 +83,29 @@ void Z80::run_from_address(unsigned short addr) {
 }
 
 void Z80::fetch_and_decode() {
-    unsigned int i;
     ///cout << "Fetching instruction at address: 0x" << hex << PC << endl; /// Debug
     IR[0] = memory[PC++];
-    if (IR[0] < MAX_OPCODE) {
-        instr_length = opcodes[IR[0]].length;
-        for (i = 0; i < instr_length - 1; i++) IR[i+1] = get_next_byte();
-        // Create the memory string based on size of instruction: 
-        if (instr_length == 1) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x      ", IR[0]);
-        if (instr_length == 2) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x    ", IR[0], IR[1]);
-        if (instr_length == 3) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x  ", IR[0], IR[1], IR[2]);
-        if (instr_length == 4) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x%02x", IR[0], IR[1], IR[2], IR[3]);
-        // Depending on the instruction, there may be data that needs to be displayed as part of the instruction string
-        // The ".s" field in the opcodes array defines the instruction layout of opcodes and data
-        // Relative jumps ("JN") require slightly different handling in order to generate the 16-bit address from 
-        // the 8-bit relative jump value
-        switch (opcodes[IR[0]].s) {
-            case O:
-            case OO:
-                strncpy(mnemonic, opcodes[IR[0]].mn, MAX_MNEMONIC_LENGTH);
-                break; 
-            case ON:
-                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[1]);
-                break;
-            case ONN:
-                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2], IR[1]);
-                break;
-            case OONN:
-                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[3], IR[2]);
-                break;
-            case JN:
-                // The following uses a clumsy way to deal with the special case where the displacement value is actually 
-                // signed where we normally treat the data as unsigned
-                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, (IR[1] < 0x80) ? IR[1]+PC : PC - (0xff - IR[1] + 1));
-                break;
-            case OON:
-            case OONO:
-                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2]);
-                break;
-
-            default:  // Invalid instruction layout
-                strncpy(mnemonic, "Invalid layout", MAX_MNEMONIC_LENGTH);
-                break;
-        }
-    }
-    else {
-        instr_length = 1;
-        snprintf(fetched, MAX_FETCHED_LENGTH, "%02x      ", IR[0]);
-        snprintf(mnemonic, MAX_MNEMONIC_LENGTH, "<UNIMP-NOP>");
+    // Figure out the opcode type (main or extended) and decode from the appropriate opcode array
+    switch (IR[0]) {
+        case 0xcb:     // Bit Instructions
+            IR[1] = memory[PC++];
+            decode_bit_instruction();
+            break;
+        case 0xdd:     // IX Register Instructions
+            IR[1] = memory[PC++];
+            decode_ix_instruction();
+            break;
+        case 0xed:     // Miscellaneous Instructions
+            IR[1] = memory[PC++];
+            decode_misc_instruction();       
+            break;
+        case 0xfd:    // IY Register Instructions
+            IR[1] = memory[PC++];
+            decode_iy_instruction();
+            break;
+        default:       // Main Instructions
+            decode_main_instruction();
+            break;
     }
 }
 
@@ -166,102 +141,348 @@ void Z80::update_flags(unsigned char f_list, INST_TYPE t, unsigned char val1, un
 }
 
 // Methods for updating the various bits in the Flags register
-    void Z80::update_C(INST_TYPE t, unsigned char val) {
-        switch (t) {
-            case ADD:
-              break;
-            case SUB:
-              break;
-            case COMP:
-              break;
-            case TEST:
-              break;
-            default:  // NONE - Flag not affected
-              break;
-        }
+void Z80::update_C(INST_TYPE t, unsigned char val) {
+    switch (t) {
+        case ADD:
+          break;
+        case SUB:
+          break;
+        case COMP:
+          break;
+        case TEST:
+          break;
+        default:  // NONE - Flag not affected
+          break;
     }
+}
 
-    void Z80::update_N(INST_TYPE t) {
-        switch (t) {
-            case ADD:
-              F.N = 0;
+void Z80::update_N(INST_TYPE t) {
+    switch (t) {
+        case ADD:
+          F.N = 0;
+          break;
+        case SUB:
+          F.N = 1;
+          break;
+        case COMP:
+        case TEST:
+        default:  // NONE - Flag not affected
+          break;
+    }
+}
+
+void Z80::update_PV(INST_TYPE t, unsigned char val1, unsigned char val2) {
+    switch (t) {
+        case ADD:
+          if ((val1 & 0x80) != (val2 & 0x80)) F.PV = 0;   // operands are diffent signs, no overflow
+          else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) F.PV = 1;
+          else F.PV = 0;
+          break;
+        case SUB:
+          if ((val1 & 0x80) == (val2 & 0x80)) F.PV = 0;   // operands are same signs, no overflow
+          else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) F.PV = 1;
+          else F.PV = 0;
+          break;
+        case COMP:
+          break;
+        case TEST:
+          break;
+        default:  // NONE - Flag not affected
+          break;
+    }
+}
+
+void Z80::update_H(INST_TYPE t, unsigned char val1, unsigned char val2) {
+    // It is important that the calling function masks val so that it is only a 4-bit value
+    switch (t) {
+        case ADD:
+          if (((val1 & 0x0f) + (val2 &0x0f)) > 0x0f) H = 1; else H = 0;
+          break;
+        case SUB:
+          if ((val1 & 0xf) < (val2 & 0x0f)) H = 1; else H = 0;
+          break;
+        case COMP:
+          break;
+        case TEST:
+          break;
+        default:  // NONE - Flag not affected
+          break;
+    }
+}
+
+void Z80::update_Z(INST_TYPE t, unsigned char val) {
+    switch (t) {
+        case ADD:
+        case SUB:
+          if (val == 0) F.Z = 1; else F.Z = 0;
+          break;
+        case COMP:
+          break;
+        case TEST:
+          break;
+        default:  // NONE - Flag not affected
+          break;
+    }
+}
+
+void Z80::update_S(INST_TYPE t, unsigned char val) {
+    switch (t) {
+        case ADD:
+        case SUB:
+          if (val & 0x80) F.S = 1; else F.S = 0;
+          break;
+        case COMP:
+          break;
+        case TEST:
+          break;
+        default:  // NONE - Flag not affected
+          break;
+    }
+}
+
+void Z80::decode_main_instruction() {
+    unsigned int i;
+    if (IR[0] < MAX_OPCODE) {
+      instr_length = opcodes[IR[0]].length;
+      for (i = 1; i < instr_length; i++) IR[i] = get_next_byte();
+      // Create the memory string based on size of instruction: 
+      if (instr_length == 1) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x      ", IR[0]);
+      if (instr_length == 2) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x    ", IR[0], IR[1]);
+      if (instr_length == 3) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x  ", IR[0], IR[1], IR[2]);
+      if (instr_length == 4) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x%02x", IR[0], IR[1], IR[2], IR[3]);
+      // Depending on the instruction, there may be data that needs to be displayed as part of the instruction string
+      // The ".s" field in the opcodes array defines the instruction layout of opcodes and data
+      // Relative jumps ("JN") require slightly different handling in order to generate the 16-bit address from 
+      // the 8-bit relative jump value
+      switch (opcodes[IR[0]].s) {
+          case O:
+          case OO:
+              strncpy(mnemonic, opcodes[IR[0]].mn, MAX_MNEMONIC_LENGTH);
+              break; 
+          case ON:
+              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[1]);
               break;
-            case SUB:
-              F.N = 1;
+          case ONN:
+              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2], IR[1]);
               break;
-            case COMP:
-            case TEST:
-            default:  // NONE - Flag not affected
+          case OONN:
+              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[3], IR[2]);
               break;
+          case JN:
+              // The following uses a clumsy way to deal with the special case where the displacement value is actually 
+              // signed where we normally treat the data as unsigned
+              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, (IR[1] < 0x80) ? IR[1]+PC : PC - (0xff - IR[1] + 1));
+              break;
+          case OON:
+          case OONO:
+              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2]);
+              break;
+
+          default:  // Invalid instruction layout
+              strncpy(mnemonic, "Invalid layout", MAX_MNEMONIC_LENGTH);
+              break;
+      }
+    }
+    else {
+        instr_length = 1;
+        snprintf(fetched, MAX_FETCHED_LENGTH, "%02x      ", IR[0]);
+        snprintf(mnemonic, MAX_MNEMONIC_LENGTH, "<UNIMP-NOP>");
+    }
+}
+
+void Z80::decode_bit_instruction() {
+    // These are all 2 byte instructions of the form OO
+    instr_length = opcodes_bit_instructions[IR[1]].length;
+    // Create the memory string based on size of instruction: 
+    snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x    ", IR[0], IR[1]);
+    // Depending on the instruction, there may be data that needs to be displayed as part of the instruction string
+    // The ".s" field in the opcodes array defines the instruction layout of opcodes and data
+    switch (opcodes_bit_instructions[IR[1]].s) {
+        case OO:
+            strncpy(mnemonic, opcodes_bit_instructions[IR[1]].mn, MAX_MNEMONIC_LENGTH);
+            break; 
+
+        default:  // Invalid instruction layout
+            strncpy(mnemonic, "Invalid layout", MAX_MNEMONIC_LENGTH);
+            break;
+    }
+}
+
+void Z80::decode_misc_instruction() {
+    unsigned int i;
+    instr_length = opcodes_misc_instructions[IR[1]].length;
+    for (i = 2; i < instr_length; i++) IR[i] = get_next_byte();
+    // Create the memory string based on size of instruction: 
+    if (instr_length == 1) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x      ", IR[0]);
+    if (instr_length == 2) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x    ", IR[0], IR[1]);
+    if (instr_length == 3) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x  ", IR[0], IR[1], IR[2]);
+    if (instr_length == 4) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x%02x", IR[0], IR[1], IR[2], IR[3]);
+    // Depending on the instruction, there may be data that needs to be displayed as part of the instruction string
+    // The ".s" field in the opcodes array defines the instruction layout of opcodes and data
+    // Relative jumps ("JN") require slightly different handling in order to generate the 16-bit address from 
+    // the 8-bit relative jump value
+    switch (opcodes_misc_instructions[IR[1]].s) {
+        case O:
+        case OO:
+            strncpy(mnemonic, opcodes_misc_instructions[IR[1]].mn, MAX_MNEMONIC_LENGTH);
+            break; 
+        case ON:
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_misc_instructions[IR[1]].mn, IR[1]);
+            break;
+        case ONN:
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_misc_instructions[IR[1]].mn, IR[2], IR[1]);
+            break;
+        case OONN:
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_misc_instructions[IR[1]].mn, IR[3], IR[2]);
+            break;
+        case JN:
+            // The following uses a clumsy way to deal with the special case where the displacement value is actually 
+            // signed where we normally treat the data as unsigned
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_misc_instructions[IR[1]].mn, (IR[1] < 0x80) ? IR[1]+PC : PC - (0xff - IR[1] + 1));
+            break;
+        case OON:
+        case OONO:
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_misc_instructions[IR[1]].mn, IR[2]);
+            break;
+
+        default:  // Invalid instruction layout
+            strncpy(mnemonic, "Invalid layout", MAX_MNEMONIC_LENGTH);
+            break;
+    }
+}
+
+void Z80::decode_ix_instruction() {
+    unsigned int i;
+    if (IR[1] == 0xcb) 
+        decode_ix_bit_instruction();
+    else {
+        instr_length = opcodes_IX_instructions[IR[1]].length;
+        for (i = 2; i < instr_length; i++) IR[i] = get_next_byte();
+        // Create the memory string based on size of instruction: 
+        if (instr_length == 1) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x      ", IR[0]);
+        if (instr_length == 2) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x    ", IR[0], IR[1]);
+        if (instr_length == 3) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x  ", IR[0], IR[1], IR[2]);
+        if (instr_length == 4) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x%02x", IR[0], IR[1], IR[2], IR[3]);
+        // Depending on the instruction, there may be data that needs to be displayed as part of the instruction string
+        // The ".s" field in the opcodes array defines the instruction layout of opcodes and data
+        // Relative jumps ("JN") require slightly different handling in order to generate the 16-bit address from 
+        // the 8-bit relative jump value
+        switch (opcodes_IX_instructions[IR[1]].s) {
+            case O:
+            case OO:
+                strncpy(mnemonic, opcodes_IX_instructions[IR[1]].mn, MAX_MNEMONIC_LENGTH);
+                break; 
+            case ON:
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IX_instructions[IR[1]].mn, IR[1]);
+                break;
+            case ONN:
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IX_instructions[IR[1]].mn, IR[2], IR[1]);
+                break;
+            case OONN:
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IX_instructions[IR[1]].mn, IR[3], IR[2]);
+                break;
+            case JN:
+                // The following uses a clumsy way to deal with the special case where the displacement value is actually 
+                // signed where we normally treat the data as unsigned
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IX_instructions[IR[1]].mn, (IR[1] < 0x80) ? IR[1]+PC : PC - (0xff - IR[1] + 1));
+                break;
+            case OON:
+            case OONO:
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IX_instructions[IR[1]].mn, IR[2]);
+                break;
+
+            default:  // Invalid instruction layout
+                strncpy(mnemonic, "Invalid layout", MAX_MNEMONIC_LENGTH);
+                break;
         }
     }
-    
-    void Z80::update_PV(INST_TYPE t, unsigned char val1, unsigned char val2) {
-        switch (t) {
-            case ADD:
-              if ((val1 & 0x80) != (val2 & 0x80)) F.PV = 0;   // operands are diffent signs, no overflow
-              else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) F.PV = 1;
-              else F.PV = 0;
-              break;
-            case SUB:
-              if ((val1 & 0x80) == (val2 & 0x80)) F.PV = 0;   // operands are same signs, no overflow
-              else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) F.PV = 1;
-              else F.PV = 0;
-              break;
-            case COMP:
-              break;
-            case TEST:
-              break;
-            default:  // NONE - Flag not affected
-              break;
+}
+
+void Z80::decode_iy_instruction() {
+    unsigned int i;
+    if (IR[1] == 0xcb) 
+        decode_iy_bit_instruction();
+    else {
+        instr_length = opcodes_IY_instructions[IR[1]].length;
+        for (i = 2; i < instr_length; i++) IR[i] = get_next_byte();
+        // Create the memory string based on size of instruction: 
+        if (instr_length == 1) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x      ", IR[0]);
+        if (instr_length == 2) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x    ", IR[0], IR[1]);
+        if (instr_length == 3) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x  ", IR[0], IR[1], IR[2]);
+        if (instr_length == 4) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x%02x", IR[0], IR[1], IR[2], IR[3]);
+        // Depending on the instruction, there may be data that needs to be displayed as part of the instruction string
+        // The ".s" field in the opcodes array defines the instruction layout of opcodes and data
+        // Relative jumps ("JN") require slightly different handling in order to generate the 16-bit address from 
+        // the 8-bit relative jump value
+        switch (opcodes_IY_instructions[IR[1]].s) {
+            case O:
+            case OO:
+                strncpy(mnemonic, opcodes_IY_instructions[IR[1]].mn, MAX_MNEMONIC_LENGTH);
+                break; 
+            case ON:
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IY_instructions[IR[1]].mn, IR[1]);
+                break;
+            case ONN:
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IY_instructions[IR[1]].mn, IR[2], IR[1]);
+                break;
+            case OONN:
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IY_instructions[IR[1]].mn, IR[3], IR[2]);
+                break;
+            case JN:
+                // The following uses a clumsy way to deal with the special case where the displacement value is actually 
+                // signed where we normally treat the data as unsigned
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IY_instructions[IR[1]].mn, (IR[1] < 0x80) ? IR[1]+PC : PC - (0xff - IR[1] + 1));
+                break;
+            case OON:
+            case OONO:
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IY_instructions[IR[1]].mn, IR[2]);
+                break;
+
+            default:  // Invalid instruction layout
+                strncpy(mnemonic, "Invalid layout", MAX_MNEMONIC_LENGTH);
+                break;
         }
     }
-    
-    void Z80::update_H(INST_TYPE t, unsigned char val1, unsigned char val2) {
-        // It is important that the calling function masks val so that it is only a 4-bit value
-        switch (t) {
-            case ADD:
-              if (((val1 & 0x0f) + (val2 &0x0f)) > 0x0f) H = 1; else H = 0;
-              break;
-            case SUB:
-              if ((val1 & 0xf) < (val2 & 0x0f)) H = 1; else H = 0;
-              break;
-            case COMP:
-              break;
-            case TEST:
-              break;
-            default:  // NONE - Flag not affected
-              break;
-        }
+}
+
+void Z80::decode_ix_bit_instruction() {
+    // All of these are 4 byte instructions
+    IR[2] = get_next_byte();
+    IR[3] = get_next_byte();
+    instr_length = opcodes_IX_bit_instructions[IR[3]].length;
+    // Create the memory string based on size of instruction (all of these are 4 bytes)
+    snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x%02x", IR[0], IR[1], IR[2], IR[3]);
+    // Depending on the instruction, there may be data that needs to be displayed as part of the instruction string
+    // The ".s" field in the opcodes array defines the instruction layout of opcodes and data
+    // All of these are of the form OONO
+    switch (opcodes_IX_bit_instructions[IR[3]].s) {
+        case OONO:
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IX_bit_instructions[IR[3]].mn, IR[2]);
+            break;
+
+        default:  // Invalid instruction layout
+            strncpy(mnemonic, "Invalid layout", MAX_MNEMONIC_LENGTH);
+            break;
     }
-    
-    void Z80::update_Z(INST_TYPE t, unsigned char val) {
-        switch (t) {
-            case ADD:
-            case SUB:
-              if (val == 0) F.Z = 1; else F.Z = 0;
-              break;
-            case COMP:
-              break;
-            case TEST:
-              break;
-            default:  // NONE - Flag not affected
-              break;
-        }
+}
+
+void Z80::decode_iy_bit_instruction() {
+    // All of these are 4 byte instructions
+    IR[2] = get_next_byte();
+    IR[3] = get_next_byte();
+    instr_length = opcodes_IY_bit_instructions[IR[3]].length;
+    // Create the memory string based on size of instruction (all of these are 4 bytes)
+    snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x%02x", IR[0], IR[1], IR[2], IR[3]);
+    // Depending on the instruction, there may be data that needs to be displayed as part of the instruction string
+    // The ".s" field in the opcodes array defines the instruction layout of opcodes and data
+    // All of these are of the form OONO
+    switch (opcodes_IY_bit_instructions[IR[3]].s) {
+        case OONO:
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_IY_bit_instructions[IR[3]].mn, IR[2]);
+            break;
+
+        default:  // Invalid instruction layout
+            strncpy(mnemonic, "Invalid layout", MAX_MNEMONIC_LENGTH);
+            break;
     }
-    
-    void Z80::update_S(INST_TYPE t, unsigned char val) {
-        switch (t) {
-            case ADD:
-            case SUB:
-              if (val & 0x80) F.S = 1; else F.S = 0;
-              break;
-            case COMP:
-              break;
-            case TEST:
-              break;
-            default:  // NONE - Flag not affected
-              break;
-        }
-    }
-    
+}

@@ -7,7 +7,7 @@
 #define MAX_INSTR_SIZE 4
 
 #define MAX_FETCHED_LENGTH 9
-#define MAX_MNEMONIC_LENGTH 16
+#define MAX_MNEMONIC_LENGTH 24
 #define MAX_TEXT_LENGTH 64
 
 class Z80 {
@@ -15,8 +15,8 @@ class Z80 {
         unsigned char memory[MAX_MEMORY] = {0};
         unsigned char io[MAX_IO] = {0};
         unsigned int instr_length;
-        char mnemonic[MAX_MNEMONIC_LENGTH];
-        char instr_string[MAX_TEXT_LENGTH];
+        char mnemonic[MAX_MNEMONIC_LENGTH + 1];
+        char instr_string[MAX_TEXT_LENGTH + 1];
 
         enum INST_TYPE {ADD, SUB, COMP, TEST, NONE};
         enum FLAGS_BITS { S_BIT = 0x80, Z_BIT = 0x40, H_BIT = 0x10, PV_BIT = 0x04, N_BIT = 0x02, C_BIT = 0x01};
@@ -86,8 +86,15 @@ class Z80 {
         unsigned short _ramend;
         unsigned short _romstart;
         unsigned short _romend;
-        char fetched[MAX_FETCHED_LENGTH];
+        char fetched[MAX_FETCHED_LENGTH + 1];
 
         void clear_registers();
+        void decode_main_instruction();
+        void decode_misc_instruction();
+        void decode_bit_instruction();
+        void decode_ix_instruction();
+        void decode_ix_bit_instruction();
+        void decode_iy_instruction();
+        void decode_iy_bit_instruction();
 };
 #endif

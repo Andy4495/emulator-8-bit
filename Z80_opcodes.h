@@ -223,7 +223,7 @@ Z80_opcodes opcodes[] = {
     {1, O,    "RET   Z"},
     {1, O,    "RET"}, 
     {3, ONN,  "JP    Z, $%02x%02x"},
-    {2, OO,   "BIT INSTR"},             // 0xcb: Bit Intructions; additional decoding required
+    {2, OO,   "BIT INSTRUCTION"},       // 0xcb: Bit Intructions; additional decoding required
     {3, ONN,  "CALL  Z, $%02x%02x"}, 
     {3, ONN,  "CALL  $%02x%02x"}, 
     {2, ON,   "ADC   A, $%02x"},
@@ -276,6 +276,109 @@ Z80_opcodes opcodes[] = {
     {2, OO,   "IY INSTRUCTIONS"},     // 0xFD: IY Instructions; additional decoding required 
     {2, ON,   "CP    $%02x"},
     {1, O,    "RST   $38"}
+};
+
+// Bit Instructions -- opcodes prefixed with 0xCB
+Z80_opcodes opcodes_bit_instructions[] = {
+    {2, OO,   "RLC   B"},             // 0xCB00
+};
+
+// IX Register Instructions -- opcodes prefixed with 0xDD
+Z80_opcodes opcodes_IX_instructions[] = {
+    {2, OO,   "INVALID: NOP" },       // 0xDD00 - Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INC   B"},
+};
+
+// Miscellaneous Instructions -- opcodes prefixed with 0xED
+Z80_opcodes opcodes_misc_instructions[] = {
+    // 0x40 insttructions not implemented (opcodes 0xED00 - 0xED3F) -- execuate NOP instead
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode  0xED00
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode  0xED10
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode  0xED20
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode  0xED30
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "IN    B, (C)"},        // 0x40
+};
+
+// IY Register Instructions -- opcodes prefixed with 0xFD
+Z80_opcodes opcodes_IY_instructions[] = {
+    {2, OO,   "INVALID: NOP" },       // 0xDD00 - Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INC   B"},
+};
+
+// IX Register Bit Instructions -- opcodes prefixed with 0xDDCB
+Z80_opcodes opcodes_IX_bit_instructions[] = {
+    {4, OONO, "RLC   (IX + $%02x), B"},
+};
+
+// IY Register Bit Instructions -- opcodes prefixed with 0xFDCB
+Z80_opcodes opcodes_IY_bit_instructions[] = {
+    {4, OONO, "RLC   (IY + $%02x), B"},
 };
 
 #endif
