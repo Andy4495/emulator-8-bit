@@ -4,7 +4,7 @@
 
 This is a simple Z80 CPU emulator that I am working on.
 
-I created it as a learning exercise to refresh my C++ programming skills (particularly with streams) and to spend some time diving into the Z80 CPU architecture for another project I am working on. I am also getting a reminder in the difference in design approaches between limited-resource embedded platform versus a platform with relatively generous resouces and an operating system.
+I created it as a learning exercise to refresh my C++ programming skills (particularly with streams) and to spend some time diving into the Z80 CPU architecture for another project I am working on. I am also getting a reminder in the difference in design approaches between limited-resource embedded platform versus (e.g. Arduino) a platform with relatively generous resouces and an operating system (WSL/MacOS/Linux).
 
 The emulator currently only supports the Z80; I am trying to write it in a way that would make it relatively easy to support other 8-bit CPUs essentially by creating a class that represents the programmer's model (registers and instruction decoding) for that particular CPU.
 
@@ -22,7 +22,7 @@ If `input-file` is not specified, then the default name `data.bin` is used.
 
 No error checking is performed on the input file, except that a maximum of 65536 bytes are read into memory. Any additional bytes beyond 65536 are ignored.
 
-*Future iterations may support additional file formats such as S-Records which would allow specific memory locations to be defined by the file.*
+*Future iterations may support additional file formats such as Intel Hex or Motorola S-Records which would allow specific memory locations to be defined by the file.*
 
 ## Building
 
@@ -34,7 +34,7 @@ The repository contains a Makefile to automate the build process. To build the e
 
 And the executable `emulator` is created.
 
-In addition, the Makefile has additional targets defined:
+The Makefile also has the following targets defined:
 
 ```text
    make debug    # Adds -g to the compiler options to create debugging information
@@ -44,7 +44,11 @@ In addition, the Makefile has additional targets defined:
 
 ## Implementation Details
 
-The emulator was developed using WSL 2 installed with Ubuntu 20.04 and g++ compiler version 9.4.0. There is no machine dependent code and it should work as-is (or with minimal changes) on other unix-like platforms.
+The emulator was developed using WSL 2 installed with Ubuntu 20.04 and g++ compiler version 9.4.0.
+
+It is also compatible with Apple MacOS clang version 12.0.0.
+
+I have not tried it on other platforms, but there is no machine dependent code. It should work as-is (or with minimal changes) on other unix-like platforms and compiler versions.
 
 ### General Program Flow
 
@@ -105,13 +109,17 @@ The Z80 CPU is defined by a class. This class contains:
 
 ## References
 
-- CPP references
-- Make references
-- Makefile [generator][3]
-- Z80 user manual
+- [Z80 Info][5]: Comprehensive source of Z80 information: hardware, compilers, assemblers, complers
+- Z80 [user manual][13]
 - Z80 opcode [table][4]
-- WSL 2 reference
-- Installing latest git reference
+- Z80 undocumented opcodes [writeup][18]
+- zasm - Z80 assembler: [online version][6] and [local install version][7]
+- [SDCC][8] - Small Device C Compiler and [manual][9]
+- [hex2bin][10] - Tool for converting [Intex Hex][11] or [Motorola S-Record][12] files to binary
+- [C++ reference][16]
+- [Make references][17]
+- Online Makefile [generator][3]
+- Installing WSL 2 [reference][14] and [devblog post][15]
 
 ## License
 
@@ -121,6 +129,20 @@ The software and other files in this repository are released under what is commo
 [2]: https://www.gnu.org/software/make/manual/make.html
 [3]: https://solver.assistedcoding.eu/makefilegen
 [4]: https://clrhome.org/table/
+[5]: http://z80.info/index.html
+[6]: http://k1.spdns.de/cgi-bin/zasm.cgi
+[7]: https://k1.spdns.de/Develop/Projects/zasm/Distributions/
+[8]: https://sdcc.sourceforge.net
+[9]: https://sdcc.sourceforge.net/doc/sdccman.pdf
+[10]: https://hex2bin.sourceforge.net
+[11]: https://developer.arm.com/documentation/ka003292/latest
+[12]: https://en.wikipedia.org/wiki/SREC_(file_format)
+[13]: https://www.zilog.com/docs/z80/um0080.pdf
+[14]: https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps
+[15]: https://devblogs.microsoft.com/commandline/the-windows-subsystem-for-linux-in-the-microsoft-store-is-now-generally-available-on-windows-10-and-11/
+[16]: https://en.cppreference.com/
+[17]: https://www.gnu.org/software/make/manual/make.html
+[18]: http://www.myquest.nl/z80undocumented/z80-documented-v0.91.pdf
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)
