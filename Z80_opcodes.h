@@ -5,7 +5,7 @@
 #ifndef Z80_OPCODES_H
 #define Z80_OPCODES_H
 
-#define MAX_OPCODE 0xBF
+#define MAX_OPCODE 0xFF
 
 // Specify the instruction byte structure
 // O -> Opcode
@@ -212,6 +212,70 @@ Z80_opcodes opcodes[] = {
     {1, O,    "CP    L"}, 
     {1, O,    "CP    (HL)"},
     {1, O,    "CP    A"}, 
+    {1, O,    "RET   NZ"},              // 0xC0
+    {1, O,    "POP   BC"}, 
+    {3, ONN,  "JP    NZ, $%02x%02x"}, 
+    {3, ONN,  "JP    $%02x%02x"}, 
+    {3, ONN,  "CALL  NZ, $%02x%02x"}, 
+    {1, O,    "PUSH  BC"}, 
+    {2, ON,   "ADD   A, $%02x"}, 
+    {1, O,    "RST   $00"}, 
+    {1, O,    "RET   Z"},
+    {1, O,    "RET"}, 
+    {3, ONN,  "JP    Z, $%02x%02x"},
+    {2, OO,   "BIT INSTR"},             // 0xcb: Bit Intructions; additional decoding required
+    {3, ONN,  "CALL  Z, $%02x%02x"}, 
+    {3, ONN,  "CALL  $%02x%02x"}, 
+    {2, ON,   "ADC   A, $%02x"},
+    {1, O,    "RST   $08"},
+    {1, O,    "RET   NC"},              // 0xD0
+    {1, O,    "POP   DE"}, 
+    {3, ONN,  "JP    NC, $%02x%02x"}, 
+    {2, ON,   "OUT   ($%02x), A"}, 
+    {3, ONN,  "CALL  NC, $%02x%02x"}, 
+    {1, O,    "PUSH  DE"}, 
+    {2, ON,   "SUB   %02x"}, 
+    {1, O,    "RST   $10"}, 
+    {1, O,    "RET   C"},
+    {1, O,    "EXX"}, 
+    {3, ONN,  "JP    C, $%02x%02x"},
+    {2, ON,   "IN    A, ($%02x"},
+    {3, ONN,  "CALL  C, $%02x%02x"}, 
+    {2, OO,   "IX INSTRUCTIONS"},       // 0xDD: IX Instructions; additional decoding required 
+    {2, ON,   "SBC   A, $%02x"},
+    {1, O,    "RST   $18"},
+    {1, O,    "RET   PO"},              // 0xE0
+    {1, O,    "POP   HL"}, 
+    {3, ONN,  "JP    PO, $%02x%02x"}, 
+    {1, O,    "EX    (SP), HL"}, 
+    {3, ONN,  "CALL  PO, $%02x%02x"}, 
+    {1, O,    "PUSH  HL"}, 
+    {2, ON,   "AND   %02x"}, 
+    {1, O,    "RST   $20"}, 
+    {1, O,    "RET   PE"},
+    {1, O,    "JP    (HL)"}, 
+    {3, ONN,  "JP    PE, $%02x%02x"},
+    {1, O,    "EX    DE, HL"},
+    {3, ONN,  "CALL  PE, $%02x%02x"}, 
+    {2, OO,   "MISC INSTRUCTIONS"},     // 0xED: Misc. Instructions; additional decoding required 
+    {2, ON,   "XOR   $%02x"},
+    {1, O,    "RST   $28"},
+    {1, O,    "RET   P"},               // 0xF0
+    {1, O,    "POP   AF"}, 
+    {3, ONN,  "JP    P, $%02x%02x"}, 
+    {1, O,    "DI"}, 
+    {3, ONN,  "CALL  P, $%02x%02x"}, 
+    {1, O,    "PUSH  AF"}, 
+    {2, ON,   "OR    %02x"}, 
+    {1, O,    "RST   $30"}, 
+    {1, O,    "RET   M"},
+    {1, O,    "LD    SP, HL"}, 
+    {3, ONN,  "JP    M, $%02x%02x"},
+    {1, O,    "EI"},
+    {3, ONN,  "CALL  M, $%02x%02x"}, 
+    {2, OO,   "IY INSTRUCTIONS"},     // 0xFD: IY Instructions; additional decoding required 
+    {2, ON,   "CP    $%02x"},
+    {1, O,    "RST   $38"},
 
 };
 
