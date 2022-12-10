@@ -37,14 +37,16 @@ void Z80::execute() {
 
 void Z80::execute_main_opcode() {
     unsigned char *r, *r_;   // Temporary storage when decoding register field in opcode
+    unsigned char F_;
 
     switch (IR[0]) {
         case 0x00:  // NOP -- no flags affected
             break;
 
-        // ************* 8-bit load Group *************
+        // ************* 8-bit Load Group *************
         // Flags are not affected by these instructions
         // ********************************************
+        //
         // LD r, r' instructions (0x40 - 0x7f)
         // LD r, (HL) 
         // LD (HL), r
@@ -144,6 +146,159 @@ void Z80::execute_main_opcode() {
             // Condition bits affected: None
             break;
 
+
+        // ************* 16-bit Load Group *************
+        // Flags are not affected by these instructions
+        // ********************************************
+        //
+        // LD dd, nn instructions (0x01, 0x11, 0x21, 0x31)
+        case 0x01: case 0x11: case 0x21: case 0x31:
+            // Determine which register we are working on:
+            // Opcode 0  0  d  d  0  0  0  1
+            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
+                SP = (IR[2]<<8) + IR[1];
+            }
+            else {
+                switch ((IR[0] & 0x30) >> 4) {
+                    case 0b00: r = &B; r_ = &C; break;
+                    case 0b01: r = &D; r_ = &E; break;
+                    case 0b10: r = &H; r_ = &L; break;
+                    default: cout << "Invalid opcode" << endl; break;
+                }
+                *r  = IR[2];
+                *r_ = IR[1];
+            }
+            // Condition bits affected: None
+            break;
+
+        // LD HL, (nn)     (0x2a)
+        case 0x2a:
+                H = memory[(IR[2]<<8) + IR[1] + 1];
+                L = memory[(IR[2]<<8) + IR[1]];
+            // Condition bits affected: None
+            break;
+
+        // LD (nn), HL (0x22)
+        case 0x22:
+            memory[(IR[2]<<8) + IR[1] + 1] = H;
+            memory[(IR[2]<<8) + IR[1]]     = L;
+            // Condition bits affected: None
+            break;
+
+        // LD SP, HL   (0xf9)
+        case 0xf9:
+            SP = (H<<8) + L;
+            // Condition bits affected: None
+            break;
+
+        // PUSH qq     (0xc5, 0xd5, 0xe5, 0xf5)
+        case 0xc5: case 0xd5: case 0xe5: case 0xf5:
+            switch ((IR[0] & 0x30) >> 4) {
+                case 0b00: r = &B; r_ = &C; break;
+                case 0b01: r = &D; r_ = &E; break;
+                case 0b10: r = &H; r_ = &L; break;
+                case 0b11: r = &A; F_ = F.S|F.Z|F.X1|F.H|F.X2|F.PV|F.N|F.C; r_ = &F_; break;
+                default: cout << "Invalid opcode" << endl; break;
+            }
+            memory[--SP] = *r;
+            memory[--SP] = *r_;
+            // Condition bits affected: None
+            break;      
+
+        // POP qq     (0xc6, 0xd6, 0xe6, 0xf6)
+        case 0xc6: case 0xd6: case 0xe6: case 0xf6:
+            switch ((IR[0] & 0x30) >> 4) {
+                case 0b00: r = &B; r_ = &C; break;
+                case 0b01: r = &D; r_ = &E; break;
+                case 0b10: r = &H; r_ = &L; break;
+                case 0b11: r = &A; r_ = &F_; break;
+                default: cout << "Invalid opcode" << endl; break;
+            }
+            *r  = memory[SP++];
+            *r_ = memory[SP++];
+            // Condition bits affected: None
+            break;      
+
+        // ************* Exchange, Block Transfer, and Search Group *************
+        // Flags are not affected by these instructions
+        // **********************************************************************
+        //
+        // EX DE, HL (0xeb)
+        case 0xeb:
+            F_ = D;
+            D  = H;
+            H  = F_;
+            F_ = E;
+            E  = L;
+            L  = F_;
+            // Condition bits affected: None
+            break;
+
+        // EX AF, AF'  (0x08)
+        case 0x08:
+            F_     = A;
+            A      = Aprime;
+            Aprime = A;
+            F_        = F.S;
+            F.S       = Fprime.S;
+            Fprime.S  = F_;
+            F_        = F.Z;
+            F.Z       = Fprime.Z;
+            Fprime.Z  = F_;
+            F_        = F.X1;
+            F.X1      = Fprime.X1;
+            Fprime.X1 = F_;
+            F_        = F.H;
+            F.H       = Fprime.H;
+            Fprime.H  = F_;
+            F_        = F.X2;
+            F.X2      = Fprime.X2;
+            Fprime.X2 = F_;
+            F_        = F.PV;
+            F.PV      = Fprime.PV;
+            Fprime.PV = F_;
+            F_        = F.N;
+            F.N       = Fprime.N;
+            Fprime.N  = F_;
+            F_        = F.C;
+            F.C       = Fprime.C;
+            Fprime.C  = F_;
+            // Condition bits affected: None
+            break;
+
+        // EXX (0xd9)
+        case 0xd9:
+            F_     = B;
+            B      = Bprime;
+            Bprime = F_;
+            F_     = C;
+            C      = Cprime;
+            Cprime = F_;
+            F_     = D;
+            D      = Dprime;
+            Dprime = F_;
+            F_     = E;
+            E      = Eprime;
+            Eprime = F_;
+            F_     = H;
+            H      = Hprime;
+            Hprime = F_;
+            F_     = L;
+            L      = Lprime;
+            Lprime = F_;
+            // Condition bits affected: None
+            break;
+
+        // EX (SP), HL (0xe3)
+        case 0xe3:
+            F_           = H;
+            H            = memory[SP+1];
+            memory[SP+1] = F_;
+            F_           = L;
+            L            = memory[SP];
+            memory[SP]   = F_;
+            // Condition bits affected: None
+            break;
 
 
 /// Example        
