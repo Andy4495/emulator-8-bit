@@ -111,15 +111,15 @@ int main(int argc, char** argv)
     << " H: " << (unsigned int) cpu.H
     << " L: " << (unsigned int) cpu.L << endl;
     cout << "SZXH XPNC: "
-    << (unsigned int) cpu.F.S 
-    << (unsigned int) cpu.F.Z 
-    << (unsigned int) cpu.F.X1 
-    << (unsigned int) cpu.F.H 
+    << cpu.testFlag(Z80::S_BIT)
+    << cpu.testFlag(Z80::Z_BIT)
+    << cpu.testFlag(Z80::X1_BIT)
+    << cpu.testFlag(Z80::H_BIT)
     << " "
-    << (unsigned int) cpu.F.X2 
-    << (unsigned int) cpu.F.PV
-    << (unsigned int) cpu.F.N 
-    << (unsigned int) cpu.F.C 
+    << cpu.testFlag(Z80::X2_BIT)
+    << cpu.testFlag(Z80::PV_BIT)
+    << cpu.testFlag(Z80::N_BIT)
+    << cpu.testFlag(Z80::C_BIT)
     << endl;
 
     return 0;

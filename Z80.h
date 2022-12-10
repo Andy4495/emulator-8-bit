@@ -19,16 +19,13 @@ class Z80 {
         char instr_string[MAX_TEXT_LENGTH + 1];
 
         enum INST_TYPE {ADD, SUB, COMP, TEST, BIT, NONE};
-        enum FLAGS_BITS { S_BIT = 0x80, Z_BIT = 0x40, H_BIT = 0x10, PV_BIT = 0x04, N_BIT = 0x02, C_BIT = 0x01};
-        struct Flags {  // X1 and X2 are unused by the Z80
-            unsigned char S:1, Z:1, X1:1, H:1, X2:1, PV:1, N:1, C:1;
-        };
+        enum FLAG_BITS { S_BIT = 0x80, Z_BIT = 0x40, X1_BIT = 0x20, H_BIT = 0x10, X2_BIT = 0x08, PV_BIT = 0x04, N_BIT = 0x02, C_BIT = 0x01};
 
         // Main register set
         // Accumulator 
         unsigned char A;
         // Flags
-        Flags F;
+        unsigned char F;
         // General purpose registers
         unsigned char B, C, D, E, H, L;
 
@@ -36,7 +33,7 @@ class Z80 {
         // Accumulator 
         unsigned char Aprime;
         // Flags
-        Flags Fprime;
+        unsigned char Fprime;
         // General purpose registers
         unsigned char Bprime, Cprime, Dprime, Eprime, Hprime, Lprime;
 
@@ -68,6 +65,7 @@ class Z80 {
         void load_memory(const char* fname);
         void cold_reset();
         void warm_reset();
+        int  testFlag(FLAG_BITS f);
         void run_from_address(unsigned short addr);
         void fetch_and_decode();
         unsigned char get_next_byte();
@@ -89,6 +87,8 @@ class Z80 {
         char fetched[MAX_FETCHED_LENGTH + 1];
 
         void clear_registers();
+        void setFlag(FLAG_BITS f);
+        void clearFlag(FLAG_BITS f);
         void decode_main_instruction();
         void decode_misc_instruction();
         void decode_bit_instruction();

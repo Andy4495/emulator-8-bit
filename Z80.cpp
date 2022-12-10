@@ -50,21 +50,11 @@ void Z80::warm_reset() {
 
 void Z80::clear_registers() {
     A    = 0;
-    F.S  = 0;
-    F.Z  = 0;
-    F.H  = 0;
-    F.PV = 0;
-    F.N  = 0;
-    F.C  = 0;
+    F    = 0;
     B    = 0; C = 0; D = 0; E = 0; H = 0; L = 0;
-    Aprime    = 0;
-    Fprime.S  = 0;
-    Fprime.Z  = 0;
-    Fprime.H  = 0;
-    Fprime.PV = 0;
-    Fprime.N  = 0;
-    Fprime.C  = 0;    
-    Bprime    = 0; Cprime = 0; Dprime = 0; Eprime = 0; Hprime = 0; Lprime = 0;
+    Aprime  = 0;
+    Fprime  = 0;   
+    Bprime  = 0; Cprime = 0; Dprime = 0; Eprime = 0; Hprime = 0; Lprime = 0;
     I = 0;
     R = 0;
     IX = 0; IY = 0;
@@ -74,6 +64,18 @@ void Z80::clear_registers() {
     IFF1 = 0;
     IFF2 = 0;
     INT_MODE = 0;
+}
+
+void Z80::setFlag(FLAG_BITS f) {
+    F |= f;
+}
+
+void Z80::clearFlag(FLAG_BITS f) {
+    F &= f;
+}
+
+int Z80::testFlag(FLAG_BITS f) {
+    return (F & f) ? 1 : 0;
 }
 
 void Z80::run_from_address(unsigned short addr) {
@@ -162,10 +164,10 @@ void Z80::update_N(INST_TYPE t) {
     switch (t) {
         case ADD:
         case BIT:
-          F.N = 0;
+          clearFlag(N_BIT);
           break;
         case SUB:
-          F.N = 1;
+          setFlag(N_BIT);
           break;
         case COMP:
         case TEST:
@@ -177,14 +179,14 @@ void Z80::update_N(INST_TYPE t) {
 void Z80::update_PV(INST_TYPE t, unsigned char val1, unsigned char val2) {
     switch (t) {
         case ADD:
-          if ((val1 & 0x80) != (val2 & 0x80)) F.PV = 0;   // operands are diffent signs, no overflow
-          else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) F.PV = 1;
-          else F.PV = 0;
+          if ((val1 & 0x80) != (val2 & 0x80)) clearFlag(PV_BIT);   // operands are diffent signs, no overflow
+          else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) setFlag(PV_BIT);
+          else clearFlag(PV_BIT);
           break;
         case SUB:
-          if ((val1 & 0x80) == (val2 & 0x80)) F.PV = 0;   // operands are same signs, no overflow
-          else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) F.PV = 1;
-          else F.PV = 0;
+          if ((val1 & 0x80) == (val2 & 0x80)) clearFlag(PV_BIT);   // operands are same signs, no overflow
+          else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) setFlag(PV_BIT);
+          else clearFlag(PV_BIT);
           break;
         case COMP:
           break;
@@ -202,17 +204,17 @@ void Z80::update_H(INST_TYPE t, unsigned char val1, unsigned char val2) {
     // It is important that the calling function masks val so that it is only a 4-bit value
     switch (t) {
         case ADD:
-          if (((val1 & 0x0f) + (val2 &0x0f)) > 0x0f) F.H = 1; else F.H = 0;
+          if (((val1 & 0x0f) + (val2 &0x0f)) > 0x0f) setFlag(H_BIT); else clearFlag(H_BIT);
           break;
         case SUB:
-          if ((val1 & 0xf) < (val2 & 0x0f)) F.H = 1; else F.H = 0;
+          if ((val1 & 0xf) < (val2 & 0x0f)) setFlag(H_BIT); else clearFlag(H_BIT);
           break;
         case COMP:
           break;
         case TEST:
           break;
         case BIT: 
-          F.H = 0; 
+          clearFlag(H_BIT); 
           break;
         default:  // NONE - Flag not affected
           break;
@@ -224,7 +226,7 @@ void Z80::update_Z(INST_TYPE t, unsigned char val) {
         case ADD:
         case SUB:
         case BIT:
-          if (val == 0) F.Z = 1; else F.Z = 0;
+          if (val == 0) setFlag(Z_BIT); else clearFlag(Z_BIT);
           break;
         case COMP:
           break;
@@ -240,7 +242,7 @@ void Z80::update_S(INST_TYPE t, unsigned char val) {
         case ADD:
         case SUB:
         case BIT:
-          if (val & 0x80) F.S = 1; else F.S = 0;
+          if (val & 0x80) setFlag(S_BIT); else clearFlag(S_BIT);
           break;
         case COMP:
           break;

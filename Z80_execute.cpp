@@ -36,8 +36,8 @@ void Z80::execute() {
 }
 
 void Z80::execute_main_opcode() {
-    unsigned char *r, *r_;   // Temporary storage when decoding register field in opcode
-    unsigned char F_;
+    unsigned char *r = nullptr, *r_ = nullptr;   // Temporary storage when decoding register field in opcode
+    unsigned char Temp;
 
     switch (IR[0]) {
         case 0x00:  // NOP -- no flags affected
@@ -197,7 +197,7 @@ void Z80::execute_main_opcode() {
                 case 0b00: r = &B; r_ = &C; break;
                 case 0b01: r = &D; r_ = &E; break;
                 case 0b10: r = &H; r_ = &L; break;
-                case 0b11: r = &A; F_ = F.S|F.Z|F.X1|F.H|F.X2|F.PV|F.N|F.C; r_ = &F_; break;
+                case 0b11: r = &A; r_ = &F; break;
                 default: cout << "Invalid opcode" << endl; break;
             }
             memory[--SP] = *r;
@@ -211,7 +211,7 @@ void Z80::execute_main_opcode() {
                 case 0b00: r = &B; r_ = &C; break;
                 case 0b01: r = &D; r_ = &E; break;
                 case 0b10: r = &H; r_ = &L; break;
-                case 0b11: r = &A; r_ = &F_; break;
+                case 0b11: r = &A; r_ = &F; break;
                 default: cout << "Invalid opcode" << endl; break;
             }
             *r  = memory[SP++];
@@ -225,78 +225,57 @@ void Z80::execute_main_opcode() {
         //
         // EX DE, HL (0xeb)
         case 0xeb:
-            F_ = D;
+            Temp = D;
             D  = H;
-            H  = F_;
-            F_ = E;
+            H  = Temp;
+            Temp = E;
             E  = L;
-            L  = F_;
+            L  = Temp;
             // Condition bits affected: None
             break;
 
         // EX AF, AF'  (0x08)
         case 0x08:
-            F_     = A;
+            Temp   = A;
             A      = Aprime;
-            Aprime = A;
-            F_        = F.S;
-            F.S       = Fprime.S;
-            Fprime.S  = F_;
-            F_        = F.Z;
-            F.Z       = Fprime.Z;
-            Fprime.Z  = F_;
-            F_        = F.X1;
-            F.X1      = Fprime.X1;
-            Fprime.X1 = F_;
-            F_        = F.H;
-            F.H       = Fprime.H;
-            Fprime.H  = F_;
-            F_        = F.X2;
-            F.X2      = Fprime.X2;
-            Fprime.X2 = F_;
-            F_        = F.PV;
-            F.PV      = Fprime.PV;
-            Fprime.PV = F_;
-            F_        = F.N;
-            F.N       = Fprime.N;
-            Fprime.N  = F_;
-            F_        = F.C;
-            F.C       = Fprime.C;
-            Fprime.C  = F_;
+            Aprime = Temp;
+            Temp   = F;
+            F      = Fprime;
+            Fprime = Temp;
             // Condition bits affected: None
             break;
 
         // EXX (0xd9)
         case 0xd9:
-            F_     = B;
+            Temp     = B;
             B      = Bprime;
-            Bprime = F_;
-            F_     = C;
+            Bprime = Temp;
+            Temp     = C;
             C      = Cprime;
-            Cprime = F_;
-            F_     = D;
+            Cprime = Temp;
+            Temp     = D;
             D      = Dprime;
-            Dprime = F_;
-            F_     = E;
+            Dprime = Temp;
+            Temp     = E;
             E      = Eprime;
-            Eprime = F_;
-            F_     = H;
+            Eprime = Temp;
+            Temp     = H;
             H      = Hprime;
-            Hprime = F_;
-            F_     = L;
+            Hprime = Temp;
+            Temp     = L;
             L      = Lprime;
-            Lprime = F_;
+            Lprime = Temp;
             // Condition bits affected: None
             break;
 
         // EX (SP), HL (0xe3)
         case 0xe3:
-            F_           = H;
+            Temp           = H;
             H            = memory[SP+1];
-            memory[SP+1] = F_;
-            F_           = L;
+            memory[SP+1] = Temp;
+            Temp           = L;
             L            = memory[SP];
-            memory[SP]   = F_;
+            memory[SP]   = Temp;
             // Condition bits affected: None
             break;
 
@@ -330,9 +309,9 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
 
     switch (IR[1]) {
         case 0x00:  // RLC B
-            F.C = (B & 0x80) ? 1 : 0;
+            if (B & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             B = B << 1;
-            B = (B & 0xFE) | F.C;
+            B = (B & 0xFE) | testFlag(C_BIT);
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, B, 0);
             break;
 
@@ -365,9 +344,9 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1] = 0xDDCB
 
     switch (IR[3]) {
         case 0x00:  // RLC (IX+d), B
-            F.C = (memory[IX+IR[2]] & 0x80) ? 1 : 0;
+            if (memory[IX+IR[2]] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             memory[IX+IR[2]] = memory[IX+IR[2]] << 1;
-            memory[IX+IR[2]] = (memory[IX+IR[2]] & 0xFE) | F.C;
+            memory[IX+IR[2]] = (memory[IX+IR[2]] & 0xFE) | testFlag(C_BIT);
             B = memory[IX+IR[2]];
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[IX+IR[2]], 0);
             break;
@@ -402,9 +381,9 @@ void Z80::execute_iy_bit_opcode() {  // IR[0,1] = 0xFDCB
 
     switch (IR[3]) {
         case 0x00:  // RLC (IY+d), B
-            F.C = (memory[IY+IR[2]] & 0x80) ? 1 : 0;
+            if (memory[IY+IR[2]] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             memory[IY+IR[2]] = memory[IY+IR[2]] << 1;
-            memory[IY+IR[2]] = (memory[IY+IR[2]] & 0xFE) | F.C;
+            memory[IY+IR[2]] = (memory[IY+IR[2]] & 0xFE) | testFlag(C_BIT);
             B = memory[IY+IR[2]];
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[IY+IR[2]], 0);
             break;
