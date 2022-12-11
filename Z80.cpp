@@ -147,7 +147,11 @@ void Z80::update_C(INST_TYPE t, unsigned char val) {
     switch (t) {
         case ADD:
           break;
+        case ADC:
+          break;
         case SUB:
+          break;
+        case SBC:
           break;
         case COMP:
           break;
@@ -163,10 +167,12 @@ void Z80::update_C(INST_TYPE t, unsigned char val) {
 void Z80::update_N(INST_TYPE t) {
     switch (t) {
         case ADD:
+        case ADC:
         case BIT:
           clearFlag(N_BIT);
           break;
         case SUB:
+        case SBC:
           setFlag(N_BIT);
           break;
         case COMP:
@@ -183,10 +189,14 @@ void Z80::update_PV(INST_TYPE t, unsigned char val1, unsigned char val2) {
           else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) setFlag(PV_BIT);
           else clearFlag(PV_BIT);
           break;
+        case ADC:
+          break;
         case SUB:
           if ((val1 & 0x80) == (val2 & 0x80)) clearFlag(PV_BIT);   // operands are same signs, no overflow
           else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) setFlag(PV_BIT);
           else clearFlag(PV_BIT);
+          break;
+        case SBC:
           break;
         case COMP:
           break;
@@ -206,8 +216,12 @@ void Z80::update_H(INST_TYPE t, unsigned char val1, unsigned char val2) {
         case ADD:
           if (((val1 & 0x0f) + (val2 &0x0f)) > 0x0f) setFlag(H_BIT); else clearFlag(H_BIT);
           break;
+        case ADC:
+          break;
         case SUB:
           if ((val1 & 0xf) < (val2 & 0x0f)) setFlag(H_BIT); else clearFlag(H_BIT);
+          break;
+        case SBC:
           break;
         case COMP:
           break;
@@ -224,7 +238,9 @@ void Z80::update_H(INST_TYPE t, unsigned char val1, unsigned char val2) {
 void Z80::update_Z(INST_TYPE t, unsigned char val) {
     switch (t) {
         case ADD:
+        case ADC:
         case SUB:
+        case SBC:
         case BIT:
           if (val == 0) setFlag(Z_BIT); else clearFlag(Z_BIT);
           break;
@@ -240,7 +256,9 @@ void Z80::update_Z(INST_TYPE t, unsigned char val) {
 void Z80::update_S(INST_TYPE t, unsigned char val) {
     switch (t) {
         case ADD:
+        case ADC:
         case SUB:
+        case SBC:
         case BIT:
           if (val & 0x80) setFlag(S_BIT); else clearFlag(S_BIT);
           break;
