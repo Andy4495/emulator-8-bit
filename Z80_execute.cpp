@@ -655,6 +655,44 @@ void Z80::execute_main_opcode() {
             // Condition bits affected: None
             break;
 
+        // ************* Rotate and Shift Group **************
+        // ***************************************************
+        
+        // RLCA (0x07)
+        case 0x07: 
+            if (A & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
+            A = A << 1;
+            if (testFlag(C_BIT)) A |= 0x01; else A &= 0xfe;
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            break;
+
+        // RLA (0x17)
+        case 0x17:
+            Temp = testFlag(C_BIT);
+            if (A & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
+            A = A << 1; 
+            if (Temp) A |= 0x01; else A &= 0xfe;
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            break;
+
+        // RRCA (0x0F)
+        case 0x0f:
+            if (A & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
+            A = A >> 1; 
+            if (testFlag(C_BIT)) A |= 0x80; else A &= 0x7f;
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+
+        // RRA (0x1F)
+        case 0x1f:
+            Temp = testFlag(C_BIT);
+            A = A >> 1;
+            if (Temp) A |= 0x80; else A &= 0x7f;
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            break;
 
         default: 
             cout << "Execution not defined: 0x" << hex << setw(2) << (unsigned int) IR[0] << endl;
