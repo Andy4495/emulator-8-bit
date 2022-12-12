@@ -1,4 +1,5 @@
 .vscode/
+.DS_Store
 a.out
 emulator
 data.bin*
