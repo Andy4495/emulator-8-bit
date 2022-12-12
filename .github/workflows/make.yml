@@ -16,8 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
-      - run: |
+      - name: make clean
+        run: | 
           make clean
+      - name:  make verbose
+        run: |
           make verbose
       - name: Print the job summary
         if: ${{ inputs.message }}
