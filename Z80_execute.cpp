@@ -38,6 +38,7 @@ void Z80::execute() {
 void Z80::execute_main_opcode() {
     unsigned char *r = nullptr, *r_ = nullptr;   // Temporary storage when decoding register field in opcode
     unsigned char Temp;
+    unsigned short Temp16;
 
     switch (IR[0]) {
 
@@ -593,9 +594,68 @@ void Z80::execute_main_opcode() {
             IFF2 = 1;
             break;
 
+        // ************* 16-bit Arithmetic Group *************
+        // ***************************************************
         
+        // ADD HL, ss  (0x09, 0x19, 0x29, 0x39)
+        case 0x09: case 0x19: case 0x29: case 0x39:
+            Temp16 = (H << 8) + L;
+            // Determine which register we are working on:
+            // Opcode 0  0  s  s  1  0  0  1
+            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
+                /// Need to implement ///
+            }
+            else {
+                switch ((IR[0] & 0x30) >> 4) {
+                    case 0b00: r = &B; r_ = &C; break;
+                    case 0b01: r = &D; r_ = &E; break;
+                    case 0b10: r = &H; r_ = &L; break;
+                    default: cout << "Invalid opcode" << endl; break;
+                }
+                /// Need to implement ///
+            }
+            /// Need to implement condition bits, may need another state ///
+            break;
 
-        
+        // INC ss (0x03, 0x013, 0x23, 0x33)
+        case 0x03: case 0x13: case 0x23: case 0x33: 
+            // Determine which register we are working on:
+            // Opcode 0  0  s  s  0  0  1  1
+            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
+                SP++;
+            }
+            else {
+                switch ((IR[0] & 0x30) >> 4) {
+                    case 0b00: Temp16 = (B<<8) + C; Temp16++; B = (Temp16 & 0xff00)>>8; C = (Temp16 & 0x00ff); break;
+                    case 0b01: Temp16 = (D<<8) + E; Temp16++; D = (Temp16 & 0xff00)>>8; E = (Temp16 & 0x00ff); break;
+                    case 0b10: Temp16 = (H<<8) + L; Temp16++; H = (Temp16 & 0xff00)>>8; L = (Temp16 & 0x00ff); break;
+                    default: cout << "Invalid opcode" << endl; break;
+                }
+                /// Need to implement ///
+            }
+            // Condition bits affected: None
+            break;
+            
+        // DEC ss (0x0b, 0x01b, 0x2b, 0x3b)
+        case 0x0b: case 0x1b: case 0x2b: case 0x3b: 
+            // Determine which register we are working on:
+            // Opcode 0  0  s  s  1  0  1  1
+            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
+                SP--;
+            }
+            else {
+                switch ((IR[0] & 0x30) >> 4) {
+                    case 0b00: Temp16 = (B<<8) + C; Temp16--; B = (Temp16 & 0xff00)>>8; C = (Temp16 & 0x00ff); break;
+                    case 0b01: Temp16 = (D<<8) + E; Temp16--; D = (Temp16 & 0xff00)>>8; E = (Temp16 & 0x00ff); break;
+                    case 0b10: Temp16 = (H<<8) + L; Temp16--; H = (Temp16 & 0xff00)>>8; L = (Temp16 & 0x00ff); break;
+                    default: cout << "Invalid opcode" << endl; break;
+                }
+                /// Need to implement ///
+            }
+            // Condition bits affected: None
+            break;
+
+
         default: 
             cout << "Execution not defined: 0x" << hex << setw(2) << (unsigned int) IR[0] << endl;
             break;
