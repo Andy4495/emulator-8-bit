@@ -95,13 +95,15 @@ int main(int argc, char** argv)
     }
 
     int state = 1;
-    while (state < 12) { // Limit the number if times we fetch and decode
+    while ((state < 12) && (!cpu.Halt)) { // Limit the number if times we fetch and decode
     ///    cout << "State: " << state << " PC: " << hex << cpu.PC << endl; /// debug
         cpu.fetch_and_decode();
         cpu.execute();
         cpu.print_fetched_instruction();
         state++;
     }
+
+    if (cpu.Halt) cout << "CPU Halted." << endl;
 
     cout << hex << "A: " << (unsigned int) cpu.A 
     << " B: " << (unsigned int) cpu.B 

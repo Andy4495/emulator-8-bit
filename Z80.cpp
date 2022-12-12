@@ -40,12 +40,14 @@ void Z80::cold_reset() {
     cout << "Cold Reset: clearing RAM, clearing registers, PC set to $0000" << endl;
     for (unsigned long i = _ramstart; i <= _ramend; i++) memory[i] = 0;
     clear_registers();
+    Halt = 0;
 }
 
 void Z80::warm_reset() {
     // Keep RAM intact, clear registers, start from $0000
     cout << "Warm Reset: clearing registers, PC set to $0000" << endl;
     clear_registers();
+    Halt = 0;
 }
 
 void Z80::clear_registers() {

@@ -40,8 +40,6 @@ void Z80::execute_main_opcode() {
     unsigned char Temp;
 
     switch (IR[0]) {
-        case 0x00:  // NOP -- no flags affected
-            break;
 
         // ************* 8-bit Load Group *************
         // Flags are not affected by these instructions
@@ -539,9 +537,63 @@ void Z80::execute_main_opcode() {
             (*r)--;
             break;
 
+        // ************* General Purpose Arithmetic and CPU Control Groups *************
+        // *****************************************************************************
+        
+        // DAA (0x27)
+        /// *** Need to implement *** ///
+        case 0x27:
+            break;
 
+        // CPL (0x2F)
+        case 0x2f:
+            A = ~A;
+            setFlag(H_BIT);
+            setFlag(N_BIT);
+            break;
 
+        // CCF (0x3F)
+        case 0x3f:
+            if (testFlag(C_BIT)) {
+                clearFlag(C_BIT); 
+                setFlag(H_BIT);
+            }
+            else  {
+                setFlag(C_BIT);
+                clearFlag(H_BIT);
+            }
+            clearFlag(N_BIT);
+            break;
 
+        // SCF (0x37)
+        case 0x37:
+            setFlag(C_BIT);
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            break;
+
+        // NOP (0x00)
+        case 0x00:
+            break;
+        
+        // HALT (0x76)
+        case 0x76: 
+            Halt = 1;
+            break;
+
+        // DI  (0xF3)
+        case 0xf3:
+            IFF1 = 0;
+            IFF2 = 0;
+            break;
+
+        // EI  (0xFB)
+        case 0xfb: 
+            IFF1 = 1;
+            IFF2 = 1;
+            break;
+
+        
 
         
         default: 
