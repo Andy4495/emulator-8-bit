@@ -276,51 +276,44 @@ void Z80::update_S(INST_TYPE t, unsigned char val) {
 
 void Z80::decode_main_instruction() {
     unsigned int i;
-    if (IR[0] < MAX_OPCODE) {
-      instr_length = opcodes[IR[0]].length;
-      for (i = 1; i < instr_length; i++) IR[i] = get_next_byte();
-      // Create the memory string based on size of instruction: 
-      if (instr_length == 1) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x      ", IR[0]);
-      if (instr_length == 2) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x    ", IR[0], IR[1]);
-      if (instr_length == 3) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x  ", IR[0], IR[1], IR[2]);
-      if (instr_length == 4) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x%02x", IR[0], IR[1], IR[2], IR[3]);
-      // Depending on the instruction, there may be data that needs to be displayed as part of the instruction string
-      // The ".s" field in the opcodes array defines the instruction layout of opcodes and data
-      // Relative jumps ("JN") require slightly different handling in order to generate the 16-bit address from 
-      // the 8-bit relative jump value
-      switch (opcodes[IR[0]].s) {
-          case O:
-          case OO:
-              strncpy(mnemonic, opcodes[IR[0]].mn, MAX_MNEMONIC_LENGTH);
-              break; 
-          case ON:
-              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[1]);
-              break;
-          case ONN:
-              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2], IR[1]);
-              break;
-          case OONN:
-              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[3], IR[2]);
-              break;
-          case JN:
-              // The following uses a clumsy way to deal with the special case where the displacement value is actually 
-              // signed where we normally treat the data as unsigned
-              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, (IR[1] & 0x80) ?  PC - (unsigned char) ~IR[1] - 1 : PC + IR[1]);
-              break;
-          case OON:
-          case OONO:
-              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2]);
-              break;
+    instr_length = opcodes[IR[0]].length;
+    for (i = 1; i < instr_length; i++) IR[i] = get_next_byte();
+    // Create the memory string based on size of instruction: 
+    if (instr_length == 1) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x      ", IR[0]);
+    if (instr_length == 2) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x    ", IR[0], IR[1]);
+    if (instr_length == 3) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x  ", IR[0], IR[1], IR[2]);
+    if (instr_length == 4) snprintf(fetched, MAX_FETCHED_LENGTH, "%02x%02x%02x%02x", IR[0], IR[1], IR[2], IR[3]);
+    // Depending on the instruction, there may be data that needs to be displayed as part of the instruction string
+    // The ".s" field in the opcodes array defines the instruction layout of opcodes and data
+    // Relative jumps ("JN") require slightly different handling in order to generate the 16-bit address from 
+    // the 8-bit relative jump value
+    switch (opcodes[IR[0]].s) {
+        case O:
+        case OO:
+            strncpy(mnemonic, opcodes[IR[0]].mn, MAX_MNEMONIC_LENGTH);
+            break; 
+        case ON:
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[1]);
+            break;
+        case ONN:
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2], IR[1]);
+            break;
+        case OONN:
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[3], IR[2]);
+            break;
+        case JN:
+            // The following uses a clumsy way to deal with the special case where the displacement value is actually 
+            // signed where we normally treat the data as unsigned
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, (IR[1] & 0x80) ?  PC - (unsigned char) ~IR[1] - 1 : PC + IR[1]);
+            break;
+        case OON:
+        case OONO:
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2]);
+            break;
 
-          default:  // Invalid instruction layout
-              strncpy(mnemonic, "Invalid layout", MAX_MNEMONIC_LENGTH);
-              break;
-      }
-    }
-    else {
-        instr_length = 1;
-        snprintf(fetched, MAX_FETCHED_LENGTH, "%02x      ", IR[0]);
-        snprintf(mnemonic, MAX_MNEMONIC_LENGTH, "<UNIMP-NOP>");
+        default:  // Invalid instruction layout
+            strncpy(mnemonic, "Invalid layout", MAX_MNEMONIC_LENGTH);
+            break;
     }
 }
 

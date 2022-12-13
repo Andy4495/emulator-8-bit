@@ -684,6 +684,7 @@ void Z80::execute_main_opcode() {
             if (testFlag(C_BIT)) A |= 0x80; else A &= 0x7f;
             clearFlag(H_BIT);
             clearFlag(N_BIT);
+            break;
 
         // RRA (0x1F)
         case 0x1f:
@@ -736,6 +737,7 @@ void Z80::execute_main_opcode() {
                     cout << "Invalid opcode" << endl;
                     break;
             }
+            break;
 
         // JR e (0x18)
         case 0x18: 
@@ -777,16 +779,110 @@ void Z80::execute_main_opcode() {
 
         // JP (HL) (0xE9)
         case 0xe9:
-          PC = (H<<8) + L;
-          break;
+            PC = (H<<8) + L;
+            break;
 
         // DJNZ e (0x10)
         case 0x10:
-          B--;
-          if (B) {
-            if (IR[1] & 0x80) PC = PC - (unsigned char) ~IR[1] - 1;
-            else PC += IR[1];                
-          }
+            B--;
+            if (B) {
+                if (IR[1] & 0x80) PC = PC - (unsigned char) ~IR[1] - 1;
+                else PC += IR[1];                
+            }
+            break;
+
+        // ************* Call and Return Group **************
+        // **************************************************
+
+        // CALL nn
+        case 0xCD:
+            memory[--SP] = (PC>>8);
+            memory[--SP] = (PC & 0xFF);
+            PC = (IR[2]<<8) + IR[1];
+            break;
+
+        // CALL cc, nn (0xC4, 0xCC, 0xD4, 0xDC, 0xe4, 0xec, 0xf4, 0xfc)
+        case 0xc4: case 0xcc: case 0xd4: case 0xdc: case 0xe4: case 0xec: case 0xf4: case 0xfc:
+        // Determine which flag to check
+        // Opcode: 1  1  c  c  c  1  0  0
+            switch ((IR[0] & 0x38)) {
+                case 0b000:  // NZ (Z == 0)
+                    if (!testFlag(Z_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    break;
+                case 0b001:  // Z (Z == 1)
+                    if (testFlag(Z_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    break;
+                case 0b010:  // NC (C == 0)
+                    if (!testFlag(C_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    break;
+                case 0b011:  // C (C == 1)
+                    if (testFlag(C_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    break;
+                case 0b100:  // PO (PV == 0)
+                    if (!testFlag(PV_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    break;
+                case 0b101:  // PE (PV == 1)
+                    if (testFlag(PV_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    break;
+                case 0b110:  // P (S == 0)
+                    if (!testFlag(S_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    break;
+                case 0b111:  // N (S == 1)
+                    if (testFlag(S_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    break;
+                default:
+                    cout << "Invalid opcode" << endl;
+                    break;
+            }
+            break;
+
+        // RET (0xC9)
+        case 0xc9: 
+            PC = (memory[SP+1]<<8) + memory[SP];
+            SP += 2;
+            break;
+
+        // RET cc (0xC0, 0xC8, 0xD0, 0xD8, 0xE0, 0xE8, 0xF0, 0xF8)
+    case 0xc0: case 0xc8: case 0xd0: case 0xd8: case 0xe0: case 0xe8: case 0xf0: case 0xf8:
+        // Determine which flag to check
+        // Opcode: 1  1  c  c  c  0  0  0
+            switch ((IR[0] & 0x38)) {
+                case 0b000:  // NZ (Z == 0)
+                    if (!testFlag(Z_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    break;
+                case 0b001:  // Z (Z == 1)
+                    if (testFlag(Z_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    break;
+                case 0b010:  // NC (C == 0)
+                    if (!testFlag(C_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    break;
+                case 0b011:  // C (C == 1)
+                    if (testFlag(C_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    break;
+                case 0b100:  // PO (PV == 0)
+                    if (!testFlag(PV_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    break;
+                case 0b101:  // PE (PV == 1)
+                    if (testFlag(PV_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    break;
+                case 0b110:  // P (S == 0)
+                    if (!testFlag(S_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    break;
+                case 0b111:  // N (S == 1)
+                    if (testFlag(S_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;;}
+                    break;
+                default:
+                    cout << "Invalid opcode" << endl;
+                    break;
+            }
+            break;
+
+        // RST p  (0xC7, 0xCF, 0xD7, 0xDF, 0xE7, 0xEF, 0xF7, 0xFF)
+        case 0xc7: case 0xcf: case 0xd7: case 0xdf: case 0xe7: case 0xef: case 0xf7: case 0xff:
+            memory[--SP] = (PC>>8);
+            memory[--SP] = (PC & 0xFF);
+            PC = 0x8 * ((IR[0] & 0x38) >> 3);
+            break;
 
         default: 
             cout << "Execution not defined: 0x" << hex << setw(2) << (unsigned int) IR[0] << endl;

@@ -5,8 +5,6 @@
 #ifndef Z80_OPCODES_H
 #define Z80_OPCODES_H
 
-#define MAX_OPCODE 0xFF
-
 // Specify the instruction byte structure
 // O -> Opcode
 // J -> Relative jump opcode

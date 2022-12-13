@@ -106,12 +106,17 @@ int main(int argc, char** argv)
     if (cpu.Halt) cout << "CPU Halted." << endl;
 
     cout << hex << "A: " << (unsigned int) cpu.A 
-    << " B: " << (unsigned int) cpu.B 
-    << " C: " << (unsigned int) cpu.C
-    << " D: " << (unsigned int) cpu.D
-    << " E: " << (unsigned int) cpu.E
-    << " H: " << (unsigned int) cpu.H
-    << " L: " << (unsigned int) cpu.L << endl;
+    <<  " B: " << (unsigned int) cpu.B 
+    <<  " C: " << (unsigned int) cpu.C
+    <<  " D: " << (unsigned int) cpu.D
+    <<  " E: " << (unsigned int) cpu.E
+    <<  " H: " << (unsigned int) cpu.H
+    <<  " L: " << (unsigned int) cpu.L 
+    << " IX: " << (unsigned short) cpu.IX 
+    << " IY: " << (unsigned short) cpu.IY
+    << " SP: " << (unsigned short) cpu.SP
+    << endl;
+
     cout << "SZXH XPNC: "
     << cpu.testFlag(Z80::S_BIT)
     << cpu.testFlag(Z80::Z_BIT)
