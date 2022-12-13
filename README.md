@@ -1,7 +1,6 @@
 # 8-bit Emulator
 
-<!-- markdown-link-check-disable-next-line -->
-[![Check Markdown Links](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/8-bit-emulator/actions/workflows/CheckMarkdownLinks.yml)
+[![Check Markdown Links](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml)
 
 This is a simple Z80 CPU emulator that I am working on.
 
