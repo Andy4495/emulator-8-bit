@@ -11,6 +11,38 @@ The emulator currently only supports the Z80; I am trying to write it in a way t
 
 There are many other open source emulators available. This emulator is not meant to replace any of those, and likely does not contain any features not already available. It was solely created as a learning exercise.
 
+## Work In Progress
+
+The emulator is not complete. The following major updates still need to be completed before I consider it a good first release:
+
+- Implement the remaining opcode groups/tables:
+  - Input and Output Group
+  - Bit Instructions
+  - IX Instructions
+  - IX Bit Instructions
+  - Miscellaneous Instructions
+  - IY Instructions
+  - IY Bit Instructions
+- ADD HL, ss instructions (opcodes 0x09, 0x19, 0x29, 0x39)
+- INC ss instructions (opcodes 0x03, 0x013, 0x23, 0x33)
+- DEC ss instructions (opcodes 0x0b, 0x01b, 0x2b, 0x3b)
+- Flag update handling
+  - In specific opcodes
+  - In flag update methods
+  - Many of the ADD/SUB cases are finished. Harder cases like H and N for DAA need to be done.
+  - Special flag handling for I/O instructions
+  - Other cases (check all opcodes)
+- DAA instruction (opcode 0x27)
+- HALT state handler in main execute method
+  - Currently handled in the main emulator module, but should be part of the CPU class implementation
+- Disassembler mode (in addition to emulate/run mode)
+- Automated test suite
+  - All valid opcodes
+  - Corner cases
+  - All flag update conditions
+
+The above items are planned to be completed before starting on the [Future Functionality](#future-functionality) items below.
+
 ## Usage
 
 ```shell
@@ -104,8 +136,6 @@ The Z80 CPU is defined by a class. This class contains:
 - Support RAM and/or ROM banking
 - Support additional file formats such as S-Records which would allow specific memory locations to be defined by the file.
 - Interrupts (maskable and non-maskable)
-- Disassembler
-- Automated test suite
 - Support additonal processor types
 
 ## References
@@ -117,8 +147,8 @@ The Z80 CPU is defined by a class. This class contains:
 - zasm - Z80 assembler: [online version][6] and [local install version][7]
 - [SDCC][8] - Small Device C Compiler and [manual][9]
 - [hex2bin][10] - Tool for converting [Intex Hex][11] or [Motorola S-Record][12] files to binary
-- [C++ reference][16]
-- [Make references][17]
+- [C++ reference][1]
+- [Make references][2]
 - Online Makefile [generator][3]
 - Installing WSL 2 [reference][14] and [devblog post][15]
 
@@ -141,8 +171,6 @@ The software and other files in this repository are released under what is commo
 [13]: https://www.zilog.com/docs/z80/um0080.pdf
 [14]: https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps
 [15]: https://devblogs.microsoft.com/commandline/the-windows-subsystem-for-linux-in-the-microsoft-store-is-now-generally-available-on-windows-10-and-11/
-[16]: https://en.cppreference.com/
-[17]: https://www.gnu.org/software/make/manual/make.html
 [18]: http://www.myquest.nl/z80undocumented/z80-documented-v0.91.pdf
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt

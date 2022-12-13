@@ -13,7 +13,8 @@
 class Z80 {
     public:
         unsigned char memory[MAX_MEMORY] = {0};
-        unsigned char io[MAX_IO] = {0};
+        unsigned char in[MAX_IO] = {0};
+        unsigned char out[MAX_IO] = {0};
         unsigned int instr_length;
         char mnemonic[MAX_MNEMONIC_LENGTH + 1];
         char instr_string[MAX_TEXT_LENGTH + 1];

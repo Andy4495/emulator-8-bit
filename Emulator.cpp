@@ -4,7 +4,7 @@ MIT License
 0.1  11/29/22  Andy4495  Initial Creation
 */
 
-#define VERSION 0.7
+#define VERSION 0.8
 
 // 1. Read command line and parse arguments parseCommandLine()
 // 2. Read memory file (hex, s-record) loadProgram()
