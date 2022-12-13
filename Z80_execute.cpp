@@ -694,6 +694,100 @@ void Z80::execute_main_opcode() {
             clearFlag(N_BIT);
             break;
 
+        // ************* Jump Group **************
+        // ***************************************
+
+        // JP nn (0xC3):
+        case 0xc3: 
+            PC = (IR[2]<<8) + IR[1];
+            // Condition bits affected: None
+            break;
+
+        // JP cc, nn (0xC2, 0xCA, 0xD2, 0xDA, 0xE2, 0xEA, 0xF2, 0xFA)
+        case 0xc2:
+            // Determine which flag to check
+            // Opcode 1  1  c  c  c  0  1  0
+            switch ((IR[0] & 0x38)) {
+                case 0b000:  // NZ (Z == 0)
+                    if (!testFlag(Z_BIT)) PC = (IR[2]<<8) + IR[1];
+                    break;
+                case 0b001:  // Z (Z == 1)
+                    if (testFlag(Z_BIT)) PC = (IR[2]<<8) + IR[1];
+                    break;
+                case 0b010:  // NC (C == 0)
+                    if (!testFlag(C_BIT)) PC = (IR[2]<<8) + IR[1];
+                    break;
+                case 0b011:  // C (C == 1)
+                    if (testFlag(C_BIT)) PC = (IR[2]<<8) + IR[1];
+                    break;
+                case 0b100:  // PO (PV == 0)
+                    if (!testFlag(PV_BIT)) PC = (IR[2]<<8) + IR[1];
+                    break;
+                case 0b101:  // PE (PV == 1)
+                    if (testFlag(PV_BIT)) PC = (IR[2]<<8) + IR[1];
+                    break;
+                case 0b110:  // P (S == 0)
+                    if (!testFlag(S_BIT)) PC = (IR[2]<<8) + IR[1];
+                    break;
+                case 0b111:  // N (S == 1)
+                    if (testFlag(S_BIT)) PC = (IR[2]<<8) + IR[1];
+                    break;
+                default:
+                    cout << "Invalid opcode" << endl;
+                    break;
+            }
+
+        // JR e (0x18)
+        case 0x18: 
+            if (IR[1] & 0x80) PC = PC - (unsigned char) ~IR[1] - 1;
+            else PC += IR[1];
+            break;
+
+        // JR C, e (0x38)
+        case 0x38: 
+            if (testFlag(C_BIT)) {
+                if (IR[1] & 0x80) PC = PC - (unsigned char) ~IR[1] - 1;
+                else PC += IR[1];                
+            }
+            break;
+
+        // JR NC, e (0x30)
+        case 0x30: 
+            if (!testFlag(C_BIT)) {
+                if (IR[1] & 0x80) PC = PC - (unsigned char) ~IR[1] - 1;
+                else PC += IR[1];                
+            }
+            break;
+
+        // JR Z, e (0x28)
+        case 0x28: 
+            if (testFlag(Z_BIT)) {
+                if (IR[1] & 0x80) PC = PC - (unsigned char) ~IR[1] - 1;
+                else PC += IR[1];                
+            }
+            break;
+
+        // JR NZ, e (0x20)
+        case 0x20: 
+            if (!testFlag(Z_BIT)) {
+                if (IR[1] & 0x80) PC = PC - (unsigned char) ~IR[1] - 1;
+                else PC += IR[1];                
+            }
+            break;
+
+        // JP (HL) (0xE9)
+        case 0xe9:
+          PC = (H<<8) + L;
+          break;
+
+        // DJNZ e (0x10)
+        case 0x10:
+          B--;
+          if (B) {
+            if (IR[1] & 0x80) PC = PC - (unsigned char) ~IR[1] - 1;
+            else PC += IR[1];                
+          }
+
         default: 
             cout << "Execution not defined: 0x" << hex << setw(2) << (unsigned int) IR[0] << endl;
             break;
@@ -707,8 +801,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;
 
         default: 
-            cout << "Execution not defined: 0x" << hex << setw(2) << (unsigned int) IR[0] 
-                 << setw(2) << (unsigned int) IR[1] << endl;
+            cout << "Execution not defined: 0xed" << hex << setw(2) << (unsigned int) IR[1] << endl;
             break;
     }
 }
@@ -724,9 +817,8 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             break;
 
         default: 
-            cout << "Execution not defined: 0x" << hex << setw(2) << (unsigned int) IR[0] 
-                 << setw(2) << (unsigned int) IR[1] << endl;
-           break;
+            cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+            break;
     }
 }
 
@@ -742,8 +834,7 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
             break;            
 
         default: 
-            cout << "Execution not defined: 0x" << hex << setw(2) << (unsigned int) IR[0] 
-                 << setw(2) << (unsigned int) IR[1] << endl;
+            cout << "Execution not defined: 0xdd" << hex << setw(2) << (unsigned int) IR[1] << endl;
             break;
     }
 }
@@ -760,9 +851,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1] = 0xDDCB
             break;
 
         default: 
-            cout << "Execution not defined: 0x" << hex << setw(2) << (unsigned int) IR[0] 
-                 << setw(2) << (unsigned int) IR[1] << "nn" 
-                 << setw(3) << (unsigned int) IR[3] << endl;
+            cout << "Execution not defined: 0xddcbnn" << hex << setw(2) << (unsigned int) IR[3] << endl;
             break;
     }
 }
@@ -779,8 +868,7 @@ void Z80::execute_iy_opcode() { // IR[0] = 0xFD
             break;            
 
         default: 
-            cout << "Execution not defined: 0x" << hex << setw(2) << (unsigned int) IR[0] 
-                 << setw(2) << (unsigned int) IR[1] << endl;
+            cout << "Execution not defined: 0xfd" << hex << setw(2) << (unsigned int) IR[1] << endl;
             break;
     }
 }
@@ -797,9 +885,7 @@ void Z80::execute_iy_bit_opcode() {  // IR[0,1] = 0xFDCB
             break;
 
         default: 
-            cout << "Execution not defined: 0x" << hex << setw(2) << (unsigned int) IR[0] 
-                 << setw(2) << (unsigned int) IR[1] << "nn" 
-                 << setw(3) << (unsigned int) IR[3] << endl;
+            cout << "Execution not defined: 0xfdcbnn" << hex << setw(2) << (unsigned int) IR[3] << endl;
             break;
     }
 }

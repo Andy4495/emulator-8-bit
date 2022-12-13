@@ -23,7 +23,7 @@ class Z80 {
 
         // State variables
         int Halt;
-        
+
         // Main register set
         // Accumulator 
         unsigned char A;
@@ -53,6 +53,9 @@ class Z80 {
         // *** Other Registers and States, not directly accessible to the programmer ***
         // Program counter
         unsigned short PC;
+        // Temporary storage for Program Counter when instruction was fetched
+        // This is needed because Jumps will alter PC value before it is printed
+        unsigned short PC_of_Fetch; 
         // Instruction Register
         // This is a one-byte register in the physical Z80, 
         // but define it here as 4-bytes (max instruction size) 

@@ -88,6 +88,7 @@ void Z80::run_from_address(unsigned short addr) {
 
 void Z80::fetch_and_decode() {
     ///cout << "Fetching instruction at address: 0x" << hex << PC << endl; /// Debug
+    PC_of_Fetch = PC; // Save the current PC for printing later
     IR[0] = memory[PC++];
     // Figure out the opcode type (main or extended) and decode from the appropriate opcode array
     switch (IR[0]) {
@@ -119,7 +120,7 @@ unsigned char Z80::get_next_byte() {
 }
 
 void Z80::print_fetched_instruction() {
-    snprintf(instr_string, MAX_TEXT_LENGTH, "%04x  %-s  %s", PC - instr_length, fetched, mnemonic);  // Same format for every opcode
+    snprintf(instr_string, MAX_TEXT_LENGTH, "%04x  %-s  %s", PC_of_Fetch, fetched, mnemonic);  // Same format for every opcode
     cout << instr_string << endl;
 }
 
@@ -304,7 +305,7 @@ void Z80::decode_main_instruction() {
           case JN:
               // The following uses a clumsy way to deal with the special case where the displacement value is actually 
               // signed where we normally treat the data as unsigned
-              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, (IR[1] < 0x80) ? IR[1]+PC : PC - (0xff - IR[1] + 1));
+              snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, (IR[1] & 0x80) ?  PC - (unsigned char) ~IR[1] - 1 : PC + IR[1]);
               break;
           case OON:
           case OONO:
