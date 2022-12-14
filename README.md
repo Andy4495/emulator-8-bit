@@ -1,10 +1,11 @@
 # 8-bit Emulator
 
+[![Build](https://github.com/Andy4495/emulator-8-bit/actions/workflows/Build.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/Build.yml)
 [![Check Markdown Links](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml)
 
 This is a simple Z80 CPU emulator that I am working on.
 
-I created it as a learning exercise to refresh my C++ programming skills (particularly with streams) and to spend some time diving into the Z80 CPU architecture for another project I am working on. I am also getting a reminder in the difference in design approaches between limited-resource embedded platform (e.g. Arduino) versus a platform with relatively generous resouces and an operating system (WSL/MacOS/Linux).
+I created it as a learning exercise to refresh my C++ programming skills (particularly with streams) and to spend some time diving into the Z80 CPU architecture for another project I am working on. I am also getting a reminder in the difference in design approaches between a limited-resource embedded platform (e.g. Arduino) versus a platform with relatively generous resouces and an operating system (WSL/MacOS/Linux).
 
 The emulator currently only supports the Z80; I am trying to write it in a way that would make it possible to support other 8-bit CPUs by creating additional CPU classes that represents the programmer's model (registers and instruction decoding).
 

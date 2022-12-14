@@ -1,6 +1,6 @@
 # Run make action
 
-name: Make - compile and link
+name: Build
 
 on: 
   push:
@@ -12,7 +12,7 @@ on:
         type: string
 
 jobs:
-  make: 
+  build: 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
