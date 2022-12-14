@@ -987,6 +987,61 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, IO, *r, 0);
             break;
 
+        // INI (0xEDA2)
+        case 0xA2: 
+            memory[(H<<8) + L] = in[C];
+            B--;
+            L++;
+            if (L == 0) H++;  // Increment H if L wrapped around 255->0 (carry)
+            if (B == 0) setFlag(Z_BIT); else clearFlag(Z_BIT);
+            setFlag(N_BIT);
+            // Per User Manual: S, H, P/V are "unknown", so we won't touch them here
+            break;
+
+        // INIR (0xEDB2)
+        case 0xB2: 
+            memory[(H<<8) + L] = in[C];
+            B--;
+            L++;
+            if (L == 0) H++;  // Increment H if L wrapped around 255->0 (carry)
+            if (B == 0) {
+                setFlag(Z_BIT); 
+            }
+            else {
+                clearFlag(Z_BIT);
+                PC = PC - 2;
+            }
+            setFlag(N_BIT);
+            // Per User Manual: S, H, P/V are "unknown", so we won't touch them here
+            break;  
+
+        // IND (0xEDAA)
+        case 0xAA:
+            memory[(H<<8) + L] = in[C];
+            B--;
+            L--;
+            if (L == 0xFF) H--;  // Decrement H if L wrapped around 0->255 (borrow)
+            if (B == 0) setFlag(Z_BIT); else clearFlag(Z_BIT);
+            setFlag(N_BIT);
+            // Per User Manual: S, H, P/V are "unknown", so we won't touch them here
+            break;                    
+
+        // INDR (0xEDBA)
+        case 0xBA: 
+            memory[(H<<8) + L] = in[C];
+            B--;
+            L--;
+            if (L == 0xFF) H--;  // Decrement H if L wrapped around 0->255 (borrow)
+            if (B == 0) {
+                setFlag(Z_BIT); 
+            }
+            else {
+                clearFlag(Z_BIT);
+                PC = PC - 2;
+            }
+            setFlag(N_BIT);
+            // Per User Manual: S, H, P/V are "unknown", so we won't touch them here
+            break;  
 
         default: 
             cout << "Execution not defined: 0xed" << hex << setw(2) << (unsigned int) IR[1] << endl;
