@@ -71,7 +71,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r_ = &L; break;
                 case 0b110: r_ = &memory[(H<<8) + L]; break;  // (HL)
                 case 0b111: r_ = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: LD r, r' r'" << endl; break;
             }
             switch ((IR[0] & 0x38) >> 3) {
                 case 0b000: r = &B; break;
@@ -82,7 +82,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: LD r, r' r" << endl; break;
             }
             *r = *r_;        // LD r, r"
             // Condition bits affected: None
@@ -103,7 +103,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;  // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: LD r, n" << endl; break;
             }
             *r = IR[1];        // LD r, n
             // Condition bits affected: None
@@ -162,7 +162,7 @@ void Z80::execute_main_opcode() {
                     case 0b00: r = &B; r_ = &C; break;
                     case 0b01: r = &D; r_ = &E; break;
                     case 0b10: r = &H; r_ = &L; break;
-                    default: cout << "Invalid opcode" << endl; break;
+                    default: cout << "Invalid opcode: LD dd, nn" << endl; break;
                 }
                 *r  = IR[2];
                 *r_ = IR[1];
@@ -197,7 +197,7 @@ void Z80::execute_main_opcode() {
                 case 0b01: r = &D; r_ = &E; break;
                 case 0b10: r = &H; r_ = &L; break;
                 case 0b11: r = &A; r_ = &F; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode PUSH qq" << endl; break;
             }
             memory[--SP] = *r;
             memory[--SP] = *r_;
@@ -211,7 +211,7 @@ void Z80::execute_main_opcode() {
                 case 0b01: r = &D; r_ = &E; break;
                 case 0b10: r = &H; r_ = &L; break;
                 case 0b11: r = &A; r_ = &F; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: POP qq" << endl; break;
             }
             *r  = memory[SP++];
             *r_ = memory[SP++];
@@ -295,7 +295,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: ADD A, r" << endl; break;
             }
             A += *r;
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, *r);
@@ -322,7 +322,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: ADC A, r" << endl; break;
             }
             A = A + *r + testFlag(C_BIT);
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADC, A, *r);
@@ -349,7 +349,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;  // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: SUB A, r" << endl; break;
             }
             A = A - *r;
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, *r);
@@ -376,7 +376,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: SBC A, r" << endl; break;
             }
             A = A - *r - testFlag(C_BIT);
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SBC, A, *r);
@@ -403,7 +403,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: AND A, r" << endl; break;
             }
             A = A & *r;
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, AND, A, *r);
@@ -430,7 +430,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: OR A, r" << endl; break;
             }
             A = A | *r;
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, OR, A, *r);
@@ -457,7 +457,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: XOR A, r" << endl; break;
             }
             A = A ^ *r;
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, XOR, A, *r);
@@ -484,7 +484,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: CP r" << endl; break;
             }
             // Compare only; register contents unchanged
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, *r);
@@ -511,7 +511,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: INC r" << endl; break;
             }
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, *r, 1);
             (*r)++;
@@ -532,7 +532,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode" << endl; break;
+                default: cout << "Invalid opcode: DEC r" << endl; break;
             }
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, *r, 1);
             (*r)--;
@@ -610,7 +610,7 @@ void Z80::execute_main_opcode() {
                     case 0b00: r = &B; r_ = &C; break;
                     case 0b01: r = &D; r_ = &E; break;
                     case 0b10: r = &H; r_ = &L; break;
-                    default: cout << "Invalid opcode" << endl; break;
+                    default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
                 }
                 /// Need to implement ///
             }
@@ -629,7 +629,7 @@ void Z80::execute_main_opcode() {
                     case 0b00: Temp16 = (B<<8) + C; Temp16++; B = (Temp16 & 0xff00)>>8; C = (Temp16 & 0x00ff); break;
                     case 0b01: Temp16 = (D<<8) + E; Temp16++; D = (Temp16 & 0xff00)>>8; E = (Temp16 & 0x00ff); break;
                     case 0b10: Temp16 = (H<<8) + L; Temp16++; H = (Temp16 & 0xff00)>>8; L = (Temp16 & 0x00ff); break;
-                    default: cout << "Invalid opcode" << endl; break;
+                    default: cout << "Invalid opcode: INC ss" << endl; break;
                 }
                 /// Need to implement ///
             }
@@ -648,7 +648,7 @@ void Z80::execute_main_opcode() {
                     case 0b00: Temp16 = (B<<8) + C; Temp16--; B = (Temp16 & 0xff00)>>8; C = (Temp16 & 0x00ff); break;
                     case 0b01: Temp16 = (D<<8) + E; Temp16--; D = (Temp16 & 0xff00)>>8; E = (Temp16 & 0x00ff); break;
                     case 0b10: Temp16 = (H<<8) + L; Temp16--; H = (Temp16 & 0xff00)>>8; L = (Temp16 & 0x00ff); break;
-                    default: cout << "Invalid opcode" << endl; break;
+                    default: cout << "Invalid opcode: DEC ss" << endl; break;
                 }
                 /// Need to implement ///
             }
@@ -734,7 +734,7 @@ void Z80::execute_main_opcode() {
                     if (testFlag(S_BIT)) PC = (IR[2]<<8) + IR[1];
                     break;
                 default:
-                    cout << "Invalid opcode" << endl;
+                    cout << "Invalid opcode: JP cc, nn" << endl;
                     break;
             }
             break;
@@ -831,7 +831,7 @@ void Z80::execute_main_opcode() {
                     if (testFlag(S_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
                     break;
                 default:
-                    cout << "Invalid opcode" << endl;
+                    cout << "Invalid opcode: CALL cc, nn" << endl;
                     break;
             }
             break;
@@ -872,7 +872,7 @@ void Z80::execute_main_opcode() {
                     if (testFlag(S_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;;}
                     break;
                 default:
-                    cout << "Invalid opcode" << endl;
+                    cout << "Invalid opcode: RET cc" << endl;
                     break;
             }
             break;
@@ -891,6 +891,11 @@ void Z80::execute_main_opcode() {
             A = in[IR[1]];
             break;
 
+        // OUT (n), A (0xD3)
+        case 0xd3: 
+            out[IR[1]] = A;
+            break;
+
         default: 
             cout << "Execution not defined: 0x" << hex << setw(2) << (unsigned int) IR[0] << endl;
             break;
@@ -904,9 +909,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
     // Note that there are some Z180-specific instructions in this group. However,
     // this emulator only supports Z80, so Z180 instructions are left unimplemented.
 
-    unsigned char *r = nullptr, *r_ = nullptr;   // Temporary storage when decoding register field in opcode
-    unsigned char Temp;
-    unsigned short Temp16;
+    unsigned char *r = nullptr;   // Temporary storage when decoding register field in opcode
 
     switch (IR[1]) {
 
@@ -949,32 +952,29 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             // Determine the register to use
             // Opcode: 0  1  r  r  r  0  0  0
             switch ((IR[1] & 0x38) << 3) {
-                case 0xb000:
+                case 0b000:
                     r = &B;
                     break;
-                case 0xb001:
+                case 0b001:
                     r = &C;
                     break;
-                case 0xb010:
+                case 0b010:
                     r = &D;
                     break;
-                case 0xb011:
+                case 0b011:
                     r = &E;
                     break;
-                case 0xb100:
+                case 0b100:
                     r = &H;
                     break;
-                case 0xb101:
+                case 0b101:
                     r = &L;
                     break;
-                case 0xb110:
-                    r = &B;
-                    break;
-                case 0xb111:
+                case 0b111:
                     r = &A;
                     break;
                 default:
-                    cout << "Invalid opcode" << endl;
+                    cout << "Invalid opcode: IN r, (C) 0xed70" << endl;
                     break;
             }
             *r = in[C];
@@ -1029,6 +1029,103 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         // INDR (0xEDBA)
         case 0xBA: 
             memory[(H<<8) + L] = in[C];
+            B--;
+            L--;
+            if (L == 0xFF) H--;  // Decrement H if L wrapped around 0->255 (borrow)
+            if (B == 0) {
+                setFlag(Z_BIT); 
+            }
+            else {
+                clearFlag(Z_BIT);
+                PC = PC - 2;
+            }
+            setFlag(N_BIT);
+            // Per User Manual: S, H, P/V are "unknown", so we won't touch them here
+            break;  
+
+        // OUT (C), r  (0xED41, 0xED49, 0xED51, 0xED59, 0xED61, 0xED69, 0xED79)
+        // Note that while 0x70 is related, it is an undocumented opcdode which behaves
+        // a little differently and is implemented below
+        case 0x41: case 0x49: case 0x51: case 0x59: case 0x61: case 0x69: case 0x79:
+            // Determine the register to use
+            // Opcode: 0  1  r  r  r  0  0  1
+            switch ((IR[1] & 0x38) << 3) {
+                case 0b000:
+                    r = &B;
+                    break;
+                case 0b001:
+                    r = &C;
+                    break;
+                case 0b010:
+                    r = &D;
+                    break;
+                case 0b011:
+                    r = &E;
+                    break;
+                case 0b100:
+                    r = &H;
+                    break;
+                case 0b101:
+                    r = &L;
+                    break;
+                case 0b111:
+                    r = &A;
+                    break;
+                default:
+                    cout << "Invalid opcode OUT (C), r  0xed71" << endl;
+                    break;
+            }
+            out[C] = *r;
+            break;
+        
+        // OUT (C), 0 (0xED71)
+        // Undocumented. Outputs 0 to port pointed to by C. Flags unaffected.
+        case 0x71:
+            out[C] = 0;
+            break;
+
+        // OUTI (0xEDA3)
+        case 0xA3:
+            out[C] = memory[(H<<8) + L];
+            B--;
+            L++;
+            if (L == 0) H++;  // Increment H if L wrapped around 255->0 (carry)
+            if (B == 0) setFlag(Z_BIT); else clearFlag(Z_BIT);
+            setFlag(N_BIT);
+            // Per User Manual: S, H, P/V are "unknown", so we won't touch them here
+            break;        
+
+        // OTIR (0xEDB3)
+        case 0xB3: 
+            out[C] = memory[(H<<8) + L];
+            B--;
+            L++;
+            if (L == 0) H++;  // Increment H if L wrapped around 255->0 (carry)
+            if (B == 0) {
+                setFlag(Z_BIT); 
+            }
+            else {
+                clearFlag(Z_BIT);
+                PC = PC - 2;
+            }
+            setFlag(N_BIT);
+            // Per User Manual: S, H, P/V are "unknown", so we won't touch them here
+            break;  
+
+        // OUTD (0xEDAB)
+        case 0xAB:
+            out[C] = memory[(H<<8) + L];
+            B--;
+            L--;
+            if (L == 0xFF) H--;  // Decrement H if L wrapped around 0->255 (borrow)
+            if (B == 0) setFlag(Z_BIT); else clearFlag(Z_BIT);
+            setFlag(N_BIT);
+            // Per User Manual: S, H, P/V are "unknown", so we won't touch them here
+            break;                    
+
+        // OTDR (0xEDBB)
+        case 0xBB: 
+            out[C] = memory[(H<<8) + L];
             B--;
             L--;
             if (L == 0xFF) H--;  // Decrement H if L wrapped around 0->255 (borrow)

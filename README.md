@@ -3,11 +3,11 @@
 [![Build](https://github.com/Andy4495/emulator-8-bit/actions/workflows/Build.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/Build.yml)
 [![Check Markdown Links](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml)
 
-This is a simple Z80 CPU emulator that I am working on.
+This is a simple Z80 CPU emulator and disassembler.
 
-I created it as a learning exercise to refresh my C++ programming skills (particularly with streams) and to spend some time diving into the Z80 CPU architecture for another project I am working on. I am also getting a reminder in the difference in design approaches between a limited-resource embedded platform (e.g. Arduino) versus a platform with relatively generous resouces and an operating system (WSL/MacOS/Linux).
+I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture. 
 
-The emulator currently only supports the Z80; I am trying to write it in a way that would make it possible to support other 8-bit CPUs by creating additional CPU classes that represents the programmer's model (registers and instruction decoding).
+The emulator currently only supports the Z80. The Z80-specific code is encapsulated in a Z80 class, so it should be possible to support additional CPUs by creating classes specific for those CPUS.
 
 There are many other open source emulators available. This emulator is not meant to replace any of those, and likely does not contain any features not already available. It was solely created as a learning exercise.
 
@@ -16,7 +16,7 @@ There are many other open source emulators available. This emulator is not meant
 The emulator is not complete. The following major updates still need to be completed before I consider it a good first release:
 
 - Implement the remaining opcode groups/tables:
-  - Input and Output Group
+  - DONE: Input and Output Group
   - Bit Instructions
   - IX Instructions
   - IX Bit Instructions
@@ -27,14 +27,13 @@ The emulator is not complete. The following major updates still need to be compl
 - INC ss instructions (opcodes 0x03, 0x013, 0x23, 0x33)
 - DEC ss instructions (opcodes 0x0b, 0x01b, 0x2b, 0x3b)
 - Flag update handling
-  - In specific opcodes
-  - In flag update methods
+  - DONE: Input specific opcodes
   - Many of the ADD/SUB cases are finished. Harder cases like H and N for DAA need to be done.
-  - Special flag handling for I/O instructions
   - Other cases (check all opcodes)
 - DAA instruction (opcode 0x27)
 - HALT state handler in main execute method
   - Currently handled in the main emulator module, but should be part of the CPU class implementation
+  - HALT should act like a breakpoint
 - Disassembler mode (in addition to emulate/run mode)
 - Automated test suite
   - All valid opcodes
@@ -53,19 +52,17 @@ The above items are planned to be completed before starting on the [Future Funct
 
 If `input-file` is not specified, then the default name `data.bin` is used.
 
-No error checking is performed on the input file, except that a maximum of 65536 bytes are read into memory. Any additional bytes beyond 65536 are ignored.
+No error checking is performed on the input file, except that a maximum of 65536 bytes are read into memory. Any bytes beyond 65536 are ignored.
 
 *Future iterations may support additional file formats such as Intel Hex or Motorola S-Records which would allow specific memory locations to be defined by the file.*
 
 ## Building
 
-The repository contains a Makefile to automate the build process. To build the executable, simply run `make` at the command line:
+The repository contains a Makefile to automate the build process. To build the `emulator` executable, simply run `make` at the command line:
 
 ```shell
     make
 ```
-
-And the executable `emulator` is created.
 
 The Makefile also has the following targets defined:
 
@@ -81,6 +78,8 @@ The emulator was developed using WSL 2 installed with Ubuntu 20.04 and g++ compi
 
 It is also compatible with Apple MacOS clang version 12.0.0.
 
+The automated build action configured in the `.github/workflows` directory builds the emulator with Ubuntu 22.04 and gcc version 11.3.0.
+
 I have not tried it on other platforms, but there is no machine dependent code. It should work as-is (or with minimal changes) on other unix-like platforms and compiler versions.
 
 ### General Program Flow
@@ -92,7 +91,7 @@ I have not tried it on other platforms, but there is no machine dependent code. 
     - Fetch and decode instruction
     - Execute instruction
     - Display machine state (depending on configuration and menu choice)
-    - Continue Loop until breakpoint reached
+    - Continue loop until breakpoint or HALT reached
 
 ### Defining the CPU
 
