@@ -7,7 +7,7 @@ This is a simple Z80 CPU emulator and disassembler.
 
 I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture. 
 
-The emulator currently only supports the Z80. The Z80-specific code is encapsulated in a Z80 class, so it should be possible to support additional CPUs by creating classes specific for those CPUS.
+The emulator currently only supports the Z80. The Z80-specific code is encapsulated in a Z80 class, so it should be possible to support additional CPUs by creating classes specific for those CPUs.
 
 There are many other open source emulators available. This emulator is not meant to replace any of those, and likely does not contain any features not already available. It was solely created as a learning exercise.
 
