@@ -278,7 +278,7 @@ Z80_opcodes opcodes[] = {
 
 // Bit Instructions -- opcodes prefixed with 0xCB
 Z80_opcodes opcodes_bit_instructions[] = {
-    {2, OO,   "RLC   B"},             // 0xCB00
+    {2, OO,   "RLC  B"},             // 0xCB00
 };
 
 // IX Register Instructions -- opcodes prefixed with 0xDD
@@ -287,7 +287,7 @@ Z80_opcodes opcodes_IX_instructions[] = {
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INC   B"},
+    {2, OO,   "INC  B"},
 };
 
 // Miscellaneous Instructions -- opcodes prefixed with 0xED
@@ -357,7 +357,7 @@ Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "IN    B, (C)"},        // 0x40
+    {2, OO,   "IN   B, (C)"},        // 0x40
 };
 
 // IY Register Instructions -- opcodes prefixed with 0xFD
@@ -366,17 +366,17 @@ Z80_opcodes opcodes_IY_instructions[] = {
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INC   B"},
+    {2, OO,   "INC  B"},
 };
 
 // IX Register Bit Instructions -- opcodes prefixed with 0xDDCB
 Z80_opcodes opcodes_IX_bit_instructions[] = {
-    {4, OONO, "RLC   (IX + $%02x), B"},
+    {4, OONO, "RLC  (IX + $%02x), B"},
 };
 
 // IY Register Bit Instructions -- opcodes prefixed with 0xFDCB
 Z80_opcodes opcodes_IY_bit_instructions[] = {
-    {4, OONO, "RLC   (IY + $%02x), B"},
+    {4, OONO, "RLC  (IY + $%02x), B"},
 };
 
 #endif
