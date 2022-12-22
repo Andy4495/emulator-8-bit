@@ -7,8 +7,6 @@ using namespace std;
 #include <cassert>
 #include <iomanip>
 
-#define MAX_BUFFER 8
-
 void Z80::execute() {
     switch (IR[0]) {
         case 0xCB: 
@@ -1148,14 +1146,338 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
 void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
     unsigned char *r = nullptr;   // Temporary storage when decoding register field in opcode
+    unsigned char tempC;          // Temporarily store carry bit for rotate operations
 
     switch (IR[1]) {
-        // RLC B  (0xCB00)
-        case 0x00:
-            if (B & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
-            B = B << 1;
-            B = (B & 0xFE) | testFlag(C_BIT);
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, B, 0);
+        // RLC r     (0xCB00 - 0xCB07)
+        // RLC (HL)  (0xCB06)
+        case 0x00: case 0x01: case 0x02: case 0x03: case 0x04: case 0x05: case 0x06: case 0x07:
+            // Opcode 0  0  0  0  0  r  r  r
+            // Decode the register, r
+            switch (IR[1] & 0x07) {
+                case 0b000:
+                    r = &B;
+                    break;
+                case 0b001:
+                    r = &C;
+                    break;
+                case 0b010:
+                    r = &D;
+                    break;
+                case 0b011:
+                    r = &E;
+                    break;
+                case 0b100:
+                    r = &H;
+                    break;
+                case 0b101:
+                    r = &L;
+                    break;
+                case 0b110:
+                    r = &memory[(H<<8) + L];
+                    break;
+                case 0b111:
+                    r = &A;
+                   break;
+                default: 
+                    r = nullptr;
+                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    break;
+            }
+            if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
+            *r = *r << 1;
+            *r = (*r & 0xFE) | testFlag(C_BIT);
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            break;
+
+        // RRC r    (0xCB10 - 0xCB17)
+        // RRC (HL)  (0xCB06)
+        case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x15: case 0x16: case 0x17:
+            // Opcode 0  0  0  1  0  r  r  r
+            // Decode the register, r
+            switch (IR[1] & 0x07) {
+                case 0b000:
+                    r = &B;
+                    break;
+                case 0b001:
+                    r = &C;
+                    break;
+                case 0b010:
+                    r = &D;
+                    break;
+                case 0b011:
+                    r = &E;
+                    break;
+                case 0b100:
+                    r = &H;
+                    break;
+                case 0b101:
+                    r = &L;
+                    break;
+                case 0b110:
+                    r = &memory[(H<<8) + L];
+                    break;
+                case 0b111:
+                    r = &A;
+                   break;
+                default: 
+                    r = nullptr;
+                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    break;
+            }
+            tempC = testFlag(C_BIT);
+            if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
+            *r = *r << 1;
+            *r = (*r & 0xFE) | tempC;
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            break;
+
+        // RRC r     (0xCB08 - 0xCB0f)
+        // RLC (HL)  (0xCB0e)
+        case 0x08: case 0x09: case 0x0a: case 0x0b: case 0x0c: case 0x0d: case 0x0e: case 0x0f:
+            // Opcode 0  0  0  0  1  r  r  r
+            // Decode the register, r
+            switch (IR[1] & 0x07) {
+                case 0b000:
+                    r = &B;
+                    break;
+                case 0b001:
+                    r = &C;
+                    break;
+                case 0b010:
+                    r = &D;
+                    break;
+                case 0b011:
+                    r = &E;
+                    break;
+                case 0b100:
+                    r = &H;
+                    break;
+                case 0b101:
+                    r = &L;
+                    break;
+                case 0b110:
+                    r = &memory[(H<<8) + L];
+                    break;
+                case 0b111:
+                    r = &A;
+                   break;
+                default: 
+                    r = nullptr;
+                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    break;
+            }
+            if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
+            *r = *r >> 1;
+            *r = (*r & 0x7f) | (testFlag(C_BIT) << 7);
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            break;
+
+        // RR  r    (0xCB18 - 0xCB1F)
+        // RR (HL)  (0xCB1E)
+        case 0x18: case 0x19: case 0x1a: case 0x1b: case 0x1c: case 0x1d: case 0x1e: case 0x1f:
+            // Opcode 0  0  0  1  1  r  r  r
+            // Decode the register, r
+            switch (IR[1] & 0x07) {
+                case 0b000:
+                    r = &B;
+                    break;
+                case 0b001:
+                    r = &C;
+                    break;
+                case 0b010:
+                    r = &D;
+                    break;
+                case 0b011:
+                    r = &E;
+                    break;
+                case 0b100:
+                    r = &H;
+                    break;
+                case 0b101:
+                    r = &L;
+                    break;
+                case 0b110:
+                    r = &memory[(H<<8) + L];
+                    break;
+                case 0b111:
+                    r = &A;
+                   break;
+                default: 
+                    r = nullptr;
+                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    break;
+            }
+            tempC = testFlag(C_BIT);
+            if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
+            *r = *r >> 1;
+            *r = (*r & 0x7F) | (tempC << 7);
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            break;
+
+        // SLA r     (0xCB20 - 0xCB27)
+        // SLA (HL)  (0xCB26)
+        case 0x20: case 0x21: case 0x22: case 0x23: case 0x24: case 0x25: case 0x26: case 0x27:
+            // Opcode 0  0  1  0  0  r  r  r
+            // Decode the register, r
+            switch (IR[1] & 0x07) {
+                case 0b000:
+                    r = &B;
+                    break;
+                case 0b001:
+                    r = &C;
+                    break;
+                case 0b010:
+                    r = &D;
+                    break;
+                case 0b011:
+                    r = &E;
+                    break;
+                case 0b100:
+                    r = &H;
+                    break;
+                case 0b101:
+                    r = &L;
+                    break;
+                case 0b110:
+                    r = &memory[(H<<8) + L];
+                    break;
+                case 0b111:
+                    r = &A;
+                   break;
+                default: 
+                    r = nullptr;
+                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    break;
+            }
+            if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
+            *r = *r << 1;
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            break;
+
+        // SRA  r    (0xCB28 - 0xCB2F)
+        // SRA (HL)  (0xCB2E)
+        case 0x28: case 0x29: case 0x2a: case 0x2b: case 0x2c: case 0x2d: case 0x2e: case 0x2f:
+            // Opcode 0  0  1  0  1  r  r  r
+            // Decode the register, r
+            switch (IR[1] & 0x07) {
+                case 0b000:
+                    r = &B;
+                    break;
+                case 0b001:
+                    r = &C;
+                    break;
+                case 0b010:
+                    r = &D;
+                    break;
+                case 0b011:
+                    r = &E;
+                    break;
+                case 0b100:
+                    r = &H;
+                    break;
+                case 0b101:
+                    r = &L;
+                    break;
+                case 0b110:
+                    r = &memory[(H<<8) + L];
+                    break;
+                case 0b111:
+                    r = &A;
+                   break;
+                default: 
+                    r = nullptr;
+                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    break;
+            }
+            tempC = *r & 0x80;    // Save the sign bit
+            if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
+            *r = *r >> 1;
+            *r = (*r & 0x7F) | tempC;
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            break;
+
+        // Undocumented "Shift Left Set", sometimes listed as SLL "Shift Left Logical"
+        // SLS r     (0xCB30 - 0xCB37)
+        // SLS (HL)  (0xCB36)
+        case 0x30: case 0x31: case 0x32: case 0x33: case 0x34: case 0x35: case 0x36: case 0x37:
+            // Opcode 0  1  1  0  0  r  r  r
+            // Decode the register, r
+            switch (IR[1] & 0x07) {
+                case 0b000:
+                    r = &B;
+                    break;
+                case 0b001:
+                    r = &C;
+                    break;
+                case 0b010:
+                    r = &D;
+                    break;
+                case 0b011:
+                    r = &E;
+                    break;
+                case 0b100:
+                    r = &H;
+                    break;
+                case 0b101:
+                    r = &L;
+                    break;
+                case 0b110:
+                    r = &memory[(H<<8) + L];
+                    break;
+                case 0b111:
+                    r = &A;
+                   break;
+                default: 
+                    r = nullptr;
+                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    break;
+            }
+            if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
+            *r = *r << 1;
+            *r |= 0x01;
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            break;
+
+        // SRL  r    (0xCB38 - 0xCB3F)
+        // SRL (HL)  (0xCB3E)
+        case 0x38: case 0x39: case 0x3a: case 0x3b: case 0x3c: case 0x3d: case 0x3e: case 0x3f:
+            // Opcode 0  0  1  0  1  r  r  r
+            // Decode the register, r
+            switch (IR[1] & 0x07) {
+                case 0b000:
+                    r = &B;
+                    break;
+                case 0b001:
+                    r = &C;
+                    break;
+                case 0b010:
+                    r = &D;
+                    break;
+                case 0b011:
+                    r = &E;
+                    break;
+                case 0b100:
+                    r = &H;
+                    break;
+                case 0b101:
+                    r = &L;
+                    break;
+                case 0b110:
+                    r = &memory[(H<<8) + L];
+                    break;
+                case 0b111:
+                    r = &A;
+                   break;
+                default: 
+                    r = nullptr;
+                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    break;
+            }
+            if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
+            *r = *r >> 1;
+            *r = (*r & 0x7F);
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // BIT b, r (0xCB40 - 0xCB7F)

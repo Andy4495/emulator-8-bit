@@ -73,7 +73,7 @@ void Z80::setFlag(FLAG_BITS f) {
 }
 
 void Z80::clearFlag(FLAG_BITS f) {
-    F &= f;
+    F = F & ~f;
 }
 
 int Z80::testFlag(FLAG_BITS f) {
