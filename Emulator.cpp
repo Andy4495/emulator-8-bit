@@ -1,25 +1,26 @@
 /* Z80 Emulator 
-MIT License
+   https://github.com/Andy4495/emulator-8-bit
+   MIT License
 
-0.1  11/29/22  Andy4495  Initial Creation
+   0.1  11/29/22  Andy4495  Initial Creation
+   0.2  12/22/22  Andy4495  Additional implementation
 */
 
-#define VERSION 0.8
+#define VERSION 0.9
 
 // 1. Read command line and parse arguments parseCommandLine()
 // 2. Read memory file (hex, s-record) loadProgram()
 //    - This can optionally pre-load RAM with values (i.e., can start-up the CPU with a known RAM state as opposed to a cold reset)
 // 3. Initialize the processor: zero out ram, initialize registers, initialize internal state variables initializeCPU()
-// 4. fetch()
-// 5. decode()
-// 6. execute()
-// 7. Print results status()
-// 8. Repeat
-// 9. softReset() clear registers, load reset vector, but don't zero RAM
-// 10. hardReset() zero out everything, load reset vector
-// 11. interrupt() TBD
-// 12. halt() TBD; implement per user manual
-// 13. quit() exit program, cleanup if required (maybe print register values before exit)
+// 4. fetch_and_decode()
+// 5. execute()
+// 6. Print results status()
+// 7. Repeat
+// 8. softReset() clear registers, load reset vector, but don't zero RAM
+// 9. hardReset() zero out everything, load reset vector
+// 10. interrupt() TBD
+// 11. halt() TBD; implement per user manual
+// 12. quit() exit program, cleanup if required (maybe print register values before exit)
 //
 // Notes:
 // 1. Currently using assert() for error handling for ease in debugging. May want to use a more graceful method in final version, which may be specific to the situation.
