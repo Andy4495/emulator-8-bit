@@ -913,9 +913,6 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
     switch (IR[1]) {
 
-        // ************* Input and Output Group **************
-        // ***************************************************
-
         // Invalid opcodes, CPU executes NOP in its place
         case 0x00: case 0x01: case 0x02: case 0x03: case 0x04: case 0x05: case 0x06: case 0x07:
         case 0x08: case 0x09: case 0x0a: case 0x0b: case 0x0c: case 0x0d: case 0x0e: case 0x0f: 
@@ -944,6 +941,9 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         case 0xf0: case 0xf1: case 0xf2: case 0xf3: case 0xf4: case 0xf5: case 0xf6: case 0xf7:
         case 0xf8: case 0xf9: case 0xfa: case 0xfb: case 0xfc: case 0xfd: case 0xfe: case 0xff: 
             break;
+
+        // ************* Input and Output Group **************
+        // ***************************************************
 
         // IN r, (C)  (0xED40, 0xED48, 0xED50, 0xED58, 0xED60, 0xED68, 0xED78)
         // Note that while 0x70 is related, it is an undocumented opcdode which behaves
