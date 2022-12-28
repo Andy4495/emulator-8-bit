@@ -5,7 +5,7 @@
 
 This is a simple Z80 CPU emulator and disassembler.
 
-I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture. 
+I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture.
 
 The emulator currently only supports the Z80. The Z80-specific code is encapsulated in a Z80 class, so it should be possible to support additional CPUs by creating classes specific for those CPUs.
 
@@ -157,7 +157,8 @@ The software and other files in this repository are released under what is commo
 
 [1]: https://en.cppreference.com/
 [2]: https://www.gnu.org/software/make/manual/make.html
-[3]: https://solver.assistedcoding.eu/makefilegen
+<!-- markdown-link-check-disable-next-line -->
+[3]: https://nicomedes.assistedcoding.eu/#/app/makefilegen
 [4]: https://clrhome.org/table/
 [5]: http://z80.info/index.html
 [6]: http://k1.spdns.de/cgi-bin/zasm.cgi
