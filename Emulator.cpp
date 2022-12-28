@@ -48,6 +48,7 @@ int main(int argc, char** argv)
 
     int choice = 0;
     unsigned short addr;
+    bool disassemble_mode = false;
 
     if (argc == 2) { // Use pathname passed on command line
         cpu.load_memory(argv[1]);
@@ -63,6 +64,7 @@ int main(int argc, char** argv)
         cout << "2. Warm reset and run from $0000." << endl;
         cout << "3. Run from specific address." << endl;
         cout << "4. Set breakpoint." << endl;
+        cout << "5. Disassemble (do not run code)." << endl;
 
         cin >> choice;
 
@@ -87,10 +89,17 @@ int main(int argc, char** argv)
                 choice = 0;
                 break;
 
+            case 5: // Disassemble (do not execute)
+                disassemble_mode = true;
+                cout << "Enter starting address in hex: 0x";
+                cin >> hex >> addr >> dec;
+                cpu.run_from_address(addr);
+                break;
+
             default: // Choice outside of range
-              cout << "Invalid selection. Try again." << endl << endl;
-              choice = 0;
-              break;
+                cout << "Invalid selection. Try again." << endl << endl;
+                choice = 0;
+                break;
 
         }
     }
@@ -99,7 +108,7 @@ int main(int argc, char** argv)
     while ((state < 12) && (!cpu.Halt)) { // Limit the number if times we fetch and decode
     ///    cout << "State: " << state << " PC: " << hex << cpu.PC << endl; /// debug
         cpu.fetch_and_decode();
-        cpu.execute();
+        if (disassemble_mode == false) cpu.execute();
         cpu.print_fetched_instruction();
         state++;
     }

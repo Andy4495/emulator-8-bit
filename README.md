@@ -17,10 +17,10 @@ The emulator is not complete. The following major updates still need to be compl
 
 - Implement the remaining opcode groups/tables:
   - DONE: Input and Output Group
-  - Bit Instructions
+  - DONE: Bit Instructions
   - IX Instructions
   - IX Bit Instructions
-  - Miscellaneous Instructions
+  - DONE: Miscellaneous Instructions
   - IY Instructions
   - IY Bit Instructions
 - ADD HL, ss instructions (opcodes 0x09, 0x19, 0x29, 0x39)
@@ -34,7 +34,7 @@ The emulator is not complete. The following major updates still need to be compl
 - HALT state handler in main execute method
   - Currently handled in the main emulator module, but should be part of the CPU class implementation
   - HALT should act like a breakpoint
-- Disassembler mode (in addition to emulate/run mode)
+- DONE: Disassembler mode (in addition to emulate/run mode)
 - Automated test suite
   - All valid opcodes
   - Corner cases

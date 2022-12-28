@@ -31,7 +31,7 @@ class Z80 {
         enum FLAG_BITS { S_BIT = 0x80, Z_BIT = 0x40, X1_BIT = 0x20, H_BIT = 0x10, X2_BIT = 0x08, PV_BIT = 0x04, N_BIT = 0x02, C_BIT = 0x01};
 
         // State variables
-        int Halt;
+        bool Halt;
 
         // Main register set
         // Accumulator 

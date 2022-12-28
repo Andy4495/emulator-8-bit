@@ -559,7 +559,7 @@ void Z80::execute_main_opcode() {
         
         // HALT (0x76)
         case 0x76: 
-            Halt = 1;
+            Halt = true;
             break;
 
         // DI  (0xF3)
