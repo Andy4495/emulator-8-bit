@@ -125,6 +125,8 @@ int main(int argc, char** argv)
     << " IX: " << (unsigned short) cpu.IX 
     << " IY: " << (unsigned short) cpu.IY
     << " SP: " << (unsigned short) cpu.SP
+    << "  I: " << (unsigned int)   cpu.I
+    << "  R: " << (unsigned int)   cpu.R
     << endl;
 
     cout << "SZXH XPNC: "

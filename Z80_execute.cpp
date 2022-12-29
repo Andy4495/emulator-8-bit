@@ -16,6 +16,7 @@ using namespace std;
 #include <iomanip>
 
 void Z80::execute() {
+    R++;
     switch (IR[0]) {
         case 0xCB: 
             execute_bit_opcode();

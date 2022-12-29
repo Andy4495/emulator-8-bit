@@ -620,7 +620,198 @@ Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "IN   B, (C)"},        // 0x40
+    {2, OO,   "IN   B, (C)"},         // 0x40
+    {2, OO,   "OUT  (C), B"},         
+    {2, OO,   "SBC  HL, BC"},         
+    {4, OONN, "LD   ($%02x%02x),  BC"},         
+    {2, OO,   "NEG"},         
+    {2, OO,   "RETN"},         
+    {2, OO,   "IM   0"},         
+    {2, OO,   "LD   I, A"},         
+    {2, OO,   "IN   C, (C)"},         
+    {2, OO,   "OUT  (C), C"},         
+    {2, OO,   "ADC  HL, BC"},         
+    {4, OONN, "LD   BC, ($%02x%02x)"},         
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x4c   
+    {2, OO,   "RETI"},         
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x4e        
+    {2, OO,   "LD   R, A"},         
+    {2, OO,   "IN   D, (C)"},         // 0x50
+    {2, OO,   "OUT  (C), D"},         
+    {2, OO,   "SBC  HL, DE"},         
+    {4, OONN, "LD   ($%02x%02x),  DE"},         
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x54    
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x55    
+    {2, OO,   "IM   1"},         
+    {2, OO,   "LD   A, I"},         
+    {2, OO,   "IN   E, (C)"},         
+    {2, OO,   "OUT  (C), E"},         
+    {2, OO,   "ADC  HL, DE"},         
+    {4, OONN, "LD   DE, ($%02x%02x)"},     
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x5C 
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x5D 
+    {2, OO,   "IM   2" }, 
+    {2, OO,   "LD   A, R"},         
+    {2, OO,   "IN   H, (C)"},         // 0x60
+    {2, OO,   "OUT  (C), H"},         
+    {2, OO,   "SBC  HL, HL"},         
+    {4, OONN, "LD   ($%02x%02x),  HL"},         
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x64    
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x65    
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x66    
+    {2, OO,   "RRD"},         
+    {2, OO,   "IN   L, (C)"},         
+    {2, OO,   "OUT  (C), L"},         
+    {2, OO,   "ADC  HL, HL"},         
+    {4, OONN, "LD   HL, ($%02x%02x)"},     
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x6C 
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x6D 
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x6E 
+    {2, OO,   "RLD"},         
+    {2, OO,   "IN   (C)"},            // 0x70
+    {2, OO,   "OUT  (C), 0"},         
+    {2, OO,   "SBC  HL, SP"},         
+    {4, OONN, "LD   ($%02x%02x),  SP"},         
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x74    
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x75    
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x76    
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x77    
+    {2, OO,   "IN   A, (C)"},         
+    {2, OO,   "OUT  (C), A"},         
+    {2, OO,   "ADC  HL, SP"},         
+    {4, OONN, "LD   SP, ($%02x%02x)"},     
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x7C 
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x7D 
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x7E 
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x7E 
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x80
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x90
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },    
+    {2, OO,   "LDI"},                 // 0xA0   
+    {2, OO,   "CPI"}, 
+    {2, OO,   "INI"},
+    {2, OO,   "OUTI"},
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "LDD"},
+    {2, OO,   "CPD"}, 
+    {2, OO,   "IND"},
+    {2, OO,   "OUTD"},
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "LDIR"},                 // 0xB0   
+    {2, OO,   "CPIR"}, 
+    {2, OO,   "INIR"},
+    {2, OO,   "OTIR"},
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "LDDR"},
+    {2, OO,   "CPDR"}, 
+    {2, OO,   "INDR"},
+    {2, OO,   "OTDR"},
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0xC0
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },    
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0xD0
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },    
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0xE0
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },    
+    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0xF0
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },       
+    {2, OO,   "INVALID: NOP" },    
 };
 
 // IY Register Instructions -- opcodes prefixed with 0xFD

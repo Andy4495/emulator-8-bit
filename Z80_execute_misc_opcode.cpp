@@ -253,6 +253,51 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             // Per User Manual: S, H, P/V are "unknown", so we won't touch them here
             break;  
 
+        // LD A, I (0xED57)
+        case 0x57:
+            A = I;
+            update_flags(S_BIT|Z_BIT, ADD, A, 0);
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            if (IFF2 == 1) setFlag(PV_BIT);
+            else clearFlag(PV_BIT);
+            break;
+
+        // LD A, R (0xED5F)
+        case 0x5F:
+            A = R;
+            update_flags(S_BIT|Z_BIT, ADD, A, 0);
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            if (IFF2 == 1) setFlag(PV_BIT);
+            else clearFlag(PV_BIT);
+            break;
+
+        // LD I, A (0xED47)
+        case 0x47: 
+            I = A;
+            break;
+
+        // LD R, A (0xED4F)
+        case 0x4F: 
+            R = A; 
+            break;
+
+        // LD dd, (nn) (0xED4B, 0xED5B, 0xED6B, 0xED7B)
+        case 0x4b: case 0x5b: case 0x6b: case 0x7b: 
+            // Determine which register we are working on:
+            // Opcode 0  1  d  d  1  0  1  1
+            switch ((IR[0] & 0x30) >> 4) {
+                case 0b00: B = memory[(IR[4]<<8) + IR[3] + 1]; C = memory[(IR[4]<<8) + IR[3]]; break;
+                case 0b01: D = memory[(IR[4]<<8) + IR[3] + 1]; E = memory[(IR[4]<<8) + IR[3]]; break;
+                case 0b10: H = memory[(IR[4]<<8) + IR[3] + 1]; L = memory[(IR[4]<<8) + IR[3]]; break;
+                case 0b11: 
+                    SP = ((memory[(IR[4]<<8) + IR[3] + 1])<<8) + memory[(IR[4]<<8) + IR[3]];
+                    break;
+                default: cout << "Invalid opcode: LD  dd, (nn)" << endl; break;
+            }
+            break;
+
         default: 
             cout << "Execution not defined: 0xed" << hex << setw(2) << (unsigned int) IR[1] << endl;
             break;
