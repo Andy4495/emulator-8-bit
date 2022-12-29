@@ -49,7 +49,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                   break;
+                    break;
                 default: 
                     r = nullptr;
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
@@ -90,7 +90,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                   break;
+                    break;
                 default: 
                     r = nullptr;
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
@@ -132,7 +132,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                   break;
+                    break;
                 default: 
                     r = nullptr;
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
@@ -173,7 +173,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                   break;
+                    break;
                 default: 
                     r = nullptr;
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
@@ -215,7 +215,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                   break;
+                    break;
                 default: 
                     r = nullptr;
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
@@ -255,7 +255,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                   break;
+                    break;
                 default: 
                     r = nullptr;
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
@@ -299,7 +299,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                   break;
+                    break;
                 default: 
                     r = nullptr;
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
@@ -340,7 +340,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                   break;
+                    break;
                 default: 
                     r = nullptr;
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
@@ -388,7 +388,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                   break;
+                    break;
                 default: 
                     r = nullptr;
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
@@ -439,7 +439,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                   break;
+                    break;
                 default: 
                     r = nullptr;
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
@@ -487,7 +487,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                   break;
+                    break;
                 default: 
                     r = nullptr;
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;

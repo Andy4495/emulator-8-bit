@@ -286,7 +286,7 @@ Z80_opcodes opcodes[] = {
 
 // Bit Instructions -- opcodes prefixed with 0xCB
 Z80_opcodes opcodes_bit_instructions[] = {
-    {2, OO,   "RLC  B"},             // 0xCB00
+    {2, OO,   "RLC  B"},               // 0xCB00
     {2, OO,   "RLC  C"},
     {2, OO,   "RLC  D"},
     {2, OO,   "RLC  E"},
@@ -294,7 +294,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RLC  L"},
     {2, OO,   "RLC  (HL)"},
     {2, OO,   "RLC  A"},
-    {2, OO,   "RRC  B"},             // 0xCB08
+    {2, OO,   "RRC  B"},               // 0xCB08
     {2, OO,   "RRC  C"},
     {2, OO,   "RRC  D"},
     {2, OO,   "RRC  E"},
@@ -302,7 +302,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RRC  L"},
     {2, OO,   "RRC  (HL)"},
     {2, OO,   "RRC  A"},
-    {2, OO,   "RL   B"},             // 0xCB10
+    {2, OO,   "RL   B"},               // 0xCB10
     {2, OO,   "RL   C"},
     {2, OO,   "RL   D"},
     {2, OO,   "RL   E"},
@@ -310,7 +310,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RL   L"},
     {2, OO,   "RL   (HL)"},
     {2, OO,   "RL   A"},
-    {2, OO,   "RR   B"},             // 0xCB18
+    {2, OO,   "RR   B"},               // 0xCB18
     {2, OO,   "RR   C"},
     {2, OO,   "RR   D"},
     {2, OO,   "RR   E"},
@@ -318,7 +318,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RR   L"},
     {2, OO,   "RR   (HL)"},
     {2, OO,   "RR   A"},
-    {2, OO,   "SLA  B"},             // 0xCB20
+    {2, OO,   "SLA  B"},               // 0xCB20
     {2, OO,   "SLA  C"},
     {2, OO,   "SLA  D"},
     {2, OO,   "SLA  E"},
@@ -326,7 +326,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "SLA  L"},
     {2, OO,   "SLA  (HL)"},
     {2, OO,   "SLA  A"},
-    {2, OO,   "SRA  B"},             // 0xCB28
+    {2, OO,   "SRA  B"},               // 0xCB28
     {2, OO,   "SRA  C"},
     {2, OO,   "SRA  D"},
     {2, OO,   "SRA  E"},
@@ -334,7 +334,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "SRA  L"},
     {2, OO,   "SRA  (HL)"},
     {2, OO,   "SRA  A"},
-    {2, OO,   "SLL  B"},             // 0xCB30
+    {2, OO,   "SLL  B"},               // 0xCB30
     {2, OO,   "SLL  C"},
     {2, OO,   "SLL  D"},
     {2, OO,   "SLL  E"},
@@ -342,7 +342,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "SLL  L"},
     {2, OO,   "SLL  (HL)"},
     {2, OO,   "SLL  A"},
-    {2, OO,   "SRL  B"},             // 0xCB38
+    {2, OO,   "SRL  B"},               // 0xCB38
     {2, OO,   "SRL  C"},
     {2, OO,   "SRL  D"},
     {2, OO,   "SRL  E"},
@@ -350,7 +350,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "SRL  L"},
     {2, OO,   "SRL  (HL)"},
     {2, OO,   "SRL  A"},
-    {2, OO,   "BIT  0, B"},          // 0xCB40
+    {2, OO,   "BIT  0, B"},            // 0xCB40
     {2, OO,   "BIT  0, C"},
     {2, OO,   "BIT  0, D"},
     {2, OO,   "BIT  0, E"},
@@ -358,7 +358,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "BIT  0, L"},
     {2, OO,   "BIT  0, (HL)"},
     {2, OO,   "BIT  0, A"},
-    {2, OO,   "BIT  1, B"},          // 0xCB48
+    {2, OO,   "BIT  1, B"},            // 0xCB48
     {2, OO,   "BIT  1, C"},
     {2, OO,   "BIT  1, D"},
     {2, OO,   "BIT  1, E"},
@@ -366,7 +366,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "BIT  1, L"},
     {2, OO,   "BIT  1, (HL)"},
     {2, OO,   "BIT  1, A"},
-    {2, OO,   "BIT  2, B"},          // 0xCB50
+    {2, OO,   "BIT  2, B"},            // 0xCB50
     {2, OO,   "BIT  2, C"},
     {2, OO,   "BIT  2, D"},
     {2, OO,   "BIT  2, E"},
@@ -374,7 +374,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "BIT  2, L"},
     {2, OO,   "BIT  2, (HL)"},
     {2, OO,   "BIT  2, A"},
-    {2, OO,   "BIT  3, B"},          // 0xCB58
+    {2, OO,   "BIT  3, B"},            // 0xCB58
     {2, OO,   "BIT  3, C"},
     {2, OO,   "BIT  3, D"},
     {2, OO,   "BIT  3, E"},
@@ -382,7 +382,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "BIT  3, L"},
     {2, OO,   "BIT  3, (HL)"},
     {2, OO,   "BIT  3, A"},
-    {2, OO,   "BIT  4, B"},          // 0xCB60
+    {2, OO,   "BIT  4, B"},            // 0xCB60
     {2, OO,   "BIT  4, C"},
     {2, OO,   "BIT  4, D"},
     {2, OO,   "BIT  4, E"},
@@ -390,7 +390,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "BIT  4, L"},
     {2, OO,   "BIT  4, (HL)"},
     {2, OO,   "BIT  4, A"},
-    {2, OO,   "BIT  5, B"},          // 0xCB68
+    {2, OO,   "BIT  5, B"},            // 0xCB68
     {2, OO,   "BIT  5, C"},
     {2, OO,   "BIT  5, D"},
     {2, OO,   "BIT  5, E"},
@@ -398,7 +398,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "BIT  5, L"},
     {2, OO,   "BIT  5, (HL)"},
     {2, OO,   "BIT  5, A"},
-    {2, OO,   "BIT  6, B"},          // 0xCB70
+    {2, OO,   "BIT  6, B"},            // 0xCB70
     {2, OO,   "BIT  6, C"},
     {2, OO,   "BIT  6, D"},
     {2, OO,   "BIT  6, E"},
@@ -406,7 +406,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "BIT  6, L"},
     {2, OO,   "BIT  6, (HL)"},
     {2, OO,   "BIT  6, A"},
-    {2, OO,   "BIT  7, B"},          // 0xCB78
+    {2, OO,   "BIT  7, B"},            // 0xCB78
     {2, OO,   "BIT  7, C"},
     {2, OO,   "BIT  7, D"},
     {2, OO,   "BIT  7, E"},
@@ -414,7 +414,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "BIT  7, L"},
     {2, OO,   "BIT  7, (HL)"},
     {2, OO,   "BIT  7, A"},
-    {2, OO,   "RES  0, B"},          // 0xCB80
+    {2, OO,   "RES  0, B"},            // 0xCB80
     {2, OO,   "RES  0, C"},
     {2, OO,   "RES  0, D"},
     {2, OO,   "RES  0, E"},
@@ -422,7 +422,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RES  0, L"},
     {2, OO,   "RES  0, (HL)"},
     {2, OO,   "RES  0, A"},
-    {2, OO,   "RES  1, B"},          // 0xCB88
+    {2, OO,   "RES  1, B"},            // 0xCB88
     {2, OO,   "RES  1, C"},
     {2, OO,   "RES  1, D"},
     {2, OO,   "RES  1, E"},
@@ -430,7 +430,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RES  1, L"},
     {2, OO,   "RES  1, (HL)"},
     {2, OO,   "RES  1, A"},
-    {2, OO,   "RES  2, B"},          // 0xCB90
+    {2, OO,   "RES  2, B"},            // 0xCB90
     {2, OO,   "RES  2, C"},
     {2, OO,   "RES  2, D"},
     {2, OO,   "RES  2, E"},
@@ -438,7 +438,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RES  2, L"},
     {2, OO,   "RES  2, (HL)"},
     {2, OO,   "RES  2, A"},
-    {2, OO,   "RES  3, B"},          // 0xCB98
+    {2, OO,   "RES  3, B"},            // 0xCB98
     {2, OO,   "RES  3, C"},
     {2, OO,   "RES  3, D"},
     {2, OO,   "RES  3, E"},
@@ -446,7 +446,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RES  3, L"},
     {2, OO,   "RES  3, (HL)"},
     {2, OO,   "RES  3, A"},
-    {2, OO,   "RES  4, B"},          // 0xCBA0
+    {2, OO,   "RES  4, B"},            // 0xCBA0
     {2, OO,   "RES  4, C"},
     {2, OO,   "RES  4, D"},
     {2, OO,   "RES  4, E"},
@@ -454,7 +454,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RES  4, L"},
     {2, OO,   "RES  4, (HL)"},
     {2, OO,   "RES  4, A"},
-    {2, OO,   "RES  5, B"},          // 0xCBA8
+    {2, OO,   "RES  5, B"},            // 0xCBA8
     {2, OO,   "RES  5, C"},
     {2, OO,   "RES  5, D"},
     {2, OO,   "RES  5, E"},
@@ -462,7 +462,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RES  5, L"},
     {2, OO,   "RES  5, (HL)"},
     {2, OO,   "RES  5, A"},
-    {2, OO,   "RES  6, B"},          // 0xCBB0
+    {2, OO,   "RES  6, B"},            // 0xCBB0
     {2, OO,   "RES  6, C"},
     {2, OO,   "RES  6, D"},
     {2, OO,   "RES  6, E"},
@@ -470,7 +470,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RES  6, L"},
     {2, OO,   "RES  6, (HL)"},
     {2, OO,   "RES  6, A"},
-    {2, OO,   "RES  7, B"},          // 0xCBB8
+    {2, OO,   "RES  7, B"},            // 0xCBB8
     {2, OO,   "RES  7, C"},
     {2, OO,   "RES  7, D"},
     {2, OO,   "RES  7, E"},
@@ -478,7 +478,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RES  7, L"},
     {2, OO,   "RES  7, (HL)"},
     {2, OO,   "RES  7, A"},
-    {2, OO,   "SET  0, B"},          // 0xCBC0
+    {2, OO,   "SET  0, B"},            // 0xCBC0
     {2, OO,   "SET  0, C"},
     {2, OO,   "SET  0, D"},
     {2, OO,   "SET  0, E"},
@@ -486,7 +486,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "SET  0, L"},
     {2, OO,   "SET  0, (HL)"},
     {2, OO,   "SET  0, A"},
-    {2, OO,   "SET  1, B"},          // 0xCBC8
+    {2, OO,   "SET  1, B"},            // 0xCBC8
     {2, OO,   "SET  1, C"},
     {2, OO,   "SET  1, D"},
     {2, OO,   "SET  1, E"},
@@ -494,7 +494,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "SET  1, L"},
     {2, OO,   "SET  1, (HL)"},
     {2, OO,   "SET  1, A"},
-    {2, OO,   "SET  2, B"},          // 0xCBD0
+    {2, OO,   "SET  2, B"},            // 0xCBD0
     {2, OO,   "SET  2, C"},
     {2, OO,   "SET  2, D"},
     {2, OO,   "SET  2, E"},
@@ -502,7 +502,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "SET  2, L"},
     {2, OO,   "SET  2, (HL)"},
     {2, OO,   "SET  2, A"},
-    {2, OO,   "SET  3, B"},          // 0xCBD8
+    {2, OO,   "SET  3, B"},            // 0xCBD8
     {2, OO,   "SET  3, C"},
     {2, OO,   "SET  3, D"},
     {2, OO,   "SET  3, E"},
@@ -510,7 +510,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "SET  3, L"},
     {2, OO,   "SET  3, (HL)"},
     {2, OO,   "SET  3, A"},
-    {2, OO,   "SET  4, B"},          // 0xCBE0
+    {2, OO,   "SET  4, B"},            // 0xCBE0
     {2, OO,   "SET  4, C"},
     {2, OO,   "SET  4, D"},
     {2, OO,   "SET  4, E"},
@@ -518,7 +518,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "SET  4, L"},
     {2, OO,   "SET  4, (HL)"},
     {2, OO,   "SET  4, A"},
-    {2, OO,   "SET  5, B"},          // 0xCBE8
+    {2, OO,   "SET  5, B"},            // 0xCBE8
     {2, OO,   "SET  5, C"},
     {2, OO,   "SET  5, D"},
     {2, OO,   "SET  5, E"},
@@ -526,7 +526,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "SET  5, L"},
     {2, OO,   "SET  5, (HL)"},
     {2, OO,   "SET  5, A"},
-    {2, OO,   "SET  6, B"},          // 0xCBF0
+    {2, OO,   "SET  6, B"},            // 0xCBF0
     {2, OO,   "SET  6, C"},
     {2, OO,   "SET  6, D"},
     {2, OO,   "SET  6, E"},
@@ -534,7 +534,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "SET  6, L"},
     {2, OO,   "SET  6, (HL)"},
     {2, OO,   "SET  6, A"},
-    {2, OO,   "SET  7, B"},          // 0xCBF8
+    {2, OO,   "SET  7, B"},            // 0xCBF8
     {2, OO,   "SET  7, C"},
     {2, OO,   "SET  7, D"},
     {2, OO,   "SET  7, E"},
@@ -546,81 +546,81 @@ Z80_opcodes opcodes_bit_instructions[] = {
 
 // IX Register Instructions -- opcodes prefixed with 0xDD
 Z80_opcodes opcodes_IX_instructions[] = {
-    {2, OO,   "INVALID: NOP" },       // 0xDD00 - Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // 0xDD00 - Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "INC  B"},
 };
 
 // Miscellaneous Instructions -- opcodes prefixed with 0xED
 Z80_opcodes opcodes_misc_instructions[] = {
     // 0x40 insttructions not implemented (opcodes 0xED00 - 0xED3F) -- execuate NOP instead
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode  0xED00
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode  0xED10
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode  0xED20
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode  0xED30
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "IN   B, (C)"},         // 0x40
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode  0xED00
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode  0xED10
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode  0xED20
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode  0xED30
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "IN   B, (C)"},          // 0x40
     {2, OO,   "OUT  (C), B"},         
     {2, OO,   "SBC  HL, BC"},         
     {4, OONN, "LD   ($%02x%02x),  BC"},         
@@ -632,59 +632,59 @@ Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "OUT  (C), C"},         
     {2, OO,   "ADC  HL, BC"},         
     {4, OONN, "LD   BC, ($%02x%02x)"},         
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x4c   
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x4c   
     {2, OO,   "RETI"},         
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x4e        
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x4e        
     {2, OO,   "LD   R, A"},         
-    {2, OO,   "IN   D, (C)"},         // 0x50
+    {2, OO,   "IN   D, (C)"},          // 0x50
     {2, OO,   "OUT  (C), D"},         
     {2, OO,   "SBC  HL, DE"},         
     {4, OONN, "LD   ($%02x%02x),  DE"},         
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x54    
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x55    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x54    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x55    
     {2, OO,   "IM   1"},         
     {2, OO,   "LD   A, I"},         
     {2, OO,   "IN   E, (C)"},         
     {2, OO,   "OUT  (C), E"},         
     {2, OO,   "ADC  HL, DE"},         
     {4, OONN, "LD   DE, ($%02x%02x)"},     
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x5C 
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x5D 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x5C 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x5D 
     {2, OO,   "IM   2" }, 
     {2, OO,   "LD   A, R"},         
-    {2, OO,   "IN   H, (C)"},         // 0x60
+    {2, OO,   "IN   H, (C)"},          // 0x60
     {2, OO,   "OUT  (C), H"},         
     {2, OO,   "SBC  HL, HL"},         
     {4, OONN, "LD   ($%02x%02x),  HL"},         
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x64    
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x65    
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x66    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x64    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x65    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x66    
     {2, OO,   "RRD"},         
     {2, OO,   "IN   L, (C)"},         
     {2, OO,   "OUT  (C), L"},         
     {2, OO,   "ADC  HL, HL"},         
     {4, OONN, "LD   HL, ($%02x%02x)"},     
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x6C 
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x6D 
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x6E 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x6C 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x6D 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x6E 
     {2, OO,   "RLD"},         
-    {2, OO,   "IN   (C)"},            // 0x70
+    {2, OO,   "IN   (C)"},             // 0x70
     {2, OO,   "OUT  (C), 0"},         
     {2, OO,   "SBC  HL, SP"},         
     {4, OONN, "LD   ($%02x%02x),  SP"},         
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x74    
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x75    
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x76    
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x77    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x74    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x75    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x76    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x77    
     {2, OO,   "IN   A, (C)"},         
     {2, OO,   "OUT  (C), A"},         
     {2, OO,   "ADC  HL, SP"},         
     {4, OONN, "LD   SP, ($%02x%02x)"},     
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x7C 
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x7D 
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x7E 
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x7E 
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x80
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x7C 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x7D 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x7E 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x7E 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x80
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -700,7 +700,7 @@ Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0x90
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x90
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -716,7 +716,7 @@ Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },    
-    {2, OO,   "LDI"},                 // 0xA0   
+    {2, OO,   "LDI"},                  // 0xA0   
     {2, OO,   "CPI"}, 
     {2, OO,   "INI"},
     {2, OO,   "OUTI"},
@@ -748,7 +748,7 @@ Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0xC0
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xC0
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -764,7 +764,7 @@ Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },    
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0xD0
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xD0
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -780,7 +780,7 @@ Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },    
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0xE0
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xE0
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -796,7 +796,7 @@ Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },    
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode 0xF0
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xF0
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -816,10 +816,10 @@ Z80_opcodes opcodes_misc_instructions[] = {
 
 // IY Register Instructions -- opcodes prefixed with 0xFD
 Z80_opcodes opcodes_IY_instructions[] = {
-    {2, OO,   "INVALID: NOP" },       // 0xDD00 - Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
-    {2, OO,   "INVALID: NOP" },       // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // 0xDD00 - Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "INC  B"},
 };
 
