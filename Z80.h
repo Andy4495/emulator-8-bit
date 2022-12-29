@@ -51,9 +51,9 @@ class Z80 {
 
         // Special purpose registers
         // Interrupt vector
-        unsigned int I;
+        unsigned char I;
         // Memory refresh register
-        unsigned int R;
+        unsigned char R;
         // Index registers
         unsigned short IX, IY;
         // Stack pointer

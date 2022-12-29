@@ -22,7 +22,10 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
     // Note that there are some Z180-specific instructions in this group. However,
     // this emulator only supports Z80, so Z180 instructions are left unimplemented.0x3f
 
-    unsigned char *r = nullptr;   // Temporary storage when decoding register field in opcode
+    unsigned char *r  = nullptr;   // Temporary storage when decoding register field in opcode
+    unsigned char *r_ = nullptr;
+    unsigned short Temp16;
+    unsigned char  Temp8;
 
     switch (IR[1]) {
 
@@ -312,6 +315,229 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                     break;
                 default: cout << "Invalid opcode: LD  (nn), dd" << endl; break;
             }
+            break;
+
+        // LDI (0xEDA0)
+        case 0xa0:
+            memory[(D>>8) + E] = memory[(H>>8) + L];
+            E++;
+            if (E == 0) D++;
+            L++;
+            if (L == 0) H++;
+            C--;
+            if (C == 0xff) B--;
+            if (B | C) setFlag(PV_BIT);
+            else clearFlag(PV_BIT);
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            break;
+
+        // LDIR (0xEDB0)
+        case 0xb0:
+            memory[(D>>8) + E] = memory[(H>>8) + L];
+            E++;
+            if (E == 0) D++;
+            L++;
+            if (L == 0) H++;
+            C--;
+            if (C == 0xff) B--;
+            if (B | C) {
+                setFlag(PV_BIT);
+                PC -= 2;
+            }
+            else clearFlag(PV_BIT);
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            break;
+
+        // LDD (0xEDA8)
+        case 0xa8:
+            memory[(D>>8) + E] = memory[(H>>8) + L];
+            E--;
+            if (E == 0xff) D--;
+            L--;
+            if (L == 0xff) H--;
+            C--;
+            if (C == 0xff) B--;
+            if (B | C) setFlag(PV_BIT);
+            else clearFlag(PV_BIT);
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            break;
+
+        // LDIR (0xEDB8)
+        case 0xb8:
+            memory[(D>>8) + E] = memory[(H>>8) + L];
+            E--;
+            if (E == 0xff) D--;
+            L--;
+            if (L == 0xff) H--;
+            C--;
+            if (C == 0xff) B--;
+            if (B | C) {
+                setFlag(PV_BIT);
+                PC -= 2;
+            }
+            else clearFlag(PV_BIT);
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            break;
+
+        // CPI (0xEDA1)
+        case 0xa1:
+            update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            L++;
+            if (L == 0) H++;
+            C--;
+            if (C == 0xff) B--;
+            if (B | C) setFlag(PV_BIT);
+            else clearFlag(PV_BIT);
+            setFlag(N_BIT);
+            break;
+
+        // CPIR (0xEDB1)
+        case 0xb1:
+            update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            L++;
+            if (L == 0) H++;
+            C--;
+            if (C == 0xff) B--;
+            if (B | C) {
+                setFlag(PV_BIT);
+                PC -=2;
+            }
+            else clearFlag(PV_BIT);
+            setFlag(N_BIT);
+            break;
+            
+        // CPD (0xEDA9)
+        case 0xa9:
+            update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            L--;
+            if (L == 0xff) H--;
+            C--;
+            if (C == 0xff) B--;
+            if (B | C) setFlag(PV_BIT);
+            else clearFlag(PV_BIT);
+            setFlag(N_BIT);
+            break;
+
+        // CPDR (0xEDB9)
+        case 0xb9:
+            update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            L--;
+            if (L == 0xff) H--;
+            C--;
+            if (C == 0xff) B--;
+            if (B | C) {
+                setFlag(PV_BIT);
+                PC -=2;
+            }
+            else clearFlag(PV_BIT);
+            setFlag(N_BIT);
+            break;
+
+        // NEG (0xED44)
+        case 0x44:
+            if (A == 0x80) setFlag(PV_BIT);
+            else clearFlag(PV_BIT);
+            A = 0 - A;
+            update_flags(S_BIT|Z_BIT|H_BIT|N_BIT|C_BIT, SUB, 0, A);
+            break;
+
+        // IM 0 (0xED46)
+        case 0x46: 
+            INT_MODE = 0;
+            break;
+
+        // IM 1 (0xED56)
+        case 0x56: 
+            INT_MODE = 1;
+            break;
+
+        // IM 2 (0xED5E)
+        case 0x5e: 
+            INT_MODE = 2;
+            break;
+            
+        // ADC HL, ss  (0x4A, 0x5A, 0x6A, 0x7A)
+        case 0x4a: case 0x5a: case 0x6a: case 0x7a:
+            Temp16 = (H << 8) + L;
+            // Determine which register we are working on:
+            // Opcode 0  1  s  s  1  0  1  0
+            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
+                /// Need to implement ///
+            }
+            else {
+                switch ((IR[0] & 0x30) >> 4) {
+                    case 0b00: r = &B; r_ = &C; break;
+                    case 0b01: r = &D; r_ = &E; break;
+                    case 0b10: r = &H; r_ = &L; break;
+                    default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
+                }
+                /// Need to implement ///
+            }
+            /// Need to implement condition bits, may need another state ///
+            break;
+
+        // SBC HL, ss  (0x42, 0x52, 0x62, 0x72)
+        case 0x42: case 0x52: case 0x62: case 0x72:
+            Temp16 = (H << 8) + L;
+            // Determine which register we are working on:
+            // Opcode 0  1  s  s  0  0  1  0
+            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
+                /// Need to implement ///
+            }
+            else {
+                switch ((IR[0] & 0x30) >> 4) {
+                    case 0b00: r = &B; r_ = &C; break;
+                    case 0b01: r = &D; r_ = &E; break;
+                    case 0b10: r = &H; r_ = &L; break;
+                    default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
+                }
+                /// Need to implement ///
+            }
+            /// Need to implement condition bits, may need another state ///
+            break;
+
+        // RLD (0xED6F)
+        case 0x6f: 
+            Temp8 = A; 
+            A = (A & 0xf0) | ((memory[(H<<8) + L] & 0xf0) >> 4);
+            memory[(H<<8) + L] = ((memory[(H<<8) + L] & 0x0f) << 4) + (Temp8 & 0x0f);
+            if (A & 0x80) setFlag(S_BIT);
+            else clearFlag(S_BIT);
+            if (A == 0) setFlag(Z_BIT);
+            else clearFlag(Z_BIT);
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            update_flags(PV_BIT, BIT, A, 0);
+            break;
+
+        // RRD (0xED67)
+        case 0x67: 
+            Temp8 = A; 
+            A = (A & 0xf0) | (memory[(H<<8) + L] & 0x0f);
+            memory[(H<<8) + L] = ((memory[(H<<8) + L] & 0xf0) >> 4) + ((Temp8 & 0x0f) << 4);
+            if (A & 0x80) setFlag(S_BIT);
+            else clearFlag(S_BIT);
+            if (A == 0) setFlag(Z_BIT);
+            else clearFlag(Z_BIT);
+            clearFlag(H_BIT);
+            clearFlag(N_BIT);
+            update_flags(PV_BIT, BIT, A, 0);
+            break;
+
+        // RETI (0xED4D)
+        case 0x4d:
+            PC = (memory[SP + 1] << 8) + memory[SP];
+            SP += 2;
+            break;
+
+        // RETN (0xED45)
+        case 0x45:
+            PC = (memory[SP + 1] << 8) + memory[SP];
+            IFF1 = IFF2;
             break;
 
         default: 

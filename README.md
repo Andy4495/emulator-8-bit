@@ -23,7 +23,9 @@ The emulator is not complete. The following major updates still need to be compl
   - DONE: Miscellaneous Instructions
   - IY Instructions
   - IY Bit Instructions
-- ADD HL, ss instructions (opcodes 0x09, 0x19, 0x29, 0x39)
+- Finish implementing ADD HL, ss instructions (opcodes 0x09, 0x19, 0x29, 0x39)
+- Finish implementing ADC HL, ss instructions
+- Finish implementing SBC HL, ss instructions
 - INC ss instructions (opcodes 0x03, 0x013, 0x23, 0x33)
 - DEC ss instructions (opcodes 0x0b, 0x01b, 0x2b, 0x3b)
 - Flag update handling
