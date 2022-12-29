@@ -20,7 +20,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
     // All instructions in this super-group have opcodes that start with 0xED, 
     // and the specific instruction is represented by the 2nd byte of the opcode.
     // Note that there are some Z180-specific instructions in this group. However,
-    // this emulator only supports Z80, so Z180 instructions are left unimplemented.
+    // this emulator only supports Z80, so Z180 instructions are left unimplemented.0x3f
 
     unsigned char *r = nullptr;   // Temporary storage when decoding register field in opcode
 
@@ -287,14 +287,30 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         case 0x4b: case 0x5b: case 0x6b: case 0x7b: 
             // Determine which register we are working on:
             // Opcode 0  1  d  d  1  0  1  1
-            switch ((IR[0] & 0x30) >> 4) {
-                case 0b00: B = memory[(IR[4]<<8) + IR[3] + 1]; C = memory[(IR[4]<<8) + IR[3]]; break;
-                case 0b01: D = memory[(IR[4]<<8) + IR[3] + 1]; E = memory[(IR[4]<<8) + IR[3]]; break;
-                case 0b10: H = memory[(IR[4]<<8) + IR[3] + 1]; L = memory[(IR[4]<<8) + IR[3]]; break;
+            switch ((IR[1] & 0x30) >> 4) {
+                case 0b00: B = memory[(IR[3]<<8) + IR[2] + 1]; C = memory[(IR[3]<<8) + IR[2]]; break;
+                case 0b01: D = memory[(IR[3]<<8) + IR[2] + 1]; E = memory[(IR[3]<<8) + IR[2]]; break;
+                case 0b10: H = memory[(IR[3]<<8) + IR[2] + 1]; L = memory[(IR[3]<<8) + IR[2]]; break;
                 case 0b11: 
-                    SP = ((memory[(IR[4]<<8) + IR[3] + 1])<<8) + memory[(IR[4]<<8) + IR[3]];
+                    SP = ((memory[(IR[3]<<8) + IR[2] + 1])<<8) + memory[(IR[3]<<8) + IR[2]];
                     break;
                 default: cout << "Invalid opcode: LD  dd, (nn)" << endl; break;
+            }
+            break;
+
+        // LD (nn), dd (0xED43, 0xED53, 0xED63, 0xED73)
+        case 0x43: case 0x53: case 0x63: case 0x73: 
+            // Determine which register we are working on:
+            // Opcode 0  1  d  d  0  0  1  1
+            switch ((IR[1] & 0x30) >> 4) {
+                case 0b00: memory[(IR[3]<<8) + IR[2] + 1] = B; memory[(IR[3]<<8) + IR[2]] = C; break;
+                case 0b01: memory[(IR[3]<<8) + IR[2] + 1] = D; memory[(IR[3]<<8) + IR[2]] = E; break;
+                case 0b10: memory[(IR[3]<<8) + IR[2] + 1] = H; memory[(IR[3]<<8) + IR[2]] = L; break;
+                case 0b11: 
+                    memory[(IR[3]<<8) + IR[2] + 1] = (SP & 0xFF00)>>8;
+                    memory[(IR[3]<<8) + IR[2]] = SP & 0xff;
+                    break;
+                default: cout << "Invalid opcode: LD  (nn), dd" << endl; break;
             }
             break;
 
