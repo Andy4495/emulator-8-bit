@@ -25,7 +25,7 @@ struct Z80_opcodes {      // The opcode value is implicit in the array index def
     const char* mn;       // Instruction mnemonic, not including data
 };
 
-Z80_opcodes opcodes[] = {
+const Z80_opcodes opcodes[] = {
     {1, O,    "NOP"},                  // 0x00
     {3, ONN,  "LD   BC, $%02x%02x"},   // LD BC, nn
     {1, O,    "LD   (BC), A"},
@@ -285,7 +285,7 @@ Z80_opcodes opcodes[] = {
 };
 
 // Bit Instructions -- opcodes prefixed with 0xCB
-Z80_opcodes opcodes_bit_instructions[] = {
+const Z80_opcodes opcodes_bit_instructions[] = {
     {2, OO,   "RLC  B"},               // 0xCB00
     {2, OO,   "RLC  C"},
     {2, OO,   "RLC  D"},
@@ -545,7 +545,7 @@ Z80_opcodes opcodes_bit_instructions[] = {
 };
 
 // IX Register Instructions -- opcodes prefixed with 0xDD
-Z80_opcodes opcodes_IX_instructions[] = {
+const Z80_opcodes opcodes_IX_instructions[] = {
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xDD00
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
@@ -805,7 +805,7 @@ Z80_opcodes opcodes_IX_instructions[] = {
 };
 
 // Miscellaneous Instructions -- opcodes prefixed with 0xED
-Z80_opcodes opcodes_misc_instructions[] = {
+const Z80_opcodes opcodes_misc_instructions[] = {
     // 0x40 insttructions not implemented (opcodes 0xED00 - 0xED3F) -- execuate NOP instead
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode  0xED00
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
@@ -1066,7 +1066,7 @@ Z80_opcodes opcodes_misc_instructions[] = {
 };
 
 // IY Register Instructions -- opcodes prefixed with 0xFD
-Z80_opcodes opcodes_IY_instructions[] = {
+const Z80_opcodes opcodes_IY_instructions[] = {
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xFD00
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
@@ -1326,8 +1326,8 @@ Z80_opcodes opcodes_IY_instructions[] = {
 };
 
 // IX Register Bit Instructions -- opcodes prefixed with 0xDDCB
-Z80_opcodes opcodes_IX_bit_instructions[] = {
-    {4, OONO, "RLC  (IX+$%02x), B"},               // 0xDDCB00
+const Z80_opcodes opcodes_IX_bit_instructions[] = {
+    {4, OONO, "RLC  (IX+$%02x), B"},   // 0xDDCB00
     {4, OONO, "RLC  (IX+$%02x), C"},
     {4, OONO, "RLC  (IX+$%02x), D"},
     {4, OONO, "RLC  (IX+$%02x), E"},
@@ -1335,7 +1335,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "RLC  (IX+$%02x), L"},
     {4, OONO, "RLC  (IX+$%02x)"},
     {4, OONO, "RLC  (IX+$%02x), A"},
-    {4, OONO, "RRC  (IX+$%02x), B"},               // 0xDDCB08
+    {4, OONO, "RRC  (IX+$%02x), B"},   // 0xDDCB08
     {4, OONO, "RRC  (IX+$%02x), C"},
     {4, OONO, "RRC  (IX+$%02x), D"},
     {4, OONO, "RRC  (IX+$%02x), E"},
@@ -1343,7 +1343,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "RRC  (IX+$%02x), L"},
     {4, OONO, "RRC  (IX+$%02x)"},
     {4, OONO, "RRC  (IX+$%02x), A"},
-    {4, OONO, "RL   (IX+$%02x), B"},               // 0xDDCB10
+    {4, OONO, "RL   (IX+$%02x), B"},   // 0xDDCB10
     {4, OONO, "RL   (IX+$%02x), C"},
     {4, OONO, "RL   (IX+$%02x), D"},
     {4, OONO, "RL   (IX+$%02x), E"},
@@ -1351,7 +1351,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "RL   (IX+$%02x), L"},
     {4, OONO, "RL   (IX+$%02x), "},
     {4, OONO, "RL   (IX+$%02x), A"},
-    {4, OONO, "RR   (IX+$%02x), B"},               // 0xDDCB18
+    {4, OONO, "RR   (IX+$%02x), B"},   // 0xDDCB18
     {4, OONO, "RR   (IX+$%02x), C"},
     {4, OONO, "RR   (IX+$%02x), D"},
     {4, OONO, "RR   (IX+$%02x), E"},
@@ -1359,7 +1359,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "RR   (IX+$%02x), L"},
     {4, OONO, "RR   (IX+$%02x)"},
     {4, OONO, "RR   (IX+$%02x), A"},
-    {4, OONO, "SLA  (IX+$%02x), B"},               // 0xDDCB20
+    {4, OONO, "SLA  (IX+$%02x), B"},   // 0xDDCB20
     {4, OONO, "SLA  (IX+$%02x), C"},
     {4, OONO, "SLA  (IX+$%02x), D"},
     {4, OONO, "SLA  (IX+$%02x), E"},
@@ -1367,7 +1367,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "SLA  (IX+$%02x), L"},
     {4, OONO, "SLA  (IX+$%02x)"},
     {4, OONO, "SLA  (IX+$%02x), A"},
-    {4, OONO, "SRA  (IX+$%02x), B"},               // 0xDDCB28
+    {4, OONO, "SRA  (IX+$%02x), B"},   // 0xDDCB28
     {4, OONO, "SRA  (IX+$%02x), C"},
     {4, OONO, "SRA  (IX+$%02x), D"},
     {4, OONO, "SRA  (IX+$%02x), E"},
@@ -1375,7 +1375,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "SRA  (IX+$%02x), L"},
     {4, OONO, "SRA  (IX+$%02x)"},
     {4, OONO, "SRA  (IX+$%02x), A"},
-    {4, OONO, "SLL  (IX+$%02x), B"},               // 0xDDCB30
+    {4, OONO, "SLL  (IX+$%02x), B"},   // 0xDDCB30
     {4, OONO, "SLL  (IX+$%02x), C"},
     {4, OONO, "SLL  (IX+$%02x), D"},
     {4, OONO, "SLL  (IX+$%02x), E"},
@@ -1383,7 +1383,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "SLL  (IX+$%02x), L"},
     {4, OONO, "SLL  (IX+$%02x)"},
     {4, OONO, "SLL  (IX+$%02x), A"},
-    {4, OONO, "SRL  (IX+$%02x), B"},               // 0xDDCB38
+    {4, OONO, "SRL  (IX+$%02x), B"},   // 0xDDCB38
     {4, OONO, "SRL  (IX+$%02x), C"},
     {4, OONO, "SRL  (IX+$%02x), D"},
     {4, OONO, "SRL  (IX+$%02x), E"},
@@ -1391,7 +1391,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "SRL  (IX+$%02x), L"},
     {4, OONO, "SRL  (IX+$%02x)"},
     {4, OONO, "SRL  (IX+$%02x), A"},
-    {4, OONO, "BIT  0, (IX+$%02x)"},            // 0xDDCB40
+    {4, OONO, "BIT  0, (IX+$%02x)"},   // 0xDDCB40
     {4, OONO, "BIT  0, (IX+$%02x)"},
     {4, OONO, "BIT  0, (IX+$%02x)"},
     {4, OONO, "BIT  0, (IX+$%02x)"},
@@ -1399,7 +1399,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "BIT  0, (IX+$%02x)"},
     {4, OONO, "BIT  0, (IX+$%02x)"},
     {4, OONO, "BIT  0, (IX+$%02x)"},
-    {4, OONO, "BIT  1, (IX+$%02x)"},            // 0xDDCB48
+    {4, OONO, "BIT  1, (IX+$%02x)"},   // 0xDDCB48
     {4, OONO, "BIT  1, (IX+$%02x)"},
     {4, OONO, "BIT  1, (IX+$%02x)"},
     {4, OONO, "BIT  1, (IX+$%02x)"},
@@ -1407,7 +1407,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "BIT  1, (IX+$%02x)"},
     {4, OONO, "BIT  1, (IX+$%02x)"},
     {4, OONO, "BIT  1, (IX+$%02x)"},
-    {4, OONO, "BIT  2, (IX+$%02x)"},            // 0xDDCB50
+    {4, OONO, "BIT  2, (IX+$%02x)"},   // 0xDDCB50
     {4, OONO, "BIT  2, (IX+$%02x)"},
     {4, OONO, "BIT  2, (IX+$%02x)"},
     {4, OONO, "BIT  2, (IX+$%02x)"},
@@ -1415,7 +1415,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "BIT  2, (IX+$%02x)"},
     {4, OONO, "BIT  2, (IX+$%02x)"},
     {4, OONO, "BIT  2, (IX+$%02x)"},
-    {4, OONO, "BIT  3, (IX+$%02x)"},            // 0xDDCB58
+    {4, OONO, "BIT  3, (IX+$%02x)"},   // 0xDDCB58
     {4, OONO, "BIT  3, (IX+$%02x)"},
     {4, OONO, "BIT  3, (IX+$%02x)"},
     {4, OONO, "BIT  3, (IX+$%02x)"},
@@ -1423,7 +1423,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "BIT  3, (IX+$%02x)"},
     {4, OONO, "BIT  3, (IX+$%02x)"},
     {4, OONO, "BIT  3, (IX+$%02x)"},
-    {4, OONO, "BIT  4, (IX+$%02x)"},            // 0xDDCB60
+    {4, OONO, "BIT  4, (IX+$%02x)"},   // 0xDDCB60
     {4, OONO, "BIT  4, (IX+$%02x)"},
     {4, OONO, "BIT  4, (IX+$%02x)"},
     {4, OONO, "BIT  4, (IX+$%02x)"},
@@ -1431,7 +1431,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "BIT  4, (IX+$%02x)"},
     {4, OONO, "BIT  4, (IX+$%02x)"},
     {4, OONO, "BIT  4, (IX+$%02x)"},
-    {4, OONO, "BIT  5, (IX+$%02x)"},            // 0xDDCB68
+    {4, OONO, "BIT  5, (IX+$%02x)"},   // 0xDDCB68
     {4, OONO, "BIT  5, (IX+$%02x)"},
     {4, OONO, "BIT  5, (IX+$%02x)"},
     {4, OONO, "BIT  5, (IX+$%02x)"},
@@ -1439,7 +1439,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "BIT  5, (IX+$%02x)"},
     {4, OONO, "BIT  5, (IX+$%02x)"},
     {4, OONO, "BIT  5, (IX+$%02x)"},
-    {4, OONO, "BIT  6, (IX+$%02x)"},            // 0xDDCB70
+    {4, OONO, "BIT  6, (IX+$%02x)"},   // 0xDDCB70
     {4, OONO, "BIT  6, (IX+$%02x)"},
     {4, OONO, "BIT  6, (IX+$%02x)"},
     {4, OONO, "BIT  6, (IX+$%02x)"},
@@ -1447,7 +1447,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "BIT  6, (IX+$%02x)"},
     {4, OONO, "BIT  6, (IX+$%02x)"},
     {4, OONO, "BIT  6, (IX+$%02x)"},
-    {4, OONO, "BIT  7, (IX+$%02x)"},            // 0xDDCB78
+    {4, OONO, "BIT  7, (IX+$%02x)"},   // 0xDDCB78
     {4, OONO, "BIT  7, (IX+$%02x)"},
     {4, OONO, "BIT  7, (IX+$%02x)"},
     {4, OONO, "BIT  7, (IX+$%02x)"},
@@ -1455,7 +1455,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "BIT  7, (IX+$%02x)"},
     {4, OONO, "BIT  7, (IX+$%02x)"},
     {4, OONO, "BIT  7, (IX+$%02x)"},
-    {4, OONO, "RES  0, (IX+$%02x), B"},            // 0xDDCB80
+    {4, OONO, "RES  0, (IX+$%02x), B"},  // 0xDDCB80
     {4, OONO, "RES  0, (IX+$%02x), C"},
     {4, OONO, "RES  0, (IX+$%02x), D"},
     {4, OONO, "RES  0, (IX+$%02x), E"},
@@ -1463,7 +1463,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "RES  0, (IX+$%02x), L"},
     {4, OONO, "RES  0, (IX+$%02x)"},
     {4, OONO, "RES  0, (IX+$%02x), A"},
-    {4, OONO, "RES  1, (IX+$%02x), B"},            // 0xDDCB88
+    {4, OONO, "RES  1, (IX+$%02x), B"},  // 0xDDCB88
     {4, OONO, "RES  1, (IX+$%02x), C"},
     {4, OONO, "RES  1, (IX+$%02x), D"},
     {4, OONO, "RES  1, (IX+$%02x), E"},
@@ -1471,7 +1471,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "RES  1, (IX+$%02x), L"},
     {4, OONO, "RES  1, (IX+$%02x)"},
     {4, OONO, "RES  1, (IX+$%02x), A"},
-    {4, OONO, "RES  2, (IX+$%02x), B"},            // 0xDDCB90
+    {4, OONO, "RES  2, (IX+$%02x), B"},  // 0xDDCB90
     {4, OONO, "RES  2, (IX+$%02x), C"},
     {4, OONO, "RES  2, (IX+$%02x), D"},
     {4, OONO, "RES  2, (IX+$%02x), E"},
@@ -1479,7 +1479,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "RES  2, (IX+$%02x), L"},
     {4, OONO, "RES  2, (IX+$%02x)"},
     {4, OONO, "RES  2, (IX+$%02x), A"},
-    {4, OONO, "RES  3, (IX+$%02x), B"},            // 0xDDCB98
+    {4, OONO, "RES  3, (IX+$%02x), B"},  // 0xDDCB98
     {4, OONO, "RES  3, (IX+$%02x), C"},
     {4, OONO, "RES  3, (IX+$%02x), D"},
     {4, OONO, "RES  3, (IX+$%02x), E"},
@@ -1487,7 +1487,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "RES  3, (IX+$%02x), L"},
     {4, OONO, "RES  3, (IX+$%02x)"},
     {4, OONO, "RES  3, (IX+$%02x), A"},
-    {4, OONO, "RES  4, (IX+$%02x), B"},            // 0xDDCBA0
+    {4, OONO, "RES  4, (IX+$%02x), B"},  // 0xDDCBA0
     {4, OONO, "RES  4, (IX+$%02x), C"},
     {4, OONO, "RES  4, (IX+$%02x), D"},
     {4, OONO, "RES  4, (IX+$%02x), E"},
@@ -1495,15 +1495,15 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "RES  4, (IX+$%02x), L"},
     {4, OONO, "RES  4, (IX+$%02x)"},
     {4, OONO, "RES  4, (IX+$%02x), A"},
-    {4, OONO, "RES  5, (IX+$%02x), B"},            // 0xDDCBA8
+    {4, OONO, "RES  5, (IX+$%02x), B"},  // 0xDDCBA8
     {4, OONO, "RES  5, (IX+$%02x), C"},
     {4, OONO, "RES  5, (IX+$%02x), D"},
     {4, OONO, "RES  5, (IX+$%02x), E"},
     {4, OONO, "RES  5, (IX+$%02x), H"},
     {4, OONO, "RES  5, (IX+$%02x), L"},
-    {4, OONO, "RES  5, (HL)"},
+    {4, OONO, "RES  5, (IX+$%02x)"},
     {4, OONO, "RES  5, (IX+$%02x), A"},
-    {4, OONO, "RES  6, (IX+$%02x), B"},            // 0xDDCBB0
+    {4, OONO, "RES  6, (IX+$%02x), B"},  // 0xDDCBB0
     {4, OONO, "RES  6, (IX+$%02x), C"},
     {4, OONO, "RES  6, (IX+$%02x), D"},
     {4, OONO, "RES  6, (IX+$%02x), E"},
@@ -1511,7 +1511,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "RES  6, (IX+$%02x), L"},
     {4, OONO, "RES  6, (IX+$%02x)"},
     {4, OONO, "RES  6, (IX+$%02x), A"},
-    {4, OONO, "RES  7, (IX+$%02x), B"},            // 0xDDCBB8
+    {4, OONO, "RES  7, (IX+$%02x), B"},  // 0xDDCBB8
     {4, OONO, "RES  7, (IX+$%02x), C"},
     {4, OONO, "RES  7, (IX+$%02x), D"},
     {4, OONO, "RES  7, (IX+$%02x), E"},
@@ -1519,7 +1519,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "RES  7, (IX+$%02x), L"},
     {4, OONO, "RES  7, (IX+$%02x)"},
     {4, OONO, "RES  7, (IX+$%02x), A"},
-    {4, OONO, "SET  0, (IX+$%02x), B"},            // 0xDDCBC0
+    {4, OONO, "SET  0, (IX+$%02x), B"},  // 0xDDCBC0
     {4, OONO, "SET  0, (IX+$%02x), C"},
     {4, OONO, "SET  0, (IX+$%02x), D"},
     {4, OONO, "SET  0, (IX+$%02x), E"},
@@ -1527,7 +1527,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "SET  0, (IX+$%02x), L"},
     {4, OONO, "SET  0, (IX+$%02x)"},
     {4, OONO, "SET  0, (IX+$%02x), A"},
-    {4, OONO, "SET  1, (IX+$%02x), B"},            // 0xDDCBC8
+    {4, OONO, "SET  1, (IX+$%02x), B"},  // 0xDDCBC8
     {4, OONO, "SET  1, (IX+$%02x), C"},
     {4, OONO, "SET  1, (IX+$%02x), D"},
     {4, OONO, "SET  1, (IX+$%02x), E"},
@@ -1535,7 +1535,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "SET  1, (IX+$%02x), L"},
     {4, OONO, "SET  1, (IX+$%02x)"},
     {4, OONO, "SET  1, (IX+$%02x), A"},
-    {4, OONO, "SET  2, (IX+$%02x), B"},            // 0xDDCBD0
+    {4, OONO, "SET  2, (IX+$%02x), B"},  // 0xDDCBD0
     {4, OONO, "SET  2, (IX+$%02x), C"},
     {4, OONO, "SET  2, (IX+$%02x), D"},
     {4, OONO, "SET  2, (IX+$%02x), E"},
@@ -1543,7 +1543,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "SET  2, (IX+$%02x), L"},
     {4, OONO, "SET  2, (IX+$%02x)"},
     {4, OONO, "SET  2, (IX+$%02x), A"},
-    {4, OONO, "SET  3, (IX+$%02x), B"},            // 0xDDCBD8
+    {4, OONO, "SET  3, (IX+$%02x), B"},  // 0xDDCBD8
     {4, OONO, "SET  3, (IX+$%02x), C"},
     {4, OONO, "SET  3, (IX+$%02x), D"},
     {4, OONO, "SET  3, (IX+$%02x), E"},
@@ -1551,7 +1551,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "SET  3, (IX+$%02x), L"},
     {4, OONO, "SET  3, (IX+$%02x)"},
     {4, OONO, "SET  3, (IX+$%02x), A"},
-    {4, OONO, "SET  4, (IX+$%02x), B"},            // 0xDDCBE0
+    {4, OONO, "SET  4, (IX+$%02x), B"},  // 0xDDCBE0
     {4, OONO, "SET  4, (IX+$%02x), C"},
     {4, OONO, "SET  4, (IX+$%02x), D"},
     {4, OONO, "SET  4, (IX+$%02x), E"},
@@ -1559,7 +1559,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "SET  4, (IX+$%02x), L"},
     {4, OONO, "SET  4, (IX+$%02x)"},
     {4, OONO, "SET  4, (IX+$%02x), A"},
-    {4, OONO, "SET  5, (IX+$%02x), B"},            // 0xDDCBE8
+    {4, OONO, "SET  5, (IX+$%02x), B"},  // 0xDDCBE8
     {4, OONO, "SET  5, (IX+$%02x), C"},
     {4, OONO, "SET  5, (IX+$%02x), D"},
     {4, OONO, "SET  5, (IX+$%02x), E"},
@@ -1567,7 +1567,7 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "SET  5, (IX+$%02x), L"},
     {4, OONO, "SET  5, (IX+$%02x)"},
     {4, OONO, "SET  5, (IX+$%02x), A"},
-    {4, OONO, "SET  6, (IX+$%02x), B"},            // 0xDDCBF0
+    {4, OONO, "SET  6, (IX+$%02x), B"},  // 0xDDCBF0
     {4, OONO, "SET  6, (IX+$%02x), C"},
     {4, OONO, "SET  6, (IX+$%02x), D"},
     {4, OONO, "SET  6, (IX+$%02x), E"},
@@ -1575,19 +1575,274 @@ Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OONO, "SET  6, (IX+$%02x), L"},
     {4, OONO, "SET  6, (IX+$%02x)"},
     {4, OONO, "SET  6, (IX+$%02x), A"},
-    {4, OONO, "SET  7, (IX+$%02x), B"},            // 0xDDCBF8
+    {4, OONO, "SET  7, (IX+$%02x), B"},  // 0xDDCBF8
     {4, OONO, "SET  7, (IX+$%02x), C"},
     {4, OONO, "SET  7, (IX+$%02x), D"},
     {4, OONO, "SET  7, (IX+$%02x), E"},
     {4, OONO, "SET  7, (IX+$%02x), H"},
     {4, OONO, "SET  7, (IX+$%02x), L"},
     {4, OONO, "SET  7, (IX+$%02x)"},
-    {4, OONO, "SET  7, (IX+$%02x), A"},
+    {4, OONO, "SET  7, (IX+$%02x), A"}
 };
 
 // IY Register Bit Instructions -- opcodes prefixed with 0xFDCB
-Z80_opcodes opcodes_IY_bit_instructions[] = {
-    {4, OONO, "RLC  (IY + $%02x), B"},
+const Z80_opcodes opcodes_IY_bit_instructions[] = {
+    {4, OONO, "RLC  (IY+$%02x), B"},   // 0xFDCB00
+    {4, OONO, "RLC  (IY+$%02x), C"},
+    {4, OONO, "RLC  (IY+$%02x), D"},
+    {4, OONO, "RLC  (IY+$%02x), E"},
+    {4, OONO, "RLC  (IY+$%02x), H"},
+    {4, OONO, "RLC  (IY+$%02x), L"},
+    {4, OONO, "RLC  (IY+$%02x)"},
+    {4, OONO, "RLC  (IY+$%02x), A"},
+    {4, OONO, "RRC  (IY+$%02x), B"},   // 0xFDCB08
+    {4, OONO, "RRC  (IY+$%02x), C"},
+    {4, OONO, "RRC  (IY+$%02x), D"},
+    {4, OONO, "RRC  (IY+$%02x), E"},
+    {4, OONO, "RRC  (IY+$%02x), H"},
+    {4, OONO, "RRC  (IY+$%02x), L"},
+    {4, OONO, "RRC  (IY+$%02x)"},
+    {4, OONO, "RRC  (IY+$%02x), A"},
+    {4, OONO, "RL   (IY+$%02x), B"},   // 0xFDCB10
+    {4, OONO, "RL   (IY+$%02x), C"},
+    {4, OONO, "RL   (IY+$%02x), D"},
+    {4, OONO, "RL   (IY+$%02x), E"},
+    {4, OONO, "RL   (IY+$%02x), H"},
+    {4, OONO, "RL   (IY+$%02x), L"},
+    {4, OONO, "RL   (IY+$%02x), "},
+    {4, OONO, "RL   (IY+$%02x), A"},
+    {4, OONO, "RR   (IY+$%02x), B"},   // 0xFDCB18
+    {4, OONO, "RR   (IY+$%02x), C"},
+    {4, OONO, "RR   (IY+$%02x), D"},
+    {4, OONO, "RR   (IY+$%02x), E"},
+    {4, OONO, "RR   (IY+$%02x), H"},
+    {4, OONO, "RR   (IY+$%02x), L"},
+    {4, OONO, "RR   (IY+$%02x)"},
+    {4, OONO, "RR   (IY+$%02x), A"},
+    {4, OONO, "SLA  (IY+$%02x), B"},   // 0xFDCB20
+    {4, OONO, "SLA  (IY+$%02x), C"},
+    {4, OONO, "SLA  (IY+$%02x), D"},
+    {4, OONO, "SLA  (IY+$%02x), E"},
+    {4, OONO, "SLA  (IY+$%02x), H"},
+    {4, OONO, "SLA  (IY+$%02x), L"},
+    {4, OONO, "SLA  (IY+$%02x)"},
+    {4, OONO, "SLA  (IY+$%02x), A"},
+    {4, OONO, "SRA  (IY+$%02x), B"},   // 0xFDCB28
+    {4, OONO, "SRA  (IY+$%02x), C"},
+    {4, OONO, "SRA  (IY+$%02x), D"},
+    {4, OONO, "SRA  (IY+$%02x), E"},
+    {4, OONO, "SRA  (IY+$%02x), H"},
+    {4, OONO, "SRA  (IY+$%02x), L"},
+    {4, OONO, "SRA  (IY+$%02x)"},
+    {4, OONO, "SRA  (IY+$%02x), A"},
+    {4, OONO, "SLL  (IY+$%02x), B"},   // 0xFDCB30
+    {4, OONO, "SLL  (IY+$%02x), C"},
+    {4, OONO, "SLL  (IY+$%02x), D"},
+    {4, OONO, "SLL  (IY+$%02x), E"},
+    {4, OONO, "SLL  (IY+$%02x), H"},
+    {4, OONO, "SLL  (IY+$%02x), L"},
+    {4, OONO, "SLL  (IY+$%02x)"},
+    {4, OONO, "SLL  (IY+$%02x), A"},
+    {4, OONO, "SRL  (IY+$%02x), B"},   // 0xFDCB38
+    {4, OONO, "SRL  (IY+$%02x), C"},
+    {4, OONO, "SRL  (IY+$%02x), D"},
+    {4, OONO, "SRL  (IY+$%02x), E"},
+    {4, OONO, "SRL  (IY+$%02x), H"},
+    {4, OONO, "SRL  (IY+$%02x), L"},
+    {4, OONO, "SRL  (IY+$%02x)"},
+    {4, OONO, "SRL  (IY+$%02x), A"},
+    {4, OONO, "BIT  0, (IY+$%02x)"},   // 0xFDCB40
+    {4, OONO, "BIT  0, (IY+$%02x)"},
+    {4, OONO, "BIT  0, (IY+$%02x)"},
+    {4, OONO, "BIT  0, (IY+$%02x)"},
+    {4, OONO, "BIT  0, (IY+$%02x)"},
+    {4, OONO, "BIT  0, (IY+$%02x)"},
+    {4, OONO, "BIT  0, (IY+$%02x)"},
+    {4, OONO, "BIT  0, (IY+$%02x)"},
+    {4, OONO, "BIT  1, (IY+$%02x)"},   // 0xFDCB48
+    {4, OONO, "BIT  1, (IY+$%02x)"},
+    {4, OONO, "BIT  1, (IY+$%02x)"},
+    {4, OONO, "BIT  1, (IY+$%02x)"},
+    {4, OONO, "BIT  1, (IY+$%02x)"},
+    {4, OONO, "BIT  1, (IY+$%02x)"},
+    {4, OONO, "BIT  1, (IY+$%02x)"},
+    {4, OONO, "BIT  1, (IY+$%02x)"},
+    {4, OONO, "BIT  2, (IY+$%02x)"},   // 0xFDCB50
+    {4, OONO, "BIT  2, (IY+$%02x)"},
+    {4, OONO, "BIT  2, (IY+$%02x)"},
+    {4, OONO, "BIT  2, (IY+$%02x)"},
+    {4, OONO, "BIT  2, (IY+$%02x)"},
+    {4, OONO, "BIT  2, (IY+$%02x)"},
+    {4, OONO, "BIT  2, (IY+$%02x)"},
+    {4, OONO, "BIT  2, (IY+$%02x)"},
+    {4, OONO, "BIT  3, (IY+$%02x)"},   // 0xFDCB58
+    {4, OONO, "BIT  3, (IY+$%02x)"},
+    {4, OONO, "BIT  3, (IY+$%02x)"},
+    {4, OONO, "BIT  3, (IY+$%02x)"},
+    {4, OONO, "BIT  3, (IY+$%02x)"},
+    {4, OONO, "BIT  3, (IY+$%02x)"},
+    {4, OONO, "BIT  3, (IY+$%02x)"},
+    {4, OONO, "BIT  3, (IY+$%02x)"},
+    {4, OONO, "BIT  4, (IY+$%02x)"},   // 0xFDCB60
+    {4, OONO, "BIT  4, (IY+$%02x)"},
+    {4, OONO, "BIT  4, (IY+$%02x)"},
+    {4, OONO, "BIT  4, (IY+$%02x)"},
+    {4, OONO, "BIT  4, (IY+$%02x)"},
+    {4, OONO, "BIT  4, (IY+$%02x)"},
+    {4, OONO, "BIT  4, (IY+$%02x)"},
+    {4, OONO, "BIT  4, (IY+$%02x)"},
+    {4, OONO, "BIT  5, (IY+$%02x)"},   // 0xFDCB68
+    {4, OONO, "BIT  5, (IY+$%02x)"},
+    {4, OONO, "BIT  5, (IY+$%02x)"},
+    {4, OONO, "BIT  5, (IY+$%02x)"},
+    {4, OONO, "BIT  5, (IY+$%02x)"},
+    {4, OONO, "BIT  5, (IY+$%02x)"},
+    {4, OONO, "BIT  5, (IY+$%02x)"},
+    {4, OONO, "BIT  5, (IY+$%02x)"},
+    {4, OONO, "BIT  6, (IY+$%02x)"},   // 0xFDCB70
+    {4, OONO, "BIT  6, (IY+$%02x)"},
+    {4, OONO, "BIT  6, (IY+$%02x)"},
+    {4, OONO, "BIT  6, (IY+$%02x)"},
+    {4, OONO, "BIT  6, (IY+$%02x)"},
+    {4, OONO, "BIT  6, (IY+$%02x)"},
+    {4, OONO, "BIT  6, (IY+$%02x)"},
+    {4, OONO, "BIT  6, (IY+$%02x)"},
+    {4, OONO, "BIT  7, (IY+$%02x)"},   // 0xFDCB78
+    {4, OONO, "BIT  7, (IY+$%02x)"},
+    {4, OONO, "BIT  7, (IY+$%02x)"},
+    {4, OONO, "BIT  7, (IY+$%02x)"},
+    {4, OONO, "BIT  7, (IY+$%02x)"},
+    {4, OONO, "BIT  7, (IY+$%02x)"},
+    {4, OONO, "BIT  7, (IY+$%02x)"},
+    {4, OONO, "BIT  7, (IY+$%02x)"},
+    {4, OONO, "RES  0, (IY+$%02x), B"},  // 0xFDCB80
+    {4, OONO, "RES  0, (IY+$%02x), C"},
+    {4, OONO, "RES  0, (IY+$%02x), D"},
+    {4, OONO, "RES  0, (IY+$%02x), E"},
+    {4, OONO, "RES  0, (IY+$%02x), H"},
+    {4, OONO, "RES  0, (IY+$%02x), L"},
+    {4, OONO, "RES  0, (IY+$%02x)"},
+    {4, OONO, "RES  0, (IY+$%02x), A"},
+    {4, OONO, "RES  1, (IY+$%02x), B"},  // 0xFDCB88
+    {4, OONO, "RES  1, (IY+$%02x), C"},
+    {4, OONO, "RES  1, (IY+$%02x), D"},
+    {4, OONO, "RES  1, (IY+$%02x), E"},
+    {4, OONO, "RES  1, (IY+$%02x), H"},
+    {4, OONO, "RES  1, (IY+$%02x), L"},
+    {4, OONO, "RES  1, (IY+$%02x)"},
+    {4, OONO, "RES  1, (IY+$%02x), A"},
+    {4, OONO, "RES  2, (IY+$%02x), B"},  // 0xFDCB90
+    {4, OONO, "RES  2, (IY+$%02x), C"},
+    {4, OONO, "RES  2, (IY+$%02x), D"},
+    {4, OONO, "RES  2, (IY+$%02x), E"},
+    {4, OONO, "RES  2, (IY+$%02x), H"},
+    {4, OONO, "RES  2, (IY+$%02x), L"},
+    {4, OONO, "RES  2, (IY+$%02x)"},
+    {4, OONO, "RES  2, (IY+$%02x), A"},
+    {4, OONO, "RES  3, (IY+$%02x), B"},  // 0xFDCB98
+    {4, OONO, "RES  3, (IY+$%02x), C"},
+    {4, OONO, "RES  3, (IY+$%02x), D"},
+    {4, OONO, "RES  3, (IY+$%02x), E"},
+    {4, OONO, "RES  3, (IY+$%02x), H"},
+    {4, OONO, "RES  3, (IY+$%02x), L"},
+    {4, OONO, "RES  3, (IY+$%02x)"},
+    {4, OONO, "RES  3, (IY+$%02x), A"},
+    {4, OONO, "RES  4, (IY+$%02x), B"},  // 0xFDCBA0
+    {4, OONO, "RES  4, (IY+$%02x), C"},
+    {4, OONO, "RES  4, (IY+$%02x), D"},
+    {4, OONO, "RES  4, (IY+$%02x), E"},
+    {4, OONO, "RES  4, (IY+$%02x), H"},
+    {4, OONO, "RES  4, (IY+$%02x), L"},
+    {4, OONO, "RES  4, (IY+$%02x)"},
+    {4, OONO, "RES  4, (IY+$%02x), A"},
+    {4, OONO, "RES  5, (IY+$%02x), B"},  // 0xFDCBA8
+    {4, OONO, "RES  5, (IY+$%02x), C"},
+    {4, OONO, "RES  5, (IY+$%02x), D"},
+    {4, OONO, "RES  5, (IY+$%02x), E"},
+    {4, OONO, "RES  5, (IY+$%02x), H"},
+    {4, OONO, "RES  5, (IY+$%02x), L"},
+    {4, OONO, "RES  5, (IY+$%02x)"},
+    {4, OONO, "RES  5, (IY+$%02x), A"},
+    {4, OONO, "RES  6, (IY+$%02x), B"},  // 0xFDCBB0
+    {4, OONO, "RES  6, (IY+$%02x), C"},
+    {4, OONO, "RES  6, (IY+$%02x), D"},
+    {4, OONO, "RES  6, (IY+$%02x), E"},
+    {4, OONO, "RES  6, (IY+$%02x), H"},
+    {4, OONO, "RES  6, (IY+$%02x), L"},
+    {4, OONO, "RES  6, (IY+$%02x)"},
+    {4, OONO, "RES  6, (IY+$%02x), A"},
+    {4, OONO, "RES  7, (IY+$%02x), B"},  // 0xFDCBB8
+    {4, OONO, "RES  7, (IY+$%02x), C"},
+    {4, OONO, "RES  7, (IY+$%02x), D"},
+    {4, OONO, "RES  7, (IY+$%02x), E"},
+    {4, OONO, "RES  7, (IY+$%02x), H"},
+    {4, OONO, "RES  7, (IY+$%02x), L"},
+    {4, OONO, "RES  7, (IY+$%02x)"},
+    {4, OONO, "RES  7, (IY+$%02x), A"},
+    {4, OONO, "SET  0, (IY+$%02x), B"},  // 0xFDCBC0
+    {4, OONO, "SET  0, (IY+$%02x), C"},
+    {4, OONO, "SET  0, (IY+$%02x), D"},
+    {4, OONO, "SET  0, (IY+$%02x), E"},
+    {4, OONO, "SET  0, (IY+$%02x), H"},
+    {4, OONO, "SET  0, (IY+$%02x), L"},
+    {4, OONO, "SET  0, (IY+$%02x)"},
+    {4, OONO, "SET  0, (IY+$%02x), A"},
+    {4, OONO, "SET  1, (IY+$%02x), B"},  // 0xFDCBC8
+    {4, OONO, "SET  1, (IY+$%02x), C"},
+    {4, OONO, "SET  1, (IY+$%02x), D"},
+    {4, OONO, "SET  1, (IY+$%02x), E"},
+    {4, OONO, "SET  1, (IY+$%02x), H"},
+    {4, OONO, "SET  1, (IY+$%02x), L"},
+    {4, OONO, "SET  1, (IY+$%02x)"},
+    {4, OONO, "SET  1, (IY+$%02x), A"},
+    {4, OONO, "SET  2, (IY+$%02x), B"},  // 0xFDCBD0
+    {4, OONO, "SET  2, (IY+$%02x), C"},
+    {4, OONO, "SET  2, (IY+$%02x), D"},
+    {4, OONO, "SET  2, (IY+$%02x), E"},
+    {4, OONO, "SET  2, (IY+$%02x), H"},
+    {4, OONO, "SET  2, (IY+$%02x), L"},
+    {4, OONO, "SET  2, (IY+$%02x)"},
+    {4, OONO, "SET  2, (IY+$%02x), A"},
+    {4, OONO, "SET  3, (IY+$%02x), B"},  // 0xFDCBD8
+    {4, OONO, "SET  3, (IY+$%02x), C"},
+    {4, OONO, "SET  3, (IY+$%02x), D"},
+    {4, OONO, "SET  3, (IY+$%02x), E"},
+    {4, OONO, "SET  3, (IY+$%02x), H"},
+    {4, OONO, "SET  3, (IY+$%02x), L"},
+    {4, OONO, "SET  3, (IY+$%02x)"},
+    {4, OONO, "SET  3, (IY+$%02x), A"},
+    {4, OONO, "SET  4, (IY+$%02x), B"},  // 0xFDCBE0
+    {4, OONO, "SET  4, (IY+$%02x), C"},
+    {4, OONO, "SET  4, (IY+$%02x), D"},
+    {4, OONO, "SET  4, (IY+$%02x), E"},
+    {4, OONO, "SET  4, (IY+$%02x), H"},
+    {4, OONO, "SET  4, (IY+$%02x), L"},
+    {4, OONO, "SET  4, (IY+$%02x)"},
+    {4, OONO, "SET  4, (IY+$%02x), A"},
+    {4, OONO, "SET  5, (IY+$%02x), B"},  // 0xFDCBE8
+    {4, OONO, "SET  5, (IY+$%02x), C"},
+    {4, OONO, "SET  5, (IY+$%02x), D"},
+    {4, OONO, "SET  5, (IY+$%02x), E"},
+    {4, OONO, "SET  5, (IY+$%02x), H"},
+    {4, OONO, "SET  5, (IY+$%02x), L"},
+    {4, OONO, "SET  5, (IY+$%02x)"},
+    {4, OONO, "SET  5, (IY+$%02x), A"},
+    {4, OONO, "SET  6, (IY+$%02x), B"},  // 0xFDCBF0
+    {4, OONO, "SET  6, (IY+$%02x), C"},
+    {4, OONO, "SET  6, (IY+$%02x), D"},
+    {4, OONO, "SET  6, (IY+$%02x), E"},
+    {4, OONO, "SET  6, (IY+$%02x), H"},
+    {4, OONO, "SET  6, (IY+$%02x), L"},
+    {4, OONO, "SET  6, (IY+$%02x)"},
+    {4, OONO, "SET  6, (IY+$%02x), A"},
+    {4, OONO, "SET  7, (IY+$%02x), B"},  // 0xFDCBF8
+    {4, OONO, "SET  7, (IY+$%02x), C"},
+    {4, OONO, "SET  7, (IY+$%02x), D"},
+    {4, OONO, "SET  7, (IY+$%02x), E"},
+    {4, OONO, "SET  7, (IY+$%02x), H"},
+    {4, OONO, "SET  7, (IY+$%02x), L"},
+    {4, OONO, "SET  7, (IY+$%02x)"},
+    {4, OONO, "SET  7, (IY+$%02x), A"},
 };
 
 #endif
