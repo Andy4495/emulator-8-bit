@@ -546,11 +546,263 @@ Z80_opcodes opcodes_bit_instructions[] = {
 
 // IX Register Instructions -- opcodes prefixed with 0xDD
 Z80_opcodes opcodes_IX_instructions[] = {
-    {2, OO,   "INVALID: NOP" },        // 0xDD00 - Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xDD00
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "INC  B"},
+    {2, OO,   "DEC  B"}, 
+    {3, OON,  "LD   B, $%02x"},
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "ADD  IX, BC"}, 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INC  C"}, 
+    {2, OO,   "DEC  C"},
+    {3, OON,  "LD   C, $%02x"},
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xDD10
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INC  D"},
+    {2, OO,   "DEC  D"}, 
+    {3, OON,  "LD   D, $%02x"},
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "ADD  IX, DE"}, 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INC  E"}, 
+    {2, OO,   "DEC  E"},
+    {3, OON,  "LD   E, $%02x"},
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xDD20
+    {4, OONN, "LD   IX, $%02x%02x" },
+    {4, OONN, "LD   ($%02x%02x), IX" },
+    {2, OO,   "INC  IX" },
+    {2, OO,   "INC  IXH"},
+    {2, OO,   "DEC  IXH"}, 
+    {3, OON,  "LD   IXH, $%02x"},
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "ADD  IX, IX"}, 
+    {2, OO,   "LD   IX, ($%02x%02x)"},
+    {2, OO,   "DEC  IX" },
+    {2, OO,   "INC  IXL"}, 
+    {2, OO,   "DEC  IXL"},
+    {3, OON,  "LD   IXL, $%02x"},
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xDD30
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {3, OON,  "INC  (IX+$%02x)"},
+    {3, OON,  "DEC  (IX+$%02x)"}, 
+    {4, OONN, "LD   (IX+$%02x), $%02x"},
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "ADD  IX, SP"}, 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "INC  A"}, 
+    {2, OO,   "DEC  A"},
+    {3, OON,  "LD   A, $%02x"},
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {2, OO,   "LD   B, B" },           // 0xDD40
+    {2, OO,   "LD   B, C" },        
+    {2, OO,   "LD   B, D" },        
+    {2, OO,   "LD   B, E" },        
+    {2, OO,   "LD   B, IXH"},
+    {2, OO,   "LD   B, IXL"}, 
+    {3, OON,  "LD   B, (IX+$%02x)"},
+    {2, OO,   "LD   B, A" },        
+    {2, OO,   "LD   C, B" },        
+    {2, OO,   "LD   C, C"}, 
+    {2, OO,   "LD   C, D" },        
+    {2, OO,   "LD   C, E" },        
+    {2, OO,   "LD   C, IXH"}, 
+    {2, OO,   "LD   C, IXL"},
+    {3, OON,  "LD   C, (IX+$%02x"},
+    {2, OO,   "LD   C, A" },        
+    {2, OO,   "LD   D, B" },           // 0xDD50
+    {2, OO,   "LD   D, C" },        
+    {2, OO,   "LD   D, D" },        
+    {2, OO,   "LD   D, E" },        
+    {2, OO,   "LD   D, IXH"},
+    {2, OO,   "LD   D, IXL"}, 
+    {3, OON,  "LD   D, (IX+$%02x)"},
+    {2, OO,   "LD   D, A" },        
+    {2, OO,   "LD   E, B" },        
+    {2, OO,   "LD   E, C"}, 
+    {2, OO,   "LD   E, D" },        
+    {2, OO,   "LD   E, E" },        
+    {2, OO,   "LD   E, IXH"}, 
+    {2, OO,   "LD   E, IXL"},
+    {3, OON,  "LD   E, (IX+$%02x"},
+    {2, OO,   "LD   E, A" },        
+    {2, OO,   "LD   IXH, B" },         // 0xDD60
+    {2, OO,   "LD   IXH, C" },        
+    {2, OO,   "LD   IXH, D" },        
+    {2, OO,   "LD   IXH, E" },        
+    {2, OO,   "LD   IXH, IXH"},
+    {2, OO,   "LD   IXH, IXL"}, 
+    {3, OON,  "LD   H, (IX+$%02x)"},
+    {2, OO,   "LD   IXH, A" },        
+    {2, OO,   "LD   IXL, B" },        
+    {2, OO,   "LD   IXL, C"}, 
+    {2, OO,   "LD   IXL, D" },        
+    {2, OO,   "LD   IXL, E" },        
+    {2, OO,   "LD   IXL, IXH"}, 
+    {2, OO,   "LD   IXL, IXL"},
+    {3, OON,  "LD   L, (IX+$%02x"},
+    {2, OO,   "LD   IXL, A" },        
+    {3, OO,   "LD   (IX+$%02x), B" },  // 0xDD70
+    {3, OO,   "LD   (IX+$%02x), C" },        
+    {3, OO,   "LD   (IX+$%02x), D" },        
+    {3, OO,   "LD   (IX+$%02x), E" },        
+    {3, OO,   "LD   (IX+$%02x), IXH"},
+    {3, OO,   "LD   (IX+$%02x), IXL"}, 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
+    {3, OO,   "LD   (IX+$%02x), A" },        
+    {2, OO,   "LD   A, B" },        
+    {2, OO,   "LD   A, C"}, 
+    {2, OO,   "LD   A, D" },        
+    {2, OO,   "LD   A, E" },        
+    {2, OO,   "LD   A, IXH"}, 
+    {2, OO,   "LD   A, IXL"},
+    {3, OON,  "LD   A, (IX+$%02x"},
+    {2, OO,   "LD   A, A" },        
+    {2, OO,   "ADD  A, B" },           // 0xDD80
+    {2, OO,   "ADD  A, C" },        
+    {2, OO,   "ADD  A, D" },        
+    {2, OO,   "ADD  A, E" },        
+    {2, OO,   "ADD  A, IXH"},
+    {2, OO,   "ADD  A, IXL"}, 
+    {3, OON,  "ADD  A, (IX+$%02x)"},
+    {2, OO,   "ADD  A, A" },        
+    {2, OO,   "ADC  A, B" },        
+    {2, OO,   "ADC  A, C"}, 
+    {2, OO,   "ADC  A, D" },        
+    {2, OO,   "ADC  A, E" },        
+    {2, OO,   "ADC  A, IXH"}, 
+    {2, OO,   "ADC  A, IXL"},
+    {3, OON,  "ADC  A, (IX+$%02x"},
+    {2, OO,   "ADC  A, A" },        
+    {2, OO,   "SUB  A, B" },           // 0xDD90
+    {2, OO,   "SUB  A, C" },        
+    {2, OO,   "SUB  A, D" },        
+    {2, OO,   "SUB  A, E" },        
+    {2, OO,   "SUB  A, IXH"},
+    {2, OO,   "SUB  A, IXL"}, 
+    {3, OON,  "SUB  A, (IX+$%02x)"},
+    {2, OO,   "SUB  A, A" },        
+    {2, OO,   "SBC  A, B" },        
+    {2, OO,   "SBC  A, C"}, 
+    {2, OO,   "SBC  A, D" },        
+    {2, OO,   "SBC  A, E" },        
+    {2, OO,   "SBC  A, IXH"}, 
+    {2, OO,   "SBC  A, IXL"},
+    {3, OON,  "SBC  A, (IX+$%02x"},
+    {2, OO,   "SBC  A, A" },        
+    {2, OO,   "AND  A, B" },           // 0xDDA0
+    {2, OO,   "AND  A, C" },        
+    {2, OO,   "AND  A, D" },        
+    {2, OO,   "AND  A, E" },        
+    {2, OO,   "AND  A, IXH"},
+    {2, OO,   "AND  A, IXL"}, 
+    {3, OON,  "AND  A, (IX+$%02x)"},
+    {2, OO,   "AND  A, A" },        
+    {2, OO,   "XOR  A, B" },        
+    {2, OO,   "XOR  A, C"}, 
+    {2, OO,   "XOR  A, D" },        
+    {2, OO,   "XOR  A, E" },        
+    {2, OO,   "XOR  A, IXH"}, 
+    {2, OO,   "XOR  A, IXL"},
+    {3, OON,  "XOR  A, (IX+$%02x"},
+    {2, OO,   "XOR  A, A" },        
+    {2, OO,   "OR   A, B" },           // 0xDDB0
+    {2, OO,   "OR   A, C" },        
+    {2, OO,   "OR   A, D" },        
+    {2, OO,   "OR   A, E" },        
+    {2, OO,   "OR   A, IXH"},
+    {2, OO,   "OR   A, IXL"}, 
+    {3, OON,  "OR   A, (IX+$%02x)"},
+    {2, OO,   "OR   A, A" },        
+    {2, OO,   "CP   A, B" },        
+    {2, OO,   "CP   A, C"}, 
+    {2, OO,   "CP   A, D" },        
+    {2, OO,   "CP   A, E" },        
+    {2, OO,   "CP   A, IXH"}, 
+    {2, OO,   "CP   A, IXL"},
+    {3, OON,  "CP   A, (IX+$%02x"},
+    {2, OO,   "CP   A, A" },        
+    {2, OO,   "INVALID: NOP" },        // 0xDDC0
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "IX BIT INSTR"},         // 0xDDcb: IX Bit Instructions; additional decoding required 
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },        // 0xDDD0
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },        // 0xDDE0
+    {2, OO,   "POP  IX" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "EX   (SP), IX" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "PUSH IX" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "JP   (IX)" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },        // 0xDDF0
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "LD   SP, IX" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" },
+    {2, OO,   "INVALID: NOP" }   
 };
 
 // Miscellaneous Instructions -- opcodes prefixed with 0xED
