@@ -97,17 +97,17 @@ I have not tried it on other platforms, but there is no machine dependent code. 
 
 ### Defining the CPU
 
-The CPU opcodes are defined in several tables (implemented using arrays of structs) for the main and extended opcodes. Each entry in tha tables contain the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode itself is represented by the array index.
+The CPU opcodes are defined in several tables implemented with arrays of structs for the main and extended opcodes (`Z80_opcodes.h`). Each entry contains the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode value is represented by the array index.
 
-The Z80 CPU is defined by a class. This class contains:
+The Z80 CPU is defined by a class (`Z80.h`). This class contains:
 
 - An array representing the memory (RAM and ROM) available to the processor
   - This is currently defined as a single structure of 65536 bytes (16-bit address space)
   - Future iterations may allow the configuration of segments of read-only ROM, read/write RAM, overlay areas, and undefined areas
   - Future iterations may also support RAM and/or ROM banking
-- An array representing the I/O address space (256 bytes)
+- Arrays representing the input and output address space (256 bytes each)
 - All programmer-accessible processor registers
-- Other internal registers and and flip-flops that aren't directly avaiable to the programmer, but represent the internal state of the processor.
+- Other internal registers and flip-flops that aren't directly avaiable to the programmer, but represent the internal state of the processor.
 - Methods representing various CPU operations, including:
   - Load memory from file
     - Loads ROM and RAM with program and data as defined in the input file
@@ -116,13 +116,12 @@ The Z80 CPU is defined by a class. This class contains:
   - Warm restart
     - Internal state information is cleared, but RAM is left as-is
   - Jump to a specific address
-    - RAM is left as is, all internal state information is left as-is except for the Program Counter
+    - RAM is left as-is, all internal state information is left as-is except for the Program Counter
   - Fetch and decode instruction and data
     - Load byte from memory into Instruction Register and update Program Counter
     - Load additional bytes from memory depending on the fetched opcode
     - Generate a string containing the disassembled instruction and data
-  - Execute
-    - Execute the actual instruction (load, store, jump, etc.)
+  - Execute the actual instruction (load, store, jump, etc.)
 
 ### Future Functionality
 
@@ -143,13 +142,13 @@ The Z80 CPU is defined by a class. This class contains:
 
 - [Z80 Info][5]: Comprehensive source of Z80 information: hardware, compilers, assemblers, complers
 - Z80 [user manual][13]
-- Z80 opcode [table][4]
+- Z80 [opcode table][4]
 - Z80 undocumented opcodes [writeup][18]
 - zasm - Z80 assembler: [online version][6] and [local install version][7]
 - [SDCC][8] - Small Device C Compiler and [manual][9]
 - [hex2bin][10] - Tool for converting [Intex Hex][11] or [Motorola S-Record][12] files to binary
 - [C++ reference][1]
-- [Make references][2]
+- [Make reference][2]
 - Online Makefile [generator][3]
 - Installing WSL 2 [reference][14] and [devblog post][15]
 
