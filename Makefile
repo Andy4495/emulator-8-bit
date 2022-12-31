@@ -5,24 +5,30 @@
 # 0.1  11/29/22  Andy4495  Initial Creation
 
 OBJS	= \
-    Emulator.o \
 	Z80.o \
 	Z80_execute.o \
 	Z80_execute_bit_opcode.o \
 	Z80_execute_ix_opcode.o \
+	Z80_execute_ix_bit_opcode.o \
 	Z80_execute_misc_opcode.o \
 	Z80_execute_iy_opcode.o \
-	Z80_execute_main_opcode.o
+	Z80_execute_iy_bit_opcode.o \
+	Z80_execute_main_opcode.o \
+	Z80_fetch_and_decode.o \
+	Emulator.o
 
 SOURCE	= \
-    Emulator.cpp \
 	Z80.cpp \
 	Z80_execute.cpp \
 	Z80_execute_bit_opcode.cpp \
 	Z80_execute_ix_opcode.cpp \
+	Z80_execute_ix_bit_opcode.cpp \
 	Z80_execute_misc_opcode.cpp \
 	Z80_execute_iy_opcode.cpp \
-	Z80_execute_main_opcode.cpp
+	Z80_execute_iy_bit_opcode.cpp \
+	Z80_execute_main_opcode.cpp \
+	Z80_fetch_and_decode.cpp \
+    Emulator.cpp
 
 HEADER	= Z80_opcodes.h Z80.h
 OUT	= emulator
@@ -56,14 +62,23 @@ Z80_execute_bit_opcode.o: Z80_execute_bit_opcode.cpp Z80.h
 Z80_execute_ix_opcode.o: Z80_execute_ix_opcode.cpp Z80.h
 	$(CC) $(FLAGS) Z80_execute_ix_opcode.cpp 
 
+Z80_execute_ix_bit_opcode.o: Z80_execute_ix_bit_opcode.cpp Z80.h
+	$(CC) $(FLAGS) Z80_execute_ix_bit_opcode.cpp 
+
 Z80_execute_misc_opcode.o: Z80_execute_misc_opcode.cpp Z80.h
 	$(CC) $(FLAGS) Z80_execute_misc_opcode.cpp 
 
 Z80_execute_iy_opcode.o: Z80_execute_iy_opcode.cpp Z80.h
 	$(CC) $(FLAGS) Z80_execute_iy_opcode.cpp 
 
+Z80_execute_iy_bit_opcode.o: Z80_execute_iy_bit_opcode.cpp Z80.h
+	$(CC) $(FLAGS) Z80_execute_iy_bit_opcode.cpp 
+
 Z80_execute_main_opcode.o: Z80_execute_main_opcode.cpp Z80.h
 	$(CC) $(FLAGS) Z80_execute_main_opcode.cpp 
+
+Z80_fetch_and_decode.o: Z80_fetch_and_decode.cpp Z80.h Z80_opcodes.h
+	$(CC) $(FLAGS) Z80_fetch_and_decode.cpp 
 
 clean:
 	rm -f $(OBJS) $(OUT)
