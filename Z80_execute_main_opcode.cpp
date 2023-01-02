@@ -51,7 +51,7 @@ void Z80::execute_main_opcode() {
                 case 0b101: r_ = &L; break;
                 case 0b110: r_ = &memory[(H<<8) + L]; break;  // (HL)
                 case 0b111: r_ = &A; break;
-                default: cout << "Invalid opcode: LD r, r' r'" << endl; break;
+                default: cout << "Invalid opcode: LD r, r'" << endl; break;
             }
             switch ((IR[0] & 0x38) >> 3) {
                 case 0b000: r = &B; break;
@@ -62,9 +62,9 @@ void Z80::execute_main_opcode() {
                 case 0b101: r = &L; break;
                 case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
                 case 0b111: r = &A; break;
-                default: cout << "Invalid opcode: LD r, r' r" << endl; break;
+                default: cout << "Invalid opcode: LD r, r'" << endl; break;
             }
-            *r = *r_;        // LD r, r"
+            *r = *r_;        // LD r, r'
             // Condition bits affected: None
             break;
 
@@ -583,7 +583,7 @@ void Z80::execute_main_opcode() {
             // Determine which register we are working on:
             // Opcode 0  0  s  s  1  0  0  1
             if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
-                /// Need to implement ///
+                Temp16 += SP;
             }
             else {
                 switch ((IR[0] & 0x30) >> 4) {
@@ -592,8 +592,10 @@ void Z80::execute_main_opcode() {
                     case 0b10: r = &H; r_ = &L; break;
                     default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
                 }
-                /// Need to implement ///
+                Temp16 += (*r<<8) + *r_;
             }
+            H = (Temp16>>8) & 0x00FF;
+            L = Temp16 & 0x00FF;
             /// Need to implement condition bits, may need another state ///
             break;
 
