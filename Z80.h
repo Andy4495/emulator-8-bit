@@ -54,8 +54,9 @@ class Z80 {
         unsigned char I;
         // Memory refresh register
         unsigned char R;
-        // Index registers
-        unsigned short IX, IY;
+        // Index registers, defined as 8-bit to simplifiy implementation
+        // Use get/set methods to manipulate as 16-bit 
+        unsigned char IXH, IXL, IYH, IYL;
         // Stack pointer
         unsigned short SP;
 
@@ -93,6 +94,18 @@ class Z80 {
         void update_H(INST_TYPE t,  unsigned char val, unsigned char val2);
         void update_Z(INST_TYPE t,  unsigned char val);
         void update_S(INST_TYPE t,  unsigned char val);
+        unsigned short getIX();
+        unsigned short getIY();
+        unsigned short getBC();
+        unsigned short getDE();
+        unsigned short getHL();
+        void setIX(unsigned short v);
+        void setIY(unsigned short v);
+        void setBC(unsigned short v);
+        void setDE(unsigned short v);
+        void setHL(unsigned short v);
+        void setSP(unsigned char msb, unsigned char lsb);
+        void setPC(unsigned char msb, unsigned char lsb);
 
     private:
         unsigned short _ramstart;

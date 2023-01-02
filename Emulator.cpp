@@ -122,8 +122,8 @@ int main(int argc, char** argv)
     <<  " E: " << (unsigned int) cpu.E
     <<  " H: " << (unsigned int) cpu.H
     <<  " L: " << (unsigned int) cpu.L 
-    << " IX: " << (unsigned short) cpu.IX 
-    << " IY: " << (unsigned short) cpu.IY
+    << " IX: " << (unsigned short) cpu.getIX()
+    << " IY: " << (unsigned short) cpu.getIY()
     << " SP: " << (unsigned short) cpu.SP
     << "  I: " << (unsigned int)   cpu.I
     << "  R: " << (unsigned int)   cpu.R

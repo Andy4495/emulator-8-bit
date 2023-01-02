@@ -45,7 +45,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     r = &L;
                     break;
                 case 0b110:
-                    r = &memory[(H<<8) + L];
+                    r = &memory[getHL()];
                     break;
                 case 0b111:
                     r = &A;
@@ -86,7 +86,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     r = &L;
                     break;
                 case 0b110:
-                    r = &memory[(H<<8) + L];
+                    r = &memory[getHL()];
                     break;
                 case 0b111:
                     r = &A;
@@ -128,7 +128,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     r = &L;
                     break;
                 case 0b110:
-                    r = &memory[(H<<8) + L];
+                    r = &memory[getHL()];
                     break;
                 case 0b111:
                     r = &A;
@@ -169,7 +169,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     r = &L;
                     break;
                 case 0b110:
-                    r = &memory[(H<<8) + L];
+                    r = &memory[getHL()];
                     break;
                 case 0b111:
                     r = &A;
@@ -211,7 +211,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     r = &L;
                     break;
                 case 0b110:
-                    r = &memory[(H<<8) + L];
+                    r = &memory[getHL()];
                     break;
                 case 0b111:
                     r = &A;
@@ -251,7 +251,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     r = &L;
                     break;
                 case 0b110:
-                    r = &memory[(H<<8) + L];
+                    r = &memory[getHL()];
                     break;
                 case 0b111:
                     r = &A;
@@ -295,7 +295,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     r = &L;
                     break;
                 case 0b110:
-                    r = &memory[(H<<8) + L];
+                    r = &memory[getHL()];
                     break;
                 case 0b111:
                     r = &A;
@@ -336,7 +336,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     r = &L;
                     break;
                 case 0b110:
-                    r = &memory[(H<<8) + L];
+                    r = &memory[getHL()];
                     break;
                 case 0b111:
                     r = &A;
@@ -384,7 +384,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     r = &L;
                     break;
                 case 0b110:
-                    r = &memory[(H<<8) + L];
+                    r = &memory[getHL()];
                     break;
                 case 0b111:
                     r = &A;
@@ -435,7 +435,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     r = &L;
                     break;
                 case 0b110:
-                    r = &memory[(H<<8) + L];
+                    r = &memory[getHL()];
                     break;
                 case 0b111:
                     r = &A;
@@ -483,7 +483,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     r = &L;
                     break;
                 case 0b110:
-                    r = &memory[(H<<8) + L];
+                    r = &memory[getHL()];
                     break;
                 case 0b111:
                     r = &A;

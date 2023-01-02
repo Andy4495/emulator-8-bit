@@ -105,7 +105,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // INI (0xEDA2)
         case 0xA2: 
-            memory[(H<<8) + L] = in[C];
+            memory[getHL()] = in[C];
             B--;
             L++;
             if (L == 0) H++;  // Increment H if L wrapped around 255->0 (carry)
@@ -116,7 +116,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // INIR (0xEDB2)
         case 0xB2: 
-            memory[(H<<8) + L] = in[C];
+            memory[getHL()] = in[C];
             B--;
             L++;
             if (L == 0) H++;  // Increment H if L wrapped around 255->0 (carry)
@@ -133,7 +133,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // IND (0xEDAA)
         case 0xAA:
-            memory[(H<<8) + L] = in[C];
+            memory[getHL()] = in[C];
             B--;
             L--;
             if (L == 0xFF) H--;  // Decrement H if L wrapped around 0->255 (borrow)
@@ -144,7 +144,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // INDR (0xEDBA)
         case 0xBA: 
-            memory[(H<<8) + L] = in[C];
+            memory[getHL()] = in[C];
             B--;
             L--;
             if (L == 0xFF) H--;  // Decrement H if L wrapped around 0->255 (borrow)
@@ -202,7 +202,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // OUTI (0xEDA3)
         case 0xA3:
-            out[C] = memory[(H<<8) + L];
+            out[C] = memory[getHL()];
             B--;
             L++;
             if (L == 0) H++;  // Increment H if L wrapped around 255->0 (carry)
@@ -213,7 +213,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // OTIR (0xEDB3)
         case 0xB3: 
-            out[C] = memory[(H<<8) + L];
+            out[C] = memory[getHL()];
             B--;
             L++;
             if (L == 0) H++;  // Increment H if L wrapped around 255->0 (carry)
@@ -230,7 +230,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // OUTD (0xEDAB)
         case 0xAB:
-            out[C] = memory[(H<<8) + L];
+            out[C] = memory[getHL()];
             B--;
             L--;
             if (L == 0xFF) H--;  // Decrement H if L wrapped around 0->255 (borrow)
@@ -241,7 +241,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // OTDR (0xEDBB)
         case 0xBB: 
-            out[C] = memory[(H<<8) + L];
+            out[C] = memory[getHL()];
             B--;
             L--;
             if (L == 0xFF) H--;  // Decrement H if L wrapped around 0->255 (borrow)
@@ -462,7 +462,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             
         // ADC HL, ss  (0x4A, 0x5A, 0x6A, 0x7A)
         case 0x4a: case 0x5a: case 0x6a: case 0x7a:
-            Temp16 = (H << 8) + L;
+            Temp16 = getHL();
             // Determine which register we are working on:
             // Opcode 0  1  s  s  1  0  1  0
             if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
@@ -482,7 +482,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // SBC HL, ss  (0x42, 0x52, 0x62, 0x72)
         case 0x42: case 0x52: case 0x62: case 0x72:
-            Temp16 = (H << 8) + L;
+            Temp16 = getHL();
             // Determine which register we are working on:
             // Opcode 0  1  s  s  0  0  1  0
             if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
@@ -503,8 +503,8 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         // RLD (0xED6F)
         case 0x6f: 
             Temp8 = A; 
-            A = (A & 0xf0) | ((memory[(H<<8) + L] & 0xf0) >> 4);
-            memory[(H<<8) + L] = ((memory[(H<<8) + L] & 0x0f) << 4) + (Temp8 & 0x0f);
+            A = (A & 0xf0) | ((memory[getHL()] & 0xf0) >> 4);
+            memory[getHL()] = ((memory[getHL()] & 0x0f) << 4) + (Temp8 & 0x0f);
             if (A & 0x80) setFlag(S_BIT);
             else clearFlag(S_BIT);
             if (A == 0) setFlag(Z_BIT);
@@ -517,8 +517,8 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         // RRD (0xED67)
         case 0x67: 
             Temp8 = A; 
-            A = (A & 0xf0) | (memory[(H<<8) + L] & 0x0f);
-            memory[(H<<8) + L] = ((memory[(H<<8) + L] & 0xf0) >> 4) + ((Temp8 & 0x0f) << 4);
+            A = (A & 0xf0) | (memory[getHL()] & 0x0f);
+            memory[getHL()] = ((memory[getHL()] & 0xf0) >> 4) + ((Temp8 & 0x0f) << 4);
             if (A & 0x80) setFlag(S_BIT);
             else clearFlag(S_BIT);
             if (A == 0) setFlag(Z_BIT);

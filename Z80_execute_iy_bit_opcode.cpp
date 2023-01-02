@@ -19,11 +19,11 @@ void Z80::execute_iy_bit_opcode() {  // IR[0,1] = 0xFDCB
 
     switch (IR[3]) {
         case 0x00:  // RLC (IY+d), B
-            if (memory[IY+IR[2]] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
-            memory[IY+IR[2]] = memory[IY+IR[2]] << 1;
-            memory[IY+IR[2]] = (memory[IY+IR[2]] & 0xFE) | testFlag(C_BIT);
-            B = memory[IY+IR[2]];
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[IY+IR[2]], 0);
+            if (memory[getIY()+IR[2]] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
+            memory[getIY()+IR[2]] = memory[getIY()+IR[2]] << 1;
+            memory[getIY()+IR[2]] = (memory[getIY()+IR[2]] & 0xFE) | testFlag(C_BIT);
+            B = memory[getIY()+IR[2]];
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[getIY()+IR[2]], 0);
             break;
 
         default: 

@@ -28,23 +28,23 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
             // Determine which register we are working on:
             // Opcode 0  0  s  s  1  0  0  1
             if ((IR[1] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
-                IX += SP;
+                setIX(getIX() + SP);   // IX += SP
             }
             else {
                 switch ((IR[1] & 0x30) >> 4) {
-                    case 0b00: r = &B; r_ = &C; break;
-                    case 0b01: r = &D; r_ = &E; break;
-                    case 0b10: r = &H; r_ = &L; break;
+                    case 0b00: r = &B; r_ = &C; setIX(getIX() + getBC()); break;
+                    case 0b01: r = &D; r_ = &E; setIX(getIX() + getDE()); break;
+                    case 0b10: r = &H; r_ = &L; setIX(getIX() + getHL()); break;
                     default: cout << "Invalid opcode: ADD IX, ss" << endl; break;
                 }
-                IX += (*r<<8) + *r_;
             }
             /// Need to implement condition bits, may need another state ///
             break;
 
         // LD IX, nn instructions (0x21)
         case 0x21:
-            IX = (IR[3]<<8) + IR[2];
+            IXH = IR[3];
+            IXL = IR[2];
             break;
 
         // INC r instructions (0x04, 0x0C, 0x14, 0x1C, 0x24, 0x2C, 0x3C)
@@ -55,8 +55,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: INC r" << endl; break;
             }
@@ -72,8 +72,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: DEC r" << endl; break;
             }
@@ -89,8 +89,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: LD r, n" << endl; break;
             }
@@ -114,8 +114,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r_ = &C; break;
                 case 0b010: r_ = &D; break;
                 case 0b011: r_ = &E; break;
-                case 0b100: r_ = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r_ = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r_ = &IXH; break;
+                case 0b101: r_ = &IXL; break;
                 case 0b111: r_ = &A; break;
                 default: cout << "Invalid opcode: LD r, r' r'" << endl; break;
             }
@@ -124,8 +124,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: LD r, r' r" << endl; break;
             }
@@ -141,8 +141,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: ADD A, r" << endl; break;
             }
@@ -158,8 +158,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: ADC A, r" << endl; break;
             }
@@ -175,8 +175,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: SUB A, r" << endl; break;
             }
@@ -192,8 +192,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: SBC A, r" << endl; break;
             }
@@ -209,8 +209,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: AND A, r" << endl; break;
             }
@@ -226,8 +226,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: XOR A, r" << endl; break;
             }
@@ -243,8 +243,8 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: OR A, r" << endl; break;
             }
@@ -260,9 +260,9 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = (unsigned char*) &IX + 1; break;     // IXH
-                case 0b101: r = (unsigned char*) &IX; break;         // IXL
-                case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
+                case 0b100: r = &IXH; break;
+                case 0b101: r = &IXL; break;
+                case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: CP r" << endl; break;
             }

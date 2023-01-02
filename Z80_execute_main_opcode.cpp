@@ -49,7 +49,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r_ = &E; break;
                 case 0b100: r_ = &H; break;
                 case 0b101: r_ = &L; break;
-                case 0b110: r_ = &memory[(H<<8) + L]; break;  // (HL)
+                case 0b110: r_ = &memory[getHL()]; break;  // (HL)
                 case 0b111: r_ = &A; break;
                 default: cout << "Invalid opcode: LD r, r'" << endl; break;
             }
@@ -60,7 +60,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
+                case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: LD r, r'" << endl; break;
             }
@@ -81,7 +81,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;  // (HL)
+                case 0b110: r = &memory[getHL()]; break;  // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: LD r, n" << endl; break;
             }
@@ -91,13 +91,13 @@ void Z80::execute_main_opcode() {
 
         // LD A, (BC)  (0A)
         case 0x0A: 
-            A = memory[(B<<8) + C];
+            A = memory[getBC()];
             // Condition bits affected: None
             break;
 
         // LD A, (DE)  (1A)
         case 0x1A: 
-            A = memory[(D<<8) + E];
+            A = memory[getDE()];
             // Condition bits affected: None
             break;
 
@@ -109,13 +109,13 @@ void Z80::execute_main_opcode() {
 
         // LD (BC), A  (02)
         case 0x02: 
-            memory[(B<<8) + C] = A;   // LD A, (BC)
+            memory[getBC()] = A;   // LD A, (BC)
             // Condition bits affected: None
             break;
 
         // LD (DE),A  (12)
         case 0x12: 
-            memory[(D<<8) + E] = A;
+            memory[getDE()] = A;
             // Condition bits affected: None
             break;
 
@@ -135,7 +135,7 @@ void Z80::execute_main_opcode() {
             // Determine which register we are working on:
             // Opcode 0  0  d  d  0  0  0  1
             if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
-                SP = (IR[2]<<8) + IR[1];
+                setSP(IR[2], IR[1]);
             }
             else {
                 switch ((IR[0] & 0x30) >> 4) {
@@ -166,7 +166,7 @@ void Z80::execute_main_opcode() {
 
         // LD SP, HL   (0xf9)
         case 0xf9:
-            SP = (H<<8) + L;
+            SP = getHL();
             // Condition bits affected: None
             break;
 
@@ -273,7 +273,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
+                case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: ADD A, r" << endl; break;
             }
@@ -300,7 +300,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
+                case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: ADC A, r" << endl; break;
             }
@@ -327,7 +327,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;  // (HL)
+                case 0b110: r = &memory[getHL()]; break;  // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: SUB A, r" << endl; break;
             }
@@ -354,7 +354,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
+                case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: SBC A, r" << endl; break;
             }
@@ -381,7 +381,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
+                case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: AND A, r" << endl; break;
             }
@@ -408,7 +408,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
+                case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: OR A, r" << endl; break;
             }
@@ -435,7 +435,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
+                case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: XOR A, r" << endl; break;
             }
@@ -462,7 +462,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
+                case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: CP r" << endl; break;
             }
@@ -489,7 +489,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
+                case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: INC r" << endl; break;
             }
@@ -510,7 +510,7 @@ void Z80::execute_main_opcode() {
                 case 0b011: r = &E; break;
                 case 0b100: r = &H; break;
                 case 0b101: r = &L; break;
-                case 0b110: r = &memory[(H<<8) + L]; break;   // (HL)
+                case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: DEC r" << endl; break;
             }
@@ -579,7 +579,7 @@ void Z80::execute_main_opcode() {
         
         // ADD HL, ss  (0x09, 0x19, 0x29, 0x39)
         case 0x09: case 0x19: case 0x29: case 0x39:
-            Temp16 = (H << 8) + L;
+            Temp16 = getHL();
             // Determine which register we are working on:
             // Opcode 0  0  s  s  1  0  0  1
             if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
@@ -608,9 +608,9 @@ void Z80::execute_main_opcode() {
             }
             else {
                 switch ((IR[0] & 0x30) >> 4) {
-                    case 0b00: Temp16 = (B<<8) + C; Temp16++; B = (Temp16 & 0xff00)>>8; C = (Temp16 & 0x00ff); break;
-                    case 0b01: Temp16 = (D<<8) + E; Temp16++; D = (Temp16 & 0xff00)>>8; E = (Temp16 & 0x00ff); break;
-                    case 0b10: Temp16 = (H<<8) + L; Temp16++; H = (Temp16 & 0xff00)>>8; L = (Temp16 & 0x00ff); break;
+                    case 0b00: setBC(getBC() + 1); break;
+                    case 0b01: setDE(getDE() + 1); break;
+                    case 0b10: setHL(getHL() + 1); break;
                     default: cout << "Invalid opcode: INC ss" << endl; break;
                 }
                 /// Need to implement ///
@@ -627,9 +627,9 @@ void Z80::execute_main_opcode() {
             }
             else {
                 switch ((IR[0] & 0x30) >> 4) {
-                    case 0b00: Temp16 = (B<<8) + C; Temp16--; B = (Temp16 & 0xff00)>>8; C = (Temp16 & 0x00ff); break;
-                    case 0b01: Temp16 = (D<<8) + E; Temp16--; D = (Temp16 & 0xff00)>>8; E = (Temp16 & 0x00ff); break;
-                    case 0b10: Temp16 = (H<<8) + L; Temp16--; H = (Temp16 & 0xff00)>>8; L = (Temp16 & 0x00ff); break;
+                    case 0b00: setBC(getBC() - 1); break;
+                    case 0b01: setDE(getDE() - 1); break;
+                    case 0b10: setHL(getHL() - 1); break;
                     default: cout << "Invalid opcode: DEC ss" << endl; break;
                 }
                 /// Need to implement ///
@@ -682,7 +682,7 @@ void Z80::execute_main_opcode() {
 
         // JP nn (0xC3):
         case 0xc3: 
-            PC = (IR[2]<<8) + IR[1];
+            setPC(IR[2], IR[1]);
             // Condition bits affected: None
             break;
 
@@ -692,28 +692,28 @@ void Z80::execute_main_opcode() {
             // Opcode 1  1  c  c  c  0  1  0
             switch ((IR[0] & 0x38)) {
                 case 0b000:  // NZ (Z == 0)
-                    if (!testFlag(Z_BIT)) PC = (IR[2]<<8) + IR[1];
+                    if (!testFlag(Z_BIT)) setPC(IR[2], IR[1]);
                     break;
                 case 0b001:  // Z (Z == 1)
-                    if (testFlag(Z_BIT)) PC = (IR[2]<<8) + IR[1];
+                    if (testFlag(Z_BIT)) setPC(IR[2], IR[1]);
                     break;
                 case 0b010:  // NC (C == 0)
-                    if (!testFlag(C_BIT)) PC = (IR[2]<<8) + IR[1];
+                    if (!testFlag(C_BIT)) setPC(IR[2], IR[1]);
                     break;
                 case 0b011:  // C (C == 1)
-                    if (testFlag(C_BIT)) PC = (IR[2]<<8) + IR[1];
+                    if (testFlag(C_BIT)) setPC(IR[2], IR[1]);;
                     break;
                 case 0b100:  // PO (PV == 0)
-                    if (!testFlag(PV_BIT)) PC = (IR[2]<<8) + IR[1];
+                    if (!testFlag(PV_BIT)) setPC(IR[2], IR[1]);
                     break;
                 case 0b101:  // PE (PV == 1)
-                    if (testFlag(PV_BIT)) PC = (IR[2]<<8) + IR[1];
+                    if (testFlag(PV_BIT)) setPC(IR[2], IR[1]);
                     break;
                 case 0b110:  // P (S == 0)
-                    if (!testFlag(S_BIT)) PC = (IR[2]<<8) + IR[1];
+                    if (!testFlag(S_BIT)) setPC(IR[2], IR[1]);
                     break;
                 case 0b111:  // N (S == 1)
-                    if (testFlag(S_BIT)) PC = (IR[2]<<8) + IR[1];
+                    if (testFlag(S_BIT)) setPC(IR[2], IR[1]);
                     break;
                 default:
                     cout << "Invalid opcode: JP cc, nn" << endl;
@@ -761,7 +761,7 @@ void Z80::execute_main_opcode() {
 
         // JP (HL) (0xE9)
         case 0xe9:
-            PC = (H<<8) + L;
+            setPC(H, L);
             break;
 
         // DJNZ e (0x10)
@@ -780,7 +780,7 @@ void Z80::execute_main_opcode() {
         case 0xCD:
             memory[--SP] = (PC>>8);
             memory[--SP] = (PC & 0xFF);
-            PC = (IR[2]<<8) + IR[1];
+            setPC(IR[2], IR[1]);
             break;
 
         // CALL cc, nn (0xC4, 0xCC, 0xD4, 0xDC, 0xe4, 0xec, 0xf4, 0xfc)
@@ -789,28 +789,28 @@ void Z80::execute_main_opcode() {
         // Opcode: 1  1  c  c  c  1  0  0
             switch ((IR[0] & 0x38)) {
                 case 0b000:  // NZ (Z == 0)
-                    if (!testFlag(Z_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    if (!testFlag(Z_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); setPC(IR[2], IR[1]);}
                     break;
                 case 0b001:  // Z (Z == 1)
-                    if (testFlag(Z_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    if (testFlag(Z_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); setPC(IR[2], IR[1]);}
                     break;
                 case 0b010:  // NC (C == 0)
-                    if (!testFlag(C_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    if (!testFlag(C_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); setPC(IR[2], IR[1]);}
                     break;
                 case 0b011:  // C (C == 1)
-                    if (testFlag(C_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    if (testFlag(C_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); setPC(IR[2], IR[1]);}
                     break;
                 case 0b100:  // PO (PV == 0)
-                    if (!testFlag(PV_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    if (!testFlag(PV_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); setPC(IR[2], IR[1]);}
                     break;
                 case 0b101:  // PE (PV == 1)
-                    if (testFlag(PV_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    if (testFlag(PV_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); setPC(IR[2], IR[1]);}
                     break;
                 case 0b110:  // P (S == 0)
-                    if (!testFlag(S_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    if (!testFlag(S_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); setPC(IR[2], IR[1]);}
                     break;
                 case 0b111:  // N (S == 1)
-                    if (testFlag(S_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); PC = (IR[2]<<8) + IR[1];}
+                    if (testFlag(S_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); setPC(IR[2], IR[1]);}
                     break;
                 default:
                     cout << "Invalid opcode: CALL cc, nn" << endl;
@@ -820,7 +820,7 @@ void Z80::execute_main_opcode() {
 
         // RET (0xC9)
         case 0xc9: 
-            PC = (memory[SP+1]<<8) + memory[SP];
+            setPC(memory[SP+1], memory[SP]);
             SP += 2;
             break;
 
@@ -830,28 +830,28 @@ void Z80::execute_main_opcode() {
         // Opcode: 1  1  c  c  c  0  0  0
             switch ((IR[0] & 0x38)) {
                 case 0b000:  // NZ (Z == 0)
-                    if (!testFlag(Z_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    if (!testFlag(Z_BIT)) {setPC(memory[SP+1], memory[SP]); SP += 2;}
                     break;
                 case 0b001:  // Z (Z == 1)
-                    if (testFlag(Z_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    if (testFlag(Z_BIT)) {setPC(memory[SP+1], memory[SP]); SP += 2;}
                     break;
                 case 0b010:  // NC (C == 0)
-                    if (!testFlag(C_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    if (!testFlag(C_BIT)) {setPC(memory[SP+1], memory[SP]); SP += 2;}
                     break;
                 case 0b011:  // C (C == 1)
-                    if (testFlag(C_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    if (testFlag(C_BIT)) {setPC(memory[SP+1], memory[SP]); SP += 2;}
                     break;
                 case 0b100:  // PO (PV == 0)
-                    if (!testFlag(PV_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    if (!testFlag(PV_BIT)) {setPC(memory[SP+1], memory[SP]); SP += 2;}
                     break;
                 case 0b101:  // PE (PV == 1)
-                    if (testFlag(PV_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    if (testFlag(PV_BIT)) {setPC(memory[SP+1], memory[SP]); SP += 2;}
                     break;
                 case 0b110:  // P (S == 0)
-                    if (!testFlag(S_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;}
+                    if (!testFlag(S_BIT)) {setPC(memory[SP+1], memory[SP]); SP += 2;}
                     break;
                 case 0b111:  // N (S == 1)
-                    if (testFlag(S_BIT)) {PC = (memory[SP+1]<<8) + memory[SP]; SP += 2;;}
+                    if (testFlag(S_BIT)) {setPC(memory[SP+1], memory[SP]); SP += 2;;}
                     break;
                 default:
                     cout << "Invalid opcode: RET cc" << endl;

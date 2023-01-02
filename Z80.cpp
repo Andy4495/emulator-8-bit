@@ -67,7 +67,7 @@ void Z80::clear_registers() {
     Bprime  = 0; Cprime = 0; Dprime = 0; Eprime = 0; Hprime = 0; Lprime = 0;
     I = 0;
     R = 0;
-    IX = 0; IY = 0;
+    IXH = 0; IXL = 0; IYH = 0; IYL = 0;
     SP = 0;
     PC = 0;
     for (int i = 0; i < MAX_INSTR_SIZE; i++) IR[i] = 0;
@@ -253,4 +253,57 @@ void Z80::update_S(INST_TYPE t, unsigned char val) {
         default:  // NONE - Flag not affected
           break;
     }
+}
+
+unsigned short Z80::getIX() {
+    return (IXH<<8) + IXL;
+}
+
+unsigned short Z80::getIY() {
+    return (IYH<<8) + IYL;
+}
+
+unsigned short Z80::getBC() {
+    return (B<<8) + C;
+}
+
+unsigned short Z80::getDE() {
+    return (D<<8) + C;
+}
+
+unsigned short Z80::getHL() {
+    return (H<<8) + L;
+}
+
+void Z80::setIX(unsigned short v) {
+    IXH = ((v & 0xff00)>8);
+    IXL = v & 0x00ff;
+}
+
+void Z80::setIY(unsigned short v) {
+    IYH = ((v & 0xff00)>8);
+    IYL = v & 0x00ff;
+}
+
+void Z80::setBC(unsigned short v) {
+    B = ((v & 0xff00)>8);
+    C = v & 0x00ff;
+}
+
+void Z80::setDE(unsigned short v) {
+    D = ((v & 0xff00)>8);
+    E = v & 0x00ff;
+}
+
+void Z80::setHL(unsigned short v) {
+    H = ((v & 0xff00)>8);
+    L = v & 0x00ff;
+}
+
+void Z80::setSP(unsigned char msb, unsigned char lsb) {
+    SP = (msb<<8) + lsb;
+}
+
+void Z80::setPC(unsigned char msb, unsigned char lsb) {
+    PC = (msb<<8) + lsb;
 }
