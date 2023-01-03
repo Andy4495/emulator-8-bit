@@ -20,7 +20,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
     // All instructions in this super-group have opcodes that start with 0xED, 
     // and the specific instruction is represented by the 2nd byte of the opcode.
     // Note that there are some Z180-specific instructions in this group. However,
-    // this emulator only supports Z80, so Z180 instructions are left unimplemented.0x3f
+    // this emulator only supports Z80, so Z180 instructions are left unimplemented.
 
     unsigned char *r  = nullptr;   // Temporary storage when decoding register field in opcode
     unsigned char *r_ = nullptr;
@@ -104,7 +104,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;
 
         // INI (0xEDA2)
-        case 0xA2: 
+        case 0xa2: 
             memory[getHL()] = in[C];
             B--;
             L++;
@@ -115,7 +115,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;
 
         // INIR (0xEDB2)
-        case 0xB2: 
+        case 0xb2: 
             memory[getHL()] = in[C];
             B--;
             L++;
@@ -132,7 +132,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;  
 
         // IND (0xEDAA)
-        case 0xAA:
+        case 0xaa:
             memory[getHL()] = in[C];
             B--;
             L--;
@@ -143,7 +143,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;                    
 
         // INDR (0xEDBA)
-        case 0xBA: 
+        case 0xba: 
             memory[getHL()] = in[C];
             B--;
             L--;
@@ -201,7 +201,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;
 
         // OUTI (0xEDA3)
-        case 0xA3:
+        case 0xa3:
             out[C] = memory[getHL()];
             B--;
             L++;
@@ -212,7 +212,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;        
 
         // OTIR (0xEDB3)
-        case 0xB3: 
+        case 0xb3: 
             out[C] = memory[getHL()];
             B--;
             L++;
@@ -229,7 +229,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;  
 
         // OUTD (0xEDAB)
-        case 0xAB:
+        case 0xab:
             out[C] = memory[getHL()];
             B--;
             L--;
@@ -240,7 +240,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;                    
 
         // OTDR (0xEDBB)
-        case 0xBB: 
+        case 0xbb: 
             out[C] = memory[getHL()];
             B--;
             L--;
@@ -267,7 +267,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;
 
         // LD A, R (0xED5F)
-        case 0x5F:
+        case 0x5f:
             A = R;
             update_flags(S_BIT|Z_BIT, ADD, A, 0);
             clearFlag(H_BIT);
@@ -282,7 +282,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;
 
         // LD R, A (0xED4F)
-        case 0x4F: 
+        case 0x4f: 
             R = A; 
             break;
 

@@ -18,7 +18,7 @@ The emulator is not complete. The following major updates still need to be compl
 - Implement the remaining opcode groups/tables:
   - DONE: Input and Output Group
   - DONE: Bit Instructions
-  - IX Instructions
+  - DONE: IX Instructions
   - IX Bit Instructions
   - DONE: Miscellaneous Instructions
   - IY Instructions

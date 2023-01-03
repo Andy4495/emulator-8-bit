@@ -84,7 +84,7 @@ void Z80::clearFlag(FLAG_BITS f) {
     F = F & ~f;
 }
 
-int Z80::testFlag(FLAG_BITS f) {
+unsigned char Z80::testFlag(FLAG_BITS f) {
     return (F & f) ? 1 : 0;
 }
 

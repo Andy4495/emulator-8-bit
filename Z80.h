@@ -81,7 +81,7 @@ class Z80 {
         void load_memory(const char* fname);
         void cold_reset();
         void warm_reset();
-        int  testFlag(FLAG_BITS f);
+        unsigned char  testFlag(FLAG_BITS f);
         void run_from_address(unsigned short addr);
         void fetch_and_decode();
         unsigned char get_next_byte();

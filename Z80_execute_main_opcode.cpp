@@ -26,7 +26,7 @@ void Z80::execute_main_opcode() {
         // Flags are not affected by these instructions
         // ********************************************
         //
-        // LD r, r' instructions (0x40 - 0x7f)
+        // LD r, r' instructions (0x40 - 0x7F)
         // LD r, (HL) 
         // LD (HL), r
         // Instructions with register bit pattern 0b110 represent (HL) which are listed in 
@@ -68,7 +68,7 @@ void Z80::execute_main_opcode() {
             // Condition bits affected: None
             break;
 
-        // LD r, n instructions (0x06/0x0e - 0x36/0x3e)
+        // LD r, n instructions (0x06/0x0E - 0x36/0x3E)
         // LD (HL), n           (0x36)
         // Instruction 0x36 with register bit pattern 0b110 represents (HL) which is listed in a
         // separate subgroup in Z80 user manual, but can be implemented here
@@ -89,37 +89,37 @@ void Z80::execute_main_opcode() {
             // Condition bits affected: None
             break;
 
-        // LD A, (BC)  (0A)
-        case 0x0A: 
+        // LD A, (BC)  (0x0A)
+        case 0x0a: 
             A = memory[getBC()];
             // Condition bits affected: None
             break;
 
-        // LD A, (DE)  (1A)
-        case 0x1A: 
+        // LD A, (DE)  (0x1A)
+        case 0x1a: 
             A = memory[getDE()];
             // Condition bits affected: None
             break;
 
-        // LD A, (nn)  (3A)
-        case 0x3A: 
+        // LD A, (nn)  (0x3A)
+        case 0x3a: 
             A = memory[(IR[2]<<8) + IR[1]];
             // Condition bits affected: None
             break;
 
-        // LD (BC), A  (02)
+        // LD (BC), A  (0x02)
         case 0x02: 
             memory[getBC()] = A;   // LD A, (BC)
             // Condition bits affected: None
             break;
 
-        // LD (DE),A  (12)
+        // LD (DE),A  (0x12)
         case 0x12: 
             memory[getDE()] = A;
             // Condition bits affected: None
             break;
 
-        // LD (nn),A  (32)
+        // LD (nn),A  (0x32)
         case 0x32: 
             memory[(IR[2]<<8) + IR[1]] = A;
             // Condition bits affected: None
@@ -150,7 +150,7 @@ void Z80::execute_main_opcode() {
             // Condition bits affected: None
             break;
 
-        // LD HL, (nn)     (0x2a)
+        // LD HL, (nn)     (0x2A)
         case 0x2a:
                 H = memory[(IR[2]<<8) + IR[1] + 1];
                 L = memory[(IR[2]<<8) + IR[1]];
@@ -164,13 +164,13 @@ void Z80::execute_main_opcode() {
             // Condition bits affected: None
             break;
 
-        // LD SP, HL   (0xf9)
+        // LD SP, HL   (0xF9)
         case 0xf9:
             SP = getHL();
             // Condition bits affected: None
             break;
 
-        // PUSH qq     (0xc5, 0xd5, 0xe5, 0xf5)
+        // PUSH qq     (0xC5, 0xD5, 0xE5, 0xF5)
         case 0xc5: case 0xd5: case 0xe5: case 0xf5:
             switch ((IR[0] & 0x30) >> 4) {
                 case 0b00: r = &B; r_ = &C; break;
@@ -184,7 +184,7 @@ void Z80::execute_main_opcode() {
             // Condition bits affected: None
             break;      
 
-        // POP qq     (0xc1, 0xd1, 0xe1, 0xf1)
+        // POP qq     (0xC1, 0xD1, 0xE1, 0xF1)
         case 0xc1: case 0xd1: case 0xe1: case 0xf1:
             switch ((IR[0] & 0x30) >> 4) {
                 case 0b00: r = &B; r_ = &C; break;
@@ -202,7 +202,7 @@ void Z80::execute_main_opcode() {
         // Flags are not affected by these instructions
         // **********************************************************************
         //
-        // EX DE, HL (0xeb)
+        // EX DE, HL (0xEB)
         case 0xeb:
             Temp = D;
             D  = H;
@@ -224,7 +224,7 @@ void Z80::execute_main_opcode() {
             // Condition bits affected: None
             break;
 
-        // EXX (0xd9)
+        // EXX (0xD9)
         case 0xd9:
             Temp     = B;
             B      = Bprime;
@@ -247,12 +247,12 @@ void Z80::execute_main_opcode() {
             // Condition bits affected: None
             break;
 
-        // EX (SP), HL (0xe3)
+        // EX (SP), HL (0xE3)
         case 0xe3:
-            Temp           = H;
+            Temp         = H;
             H            = memory[SP+1];
             memory[SP+1] = Temp;
-            Temp           = L;
+            Temp         = L;
             L            = memory[SP];
             memory[SP]   = Temp;
             // Condition bits affected: None
@@ -282,7 +282,7 @@ void Z80::execute_main_opcode() {
             break;
 
         // ADD A, n    (0xC6)
-        case 0xC6:
+        case 0xc6:
             A += memory[IR[1]];
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, memory[IR[1]]);
             break;
@@ -309,7 +309,7 @@ void Z80::execute_main_opcode() {
             break;
 
         // ADC A, n    (0xCE)
-        case 0xCE:
+        case 0xce:
             A = A + memory[IR[1]] + testFlag(C_BIT);
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADC, A, memory[IR[1]]);
             break;
@@ -335,7 +335,7 @@ void Z80::execute_main_opcode() {
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, *r);
             break;
 
-        // SUB A, n    (0xd6)
+        // SUB A, n    (0xD6)
         case 0xd6:
             A = A - memory[IR[1]];
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, memory[IR[1]]);
@@ -389,7 +389,7 @@ void Z80::execute_main_opcode() {
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, AND, A, *r);
             break;
 
-        // AND A, n    (0xe6)
+        // AND A, n    (0xE6)
         case 0xe6:
             A = A & memory[IR[1]];
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, AND, A, memory[IR[1]]);
@@ -416,7 +416,7 @@ void Z80::execute_main_opcode() {
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, OR, A, *r);
             break;
 
-        // OR A, n    (0xf6)
+        // OR A, n    (0xF6)
         case 0xf6:
             A = A | memory[IR[1]];
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, OR, A, memory[IR[1]]);
@@ -443,7 +443,7 @@ void Z80::execute_main_opcode() {
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, XOR, A, *r);
             break;
 
-        // XOR A, n    (0xee)
+        // XOR A, n    (0xEE)
         case 0xee:
             A = A ^ memory[IR[1]];
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, XOR, A, memory[IR[1]]);
@@ -470,7 +470,7 @@ void Z80::execute_main_opcode() {
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, *r);
             break;
 
-        // CP n    (0xfe)
+        // CP n    (0xFE)
         case 0xfe:
             // Compare only; register contents unchanged
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, memory[IR[1]]);
@@ -618,7 +618,7 @@ void Z80::execute_main_opcode() {
             // Condition bits affected: None
             break;
             
-        // DEC ss (0x0b, 0x01b, 0x2b, 0x3b)
+        // DEC ss (0x0B, 0x01B, 0x2B, 0x3B)
         case 0x0b: case 0x1b: case 0x2b: case 0x3b: 
             // Determine which register we are working on:
             // Opcode 0  0  s  s  1  0  1  1
@@ -776,14 +776,14 @@ void Z80::execute_main_opcode() {
         // ************* Call and Return Group **************
         // **************************************************
 
-        // CALL nn
-        case 0xCD:
+        // CALL nn (0xCD)
+        case 0xcd:
             memory[--SP] = (PC>>8);
             memory[--SP] = (PC & 0xFF);
             setPC(IR[2], IR[1]);
             break;
 
-        // CALL cc, nn (0xC4, 0xCC, 0xD4, 0xDC, 0xe4, 0xec, 0xf4, 0xfc)
+        // CALL cc, nn (0xC4, 0xCC, 0xD4, 0xDC, 0xe4, 0xEC, 0xF4, 0xFC)
         case 0xc4: case 0xcc: case 0xd4: case 0xdc: case 0xe4: case 0xec: case 0xf4: case 0xfc:
         // Determine which flag to check
         // Opcode: 1  1  c  c  c  1  0  0

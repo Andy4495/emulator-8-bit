@@ -19,7 +19,6 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
 
     unsigned char *r = nullptr, *r_ = nullptr;   // Temporary storage when decoding register field in opcode
     unsigned char Temp;
-    unsigned short Temp16;
 
     switch (IR[1]) {
 
@@ -47,8 +46,210 @@ void Z80::execute_ix_opcode() {  // IR[0] = 0xDD
             IXL = IR[2];
             break;
 
+        // LD (nn), IX (0x22)
+        case 0x22:
+            memory[(IR[2]<<8) + IR[1] + 1] = IXH;
+            memory[(IR[2]<<8) + IR[1]]     = IXL;
+            // Condition bits affected: None
+            break;
+
+        // INC IX (0x23)
+        case 0x23:
+            setIX(getIX() + 1);
+            // Condition bits affected: None
+            break;
+
+        // LD IX, (nn)  (0x2A)
+        case 0x3a: 
+            IXH = memory[(IR[2]<<8) + IR[1] + 1];
+            IXL = memory[(IR[2]<<8) + IR[1]];
+            // Condition bits affected: None
+            break;
+
+        // DEC IX (0x2B)
+        case 0x2b:
+            setIX(getIX() - 1);
+            // Condition bits affected: None
+            break;
+
+        // INC (IX + d)           (0x34)
+        case 0x34:
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, ADD, memory[getIX() + IR[2]], 1);
+            memory[getIX() + IR[2]] = memory[getIX() + IR[2]] + 1;
+            break;
+            
+        // DEC (IX + d)           (0x35)
+        case 0x35:
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, SUB, memory[getIX() + IR[2]], 1);
+            memory[getIX() + IR[2]] = memory[getIX() + IR[2]] - 1;
+            break;
+
+        // LD (IX + d), n         (0x36)
+        case 0x36:
+            memory[getIX() + IR[2]] = IR[3];
+            break;
+
+        // LD B, (IX + d)         (0x46)
+        case 0x46:
+            B = memory[getIX() + IR[2]];
+            break;
+
+        // LD C, (IX + d)         (0x4E)
+        case 0x4e:
+            C = memory[getIX() + IR[2]];
+            break;
+
+        // LD D, (IX + d)         (0x56)
+        case 0x56:
+            D = memory[getIX() + IR[2]];
+            break;
+           
+        // LD E, (IX + d)         (0x5E)
+        case 0x5e:
+            E = memory[getIX() + IR[2]];
+            break;
+
+        // LD H, (IX + d)         (0x66)
+        case 0x66:
+            H = memory[getIX() + IR[2]];
+            break;
+
+        // LD L, (IX + d)         (0x6E)
+        case 0x6e:
+            L = memory[getIX() + IR[2]];
+            break;
+
+        // LD (IX + d), B         (0x70)
+        case 0x70:
+            memory[getIX() + IR[2]] = B;
+            break;
+
+        // LD (IX + d), B         (0x71)
+        case 0x71:
+            memory[getIX() + IR[2]] = C;
+            break;
+
+        // LD (IX + d), B         (0x72)
+        case 0x72:
+            memory[getIX() + IR[2]] = D;
+            break;
+
+        // LD (IX + d), B         (0x73)
+        case 0x73:
+            memory[getIX() + IR[2]] = E;
+            break;
+
+        // LD (IX + d), B         (0x74)
+        case 0x74:
+            memory[getIX() + IR[2]] = H;
+            break;
+
+        // LD (IX + d), B         (0x75)
+        case 0x75:
+            memory[getIX() + IR[2]] = L;
+            break;
+
+        // LD (IX + d), B         (0x77)
+        case 0x77:
+            memory[getIX() + IR[2]] = A;
+            break;
+
+        // LD (IX + d), B         (0x7E)
+        case 0x7e:
+            A = memory[getIX() + IR[2]];
+            break;
+
+        // ADD A, (IX + d)         (0x86)
+        case 0x86:
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, memory[getIX() + IR[2]]);
+            A += memory[getIX() + IR[2]];
+            break;
+
+        // ADC A, (IX + d)         (0x8E)
+        case 0x8e:
+            Temp = testFlag(C_BIT); // Save the carry bit
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, memory[getIX() + IR[2]] + Temp);
+            A += memory[getIX() + IR[2]] + Temp;
+            break;
+
+        // SUB A, (IX + d)         (0x96)
+        case 0x96:
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, memory[getIX() + IR[2]]);
+            A += memory[getIX() - IR[2]];
+            break;
+
+        // SBC A, (IX + d)         (0x9E)
+        case 0x9e:
+            Temp = testFlag(C_BIT); // Save the carry bit
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, memory[getIX() + IR[2]] - Temp);
+            A += memory[getIX() + IR[2]] + Temp;
+            break;
+
+        // AND A, (IX + d)         (0xA6)
+        case 0xa6:
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, AND, A, memory[getIX() + IR[2]]);
+            A &= memory[getIX() + IR[2]];
+            break;
+
+        // XOR A, (IX + d)         (0xAE)
+        case 0xae:
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, XOR, A, memory[getIX() + IR[2]]);
+            A ^= memory[getIX() + IR[2]];
+            break;
+
+        // OR A, (IX + d)         (0xB6)
+        case 0xb6:
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, memory[getIX() + IR[2]]);
+            A |= memory[getIX() + IR[2]];
+            break;
+
+        // CP A, (IX + d)         (0xBE)
+        case 0xbe:
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, memory[getIX() + IR[2]]);
+            break;
+
+        // POP IX     (0xE1)
+        case 0xe1:
+            IXH  = memory[SP++];
+            IXL = memory[SP++];
+            // Condition bits affected: None
+            break;   
+
+        // EX (SP), IX (0xE3)
+        case 0xe3:
+            Temp         = IXH;
+            IXH          = memory[SP+1];
+            memory[SP+1] = Temp;
+            Temp         = IXL;
+            IXL          = memory[SP];
+            memory[SP]   = Temp;
+            // Condition bits affected: None
+            break;
+
+        // PUSH IX     (0xE5)
+        case 0xe5:
+            memory[--SP] = IXH;
+            memory[--SP] = IXL;
+            // Condition bits affected: None
+            break;      
+
+        // JP (IX)    (0xE9)
+        case 0xe9:
+            setPC(IXH, IXL);
+            break;
+
+        // LD SP, IX   (0xF9)
+        case 0xf9:
+            SP = getIX();
+            // Condition bits affected: None
+            break;
+
+        // ******************************* //
+        // Undocumented instructions below //
+        // ******************************* //
+
         // INC r instructions (0x04, 0x0C, 0x14, 0x1C, 0x24, 0x2C, 0x3C)
-        case 0x04: case 0x0c: case 0x14: case 0x1c: case 0x24: case 0x2c:       case 0x3C:
+        case 0x04: case 0x0c: case 0x14: case 0x1c: case 0x24: case 0x2c:       case 0x3c:
             // Opcode 0  0  r  r  r  1  0  0 
             switch ((IR[1] & 0x38) >> 3) {
                 case 0b000: r = &B; break;
