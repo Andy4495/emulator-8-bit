@@ -21,7 +21,7 @@ The emulator is not complete. The following major updates still need to be compl
   - DONE: IX Instructions
   - IX Bit Instructions
   - DONE: Miscellaneous Instructions
-  - IY Instructions
+  - DONE: IY Instructions
   - IY Bit Instructions
 - Finish implementing ADD HL, ss instructions (opcodes 0x09, 0x19, 0x29, 0x39)
 - Finish implementing ADC HL, ss instructions
