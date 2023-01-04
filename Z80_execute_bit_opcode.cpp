@@ -61,8 +61,8 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
-        // RRC r    (0xCB10 - 0xCB17)
-        // RRC (HL)  (0xCB06)
+        // RL r    (0xCB10 - 0xCB17)
+        // RL (HL)  (0xCB06)
         case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x15: case 0x16: case 0x17:
             // Opcode 0  0  0  1  0  r  r  r
             // Decode the register, r
