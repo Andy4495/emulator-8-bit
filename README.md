@@ -15,28 +15,18 @@ There are many other open source emulators available. This emulator is not meant
 
 The emulator is not complete. The following major updates still need to be completed before I consider it a good first release:
 
-- Implement the remaining opcode groups/tables:
-  - DONE: Input and Output Group
-  - DONE: Bit Instructions
-  - DONE: IX Instructions
-  - IX Bit Instructions
-  - DONE: Miscellaneous Instructions
-  - DONE: IY Instructions
-  - IY Bit Instructions
-- Finish implementing ADD HL, ss instructions (opcodes 0x09, 0x19, 0x29, 0x39)
-- Finish implementing ADC HL, ss instructions
-- Finish implementing SBC HL, ss instructions
-- INC ss instructions (opcodes 0x03, 0x013, 0x23, 0x33)
-- DEC ss instructions (opcodes 0x0b, 0x01b, 0x2b, 0x3b)
+- All opcodes have decoding and execution code implemented.
+- Several opcodes need additional work:
+  - INC ss instructions (opcodes 0x03, 0x013, 0x23, 0x33)
+  - DEC ss instructions (opcodes 0x0b, 0x01b, 0x2b, 0x3b)
+  - DAA instruction (opcode 0x27)
 - Flag update handling
-  - DONE: Input specific opcodes
-  - Many of the ADD/SUB cases are finished. Harder cases like H and N for DAA need to be done.
+  - H and N flags for DAA incomplete
+  - Flag updates for 16-bit ADD, ADC, SBC instructions
   - Other cases (check all opcodes)
-- DAA instruction (opcode 0x27)
 - HALT state handler in main execute method
   - Currently handled in the main emulator module, but should be part of the CPU class implementation
   - HALT should act like a breakpoint
-- DONE: Disassembler mode (in addition to emulate/run mode)
 - Automated test suite
   - All valid opcodes
   - Corner cases

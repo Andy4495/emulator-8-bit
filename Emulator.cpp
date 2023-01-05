@@ -6,7 +6,7 @@
    0.2  12/22/22  Andy4495  Additional implementation
 */
 
-#define VERSION 0.9
+#define VERSION 0.10
 
 // 1. Read command line and parse arguments parseCommandLine()
 // 2. Read memory file (hex, s-record) loadProgram()
@@ -130,15 +130,15 @@ int main(int argc, char** argv)
     << endl;
 
     cout << "SZXH XPNC: "
-    << cpu.testFlag(Z80::S_BIT)
-    << cpu.testFlag(Z80::Z_BIT)
-    << cpu.testFlag(Z80::X1_BIT)
-    << cpu.testFlag(Z80::H_BIT)
+    << (unsigned int) cpu.testFlag(Z80::S_BIT)
+    << (unsigned int) cpu.testFlag(Z80::Z_BIT)
+    << (unsigned int) cpu.testFlag(Z80::X1_BIT)
+    << (unsigned int) cpu.testFlag(Z80::H_BIT)
     << " "
-    << cpu.testFlag(Z80::X2_BIT)
-    << cpu.testFlag(Z80::PV_BIT)
-    << cpu.testFlag(Z80::N_BIT)
-    << cpu.testFlag(Z80::C_BIT)
+    << (unsigned int) cpu.testFlag(Z80::X2_BIT)
+    << (unsigned int) cpu.testFlag(Z80::PV_BIT)
+    << (unsigned int) cpu.testFlag(Z80::N_BIT)
+    << (unsigned int) cpu.testFlag(Z80::C_BIT)
     << endl;
 
     return 0;

@@ -396,7 +396,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             }
             // Decode the bit position, b
             if (r != nullptr) {
-                if ((*r) >> (IR[1] >> ((IR[1] & 0x3f) >> 3)) == 0) setFlag(Z_BIT);
+                if ((*r) >> (IR[1] >> ((IR[1] & 0x38) >> 3)) == 0) setFlag(Z_BIT);
                 else clearFlag(Z_BIT);
                 setFlag(H_BIT);
                 clearFlag(N_BIT);
@@ -447,7 +447,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             }
             // Decode the bit position, b
             if (r != nullptr) {
-                *r |= (1 << ((IR[1] & 0x3f) >> 3));
+                *r |= (1 << ((IR[1] & 0x38) >> 3));
             }
             break;
 
@@ -495,7 +495,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             }
             // Decode the bit position, b
             if (r != nullptr) {
-                *r &= ~(1 << ((IR[1] & 0x3f) >> 3));
+                *r &= ~(1 << ((IR[1] & 0x38) >> 3));
             }
             break;
 
