@@ -465,19 +465,14 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             Temp16 = getHL();
             // Determine which register we are working on:
             // Opcode 0  1  s  s  1  0  1  0
-            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
-                /// Need to implement ///
+            switch ((IR[1] & 0x30) >> 4) {
+                case 0b00: setHL(getHL() + getBC() + testFlag(C_BIT)); break;
+                case 0b01: setHL(getHL() + getDE() + testFlag(C_BIT)); break;
+                case 0b10: setHL(getHL() + getHL() + testFlag(C_BIT)); break;
+                case 0b11: setHL(getHL() + SP      + testFlag(C_BIT)); break;
+                default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
             }
-            else {
-                switch ((IR[0] & 0x30) >> 4) {
-                    case 0b00: r = &B; r_ = &C; break;
-                    case 0b01: r = &D; r_ = &E; break;
-                    case 0b10: r = &H; r_ = &L; break;
-                    default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
-                }
-                /// Need to implement ///
-            }
-            /// Need to implement condition bits, may need another state ///
+            /// Need to implement condition bits ///
             break;
 
         // SBC HL, ss  (0x42, 0x52, 0x62, 0x72)
@@ -485,19 +480,14 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             Temp16 = getHL();
             // Determine which register we are working on:
             // Opcode 0  1  s  s  0  0  1  0
-            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
-                /// Need to implement ///
+            switch ((IR[1] & 0x30) >> 4) {
+                case 0b00: setHL(getHL() - getBC() - testFlag(C_BIT)); break;
+                case 0b01: setHL(getHL() - getDE() - testFlag(C_BIT)); break;
+                case 0b10: setHL(getHL() - getHL() - testFlag(C_BIT)); break;
+                case 0b11: setHL(getHL() - SP      - testFlag(C_BIT)); break;
+                default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
             }
-            else {
-                switch ((IR[0] & 0x30) >> 4) {
-                    case 0b00: r = &B; r_ = &C; break;
-                    case 0b01: r = &D; r_ = &E; break;
-                    case 0b10: r = &H; r_ = &L; break;
-                    default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
-                }
-                /// Need to implement ///
-            }
-            /// Need to implement condition bits, may need another state ///
+            /// Need to implement condition bits ///
             break;
 
         // RLD (0xED6F)
