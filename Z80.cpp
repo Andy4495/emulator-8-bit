@@ -96,7 +96,6 @@ void Z80::run_from_address(unsigned short addr) {
 }
 
 unsigned char Z80::get_next_byte() {
-    ///cout << "Loading a byte from memory." << endl; /// Debug
     return memory[PC++];
 }
 

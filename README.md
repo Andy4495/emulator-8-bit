@@ -15,14 +15,11 @@ There are many other open source emulators available. This emulator is not meant
 
 The emulator is not complete. The following major updates still need to be completed before I consider it a good first release:
 
-- All opcodes have decoding and execution code implemented.
-- Several opcodes need additional work:
-  - INC ss instructions (opcodes 0x03, 0x013, 0x23, 0x33)
-  - DEC ss instructions (opcodes 0x0b, 0x01b, 0x2b, 0x3b)
+- All opcodes have decoding and execution code implemented, with the exception of:
   - DAA instruction (opcode 0x27)
 - Flag update handling
-  - H and N flags for DAA incomplete
-  - Flag updates for 16-bit ADD, ADC, SBC instructions
+  - DAA incomplete (H and N flags in particular may be a little tricky)
+  - Flag updates for 16-bit ADD, SUB, ADC, SBC instructions (main, misc, IX, and IY)
   - Other cases (check all opcodes)
 - HALT state handler in main execute method
   - Currently handled in the main emulator module, but should be part of the CPU class implementation
