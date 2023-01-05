@@ -134,18 +134,12 @@ void Z80::execute_main_opcode() {
         case 0x01: case 0x11: case 0x21: case 0x31:
             // Determine which register we are working on:
             // Opcode 0  0  d  d  0  0  0  1
-            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
-                setSP(IR[2], IR[1]);
-            }
-            else {
-                switch ((IR[0] & 0x30) >> 4) {
-                    case 0b00: r = &B; r_ = &C; break;
-                    case 0b01: r = &D; r_ = &E; break;
-                    case 0b10: r = &H; r_ = &L; break;
-                    default: cout << "Invalid opcode: LD dd, nn" << endl; break;
-                }
-                *r  = IR[2];
-                *r_ = IR[1];
+            switch ((IR[0] & 0x30) >> 4) {
+                case 0b00: B = IR[2]; C = IR[1]; break;
+                case 0b01: D = IR[2]; E = IR[1]; break;
+                case 0b10: H = IR[2]; L = IR[1]; break;
+                case 0b11: setSP(IR[2], IR[1]);  break;
+                default: cout << "Invalid opcode: LD dd, nn" << endl; break;
             }
             // Condition bits affected: None
             break;
@@ -582,20 +576,13 @@ void Z80::execute_main_opcode() {
             Temp16 = getHL();
             // Determine which register we are working on:
             // Opcode 0  0  s  s  1  0  0  1
-            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
-                Temp16 += SP;
+            switch ((IR[0] & 0x30) >> 4) {
+                case 0b00: setHL(getHL() + getBC()); break;
+                case 0b01: setHL(getHL() + getDE()); break;
+                case 0b10: setHL(getHL() + getHL()); break;
+                case 0b11: setHL(getHL() + SP);      break;
+                default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
             }
-            else {
-                switch ((IR[0] & 0x30) >> 4) {
-                    case 0b00: r = &B; r_ = &C; break;
-                    case 0b01: r = &D; r_ = &E; break;
-                    case 0b10: r = &H; r_ = &L; break;
-                    default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
-                }
-                Temp16 += (*r<<8) + *r_;
-            }
-            H = (Temp16>>8) & 0x00FF;
-            L = Temp16 & 0x00FF;
             /// Need to implement condition bits, may need another state ///
             break;
 
@@ -603,17 +590,12 @@ void Z80::execute_main_opcode() {
         case 0x03: case 0x13: case 0x23: case 0x33: 
             // Determine which register we are working on:
             // Opcode 0  0  s  s  0  0  1  1
-            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
-                SP++;
-            }
-            else {
-                switch ((IR[0] & 0x30) >> 4) {
-                    case 0b00: setBC(getBC() + 1); break;
-                    case 0b01: setDE(getDE() + 1); break;
-                    case 0b10: setHL(getHL() + 1); break;
-                    default: cout << "Invalid opcode: INC ss" << endl; break;
-                }
-                /// Need to implement ///
+            switch ((IR[0] & 0x30) >> 4) {
+                case 0b00: setBC(getBC() + 1); break;
+                case 0b01: setDE(getDE() + 1); break;
+                case 0b10: setHL(getHL() + 1); break;
+                case 0b11: SP++;               break;
+                default: cout << "Invalid opcode: INC ss" << endl; break;
             }
             // Condition bits affected: None
             break;
@@ -622,17 +604,12 @@ void Z80::execute_main_opcode() {
         case 0x0b: case 0x1b: case 0x2b: case 0x3b: 
             // Determine which register we are working on:
             // Opcode 0  0  s  s  1  0  1  1
-            if ((IR[0] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
-                SP--;
-            }
-            else {
-                switch ((IR[0] & 0x30) >> 4) {
-                    case 0b00: setBC(getBC() - 1); break;
-                    case 0b01: setDE(getDE() - 1); break;
-                    case 0b10: setHL(getHL() - 1); break;
-                    default: cout << "Invalid opcode: DEC ss" << endl; break;
-                }
-                /// Need to implement ///
+            switch ((IR[0] & 0x30) >> 4) {
+                case 0b00: setBC(getBC() - 1); break;
+                case 0b01: setDE(getDE() - 1); break;
+                case 0b10: setHL(getHL() - 1); break;
+                case 0b11: SP--;               break;
+                default: cout << "Invalid opcode: DEC ss" << endl; break;
             }
             // Condition bits affected: None
             break;
