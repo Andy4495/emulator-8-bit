@@ -24,7 +24,7 @@ void Z80::execute() {
             break;
 
         case 0xDD: 
-            if (IR[1] == 0xCB) execute_ix_bit_opcode();
+            if (IR[1] == 0xCB) execute_ix_iy_bit_opcode();
             else execute_ix_opcode();
             break;
 
@@ -33,7 +33,7 @@ void Z80::execute() {
             break;
 
         case 0xFD:
-            if (IR[1] == 0xCB) execute_iy_bit_opcode();
+            if (IR[1] == 0xCB) execute_ix_iy_bit_opcode();
             else execute_iy_opcode();
             break;
 

@@ -15,13 +15,17 @@ using namespace std;
 #include <cassert>
 #include <iomanip>
 
-void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
+void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,2] = 0xFDCBdd
 
     unsigned char *r = nullptr;   // Temporary storage when decoding register field in opcode
     unsigned char tempC;          // Temporarily store carry bit for rotate operations
+    unsigned char index;          // Array index into memory[] array based on IX or IY plus displacement in opcode
+
+    if (IR[0] == 0xDD) index = getIX() + IR[2];
+    else               index = getIY() + IR[2];
 
     switch (IR[3]) {
-        // RLC (IX + d), r     (0xDDCB00dd - 0xDDCB07dd)
+        // RLC (IX + d), r     (0xXDCB00dd - 0xXDCB07dd)
         case 0x00: case 0x01: case 0x02: case 0x03: case 0x04: case 0x05: case 0x06: case 0x07:
             // Opcode 0  0  0  0  0  r  r  r
             // Decode the register, r
@@ -52,19 +56,19 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            if (memory[getIX() + IR[2]] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
-            memory[getIX() + IR[2]] = ((memory[getIX() + IR[2]] << 1) & 0xfe) | testFlag(C_BIT);
+            if (memory[index] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
+            memory[index] = ((memory[index] << 1) & 0xfe) | testFlag(C_BIT);
             if (r != nullptr) {
-                *r = memory[getIX() + IR[2]];
+                *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[getIX() + IR[2]], 0);
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
             break;
 
-        // RL r    (0xDDCBdd10 - 0xDDCBdd17)
-        // RL (HL)  (0xDDCBdd06)
+        // RL r    (0xXDCBdd10 - 0xXDCBdd17)
+        // RL (HL)  (0xXDCBdd06)
         case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x15: case 0x16: case 0x17:
             // Opcode 0  0  0  1  0  r  r  r
             // Decode the register, r
@@ -95,21 +99,21 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             tempC = testFlag(C_BIT);
 
-            if (memory[getIX() + IR[2]] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
-            memory[getIX() + IR[2]] = ((memory[getIX() + IR[2]] << 1) & 0xfe) | tempC;
+            if (memory[index] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
+            memory[index] = ((memory[index] << 1) & 0xfe) | tempC;
             if (r != nullptr) {
-                *r = memory[getIX() + IR[2]];
+                *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[getIX() + IR[2]], 0);
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
             break;
 
-        // RRC r     (0xDDCBdd08 - 0xDDCBdd0f)
-        // RLC (HL)  (0xDDCBdd0e)
+        // RRC r     (0xXDCBdd08 - 0xXDCBdd0f)
+        // RLC (HL)  (0xXDCBdd0e)
         case 0x08: case 0x09: case 0x0a: case 0x0b: case 0x0c: case 0x0d: case 0x0e: case 0x0f:
             // Opcode 0  0  0  0  1  r  r  r
             // Decode the register, r
@@ -140,19 +144,19 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            if (memory[getIX() + IR[2]] & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
-            memory[getIX() + IR[2]] = ((memory[getIX() + IR[2]] >> 1) & 0x7f) | (testFlag(C_BIT) << 7);
+            if (memory[index] & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
+            memory[index] = ((memory[index] >> 1) & 0x7f) | (testFlag(C_BIT) << 7);
             if (r != nullptr) {
-                *r = memory[getIX() + IR[2]];
+                *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[getIX() + IR[2]], 0);
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
             break;
 
-        // RR  r    (0xDDCBdd18 - 0xDDCBdd1F)
-        // RR (HL)  (0xDDCBdd1E)
+        // RR  r    (0xXDCBdd18 - 0xXDCBdd1F)
+        // RR (HL)  (0xXDCBdd1E)
         case 0x18: case 0x19: case 0x1a: case 0x1b: case 0x1c: case 0x1d: case 0x1e: case 0x1f:
             // Opcode 0  0  0  1  1  r  r  r
             // Decode the register, r
@@ -183,19 +187,19 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            if (memory[getIX() + IR[2]] & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
-            memory[getIX() + IR[2]] = ((memory[getIX() + IR[2]] << 1) & 0x7f) | (testFlag(C_BIT) << 7);
+            if (memory[index] & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
+            memory[index] = ((memory[index] << 1) & 0x7f) | (testFlag(C_BIT) << 7);
             if (r != nullptr) {
-                *r = memory[getIX() + IR[2]];
+                *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[getIX() + IR[2]], 0);
+            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
             break;
 
-        // SLA r     (0xDDCBdd20 - 0xDDCBdd27)
-        // SLA (HL)  (0xDDCBdd26)
+        // SLA r     (0xXDCBdd20 - 0xXDCBdd27)
+        // SLA (HL)  (0xXDCBdd26)
         case 0x20: case 0x21: case 0x22: case 0x23: case 0x24: case 0x25: case 0x26: case 0x27:
             // Opcode 0  0  1  0  0  r  r  r
             // Decode the register, r
@@ -226,7 +230,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
@@ -234,8 +238,8 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
-        // SRA  r    (0xDDCBdd28 - 0xDDCBdd2F)
-        // SRA (HL)  (0xDDCBdd2E)
+        // SRA  r    (0xXDCBdd28 - 0xXDCBdd2F)
+        // SRA (HL)  (0xXDCBdd2E)
         case 0x28: case 0x29: case 0x2a: case 0x2b: case 0x2c: case 0x2d: case 0x2e: case 0x2f:
             // Opcode 0  0  1  0  1  r  r  r
             // Decode the register, r
@@ -266,7 +270,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             tempC = *r & 0x80;    // Save the sign bit
@@ -278,8 +282,8 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
 
         // Undocumented "Shift Left Set", sometimes listed as SLL "Shift Left Logical"
         // See article https://spectrumcomputing.co.uk/page.php?issue_id=333&page=51
-        // SLS r     (0xDDCBdd30 - 0xDDCBdd37)
-        // SLS (HL)  (0xDDCBdd36)
+        // SLS r     (0xXDCBdd30 - 0xXDCBdd37)
+        // SLS (HL)  (0xXDCBdd36)
         case 0x30: case 0x31: case 0x32: case 0x33: case 0x34: case 0x35: case 0x36: case 0x37:
             // Opcode 0  1  1  0  0  r  r  r
             // Decode the register, r
@@ -310,7 +314,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
@@ -319,8 +323,8 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
-        // SRL  r    (0xDDCBdd38 - 0xDDCBdd3F)
-        // SRL (HL)  (0xDDCBdd3E)
+        // SRL  r    (0xXDCBdd38 - 0xXDCBdd3F)
+        // SRL (HL)  (0xXDCBdd3E)
         case 0x38: case 0x39: case 0x3a: case 0x3b: case 0x3c: case 0x3d: case 0x3e: case 0x3f:
             // Opcode 0  0  1  0  1  r  r  r
             // Decode the register, r
@@ -351,7 +355,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
@@ -360,7 +364,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
             update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
-        // BIT b, r (0xDDCBdd40 - 0xDDCBdd7F)
+        // BIT b, r (0xXDCBdd40 - 0xXDCBdd7F)
         // BIT b, (HL)  (0xX6, 0xXE)
         case 0x40: case 0x41: case 0x42: case 0x43: case 0x44: case 0x45: case 0x46: case 0x47:
         case 0x48: case 0x49: case 0x4a: case 0x4b: case 0x4c: case 0x4d: case 0x4e: case 0x4f:
@@ -399,7 +403,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             // Decode the bit position, b
@@ -411,7 +415,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
             }
             break;
 
-        // SET b, r (0xDDCBddC0 - 0xDDCBddFF)
+        // SET b, r (0xXDCBddC0 - 0xXDCBddFF)
         // SET b, (HL)  (0xX6, 0xXE)
         case 0xc0: case 0xc1: case 0xc2: case 0xc3: case 0xc4: case 0xc5: case 0xc6: case 0xc7:
         case 0xc8: case 0xc9: case 0xca: case 0xcb: case 0xcc: case 0xcd: case 0xce: case 0xcf:
@@ -450,7 +454,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             // Decode the bit position, b
@@ -459,7 +463,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
             }
             break;
 
-        // RES b, r (0xDDCBdd80 - 0xDDCBddbF)
+        // RES b, r (0xXDCBdd80 - 0xXDCBddbF)
         // RES b, (HL)  (0xX6, 0xXE)
         case 0x80: case 0x81: case 0x82: case 0x83: case 0x84: case 0x85: case 0x86: case 0x87:
         case 0x88: case 0x89: case 0x8a: case 0x8b: case 0x8c: case 0x8d: case 0x8e: case 0x8f:
@@ -498,7 +502,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             // Decode the bit position, b
@@ -508,7 +512,7 @@ void Z80::execute_ix_bit_opcode() {  // IR[0,1,2] = 0xDDCBdd
             break;
 
         default: 
-            cout << "Execution not defined: 0xDDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+            cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
             break;
     }
 

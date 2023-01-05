@@ -128,8 +128,7 @@ class Z80 {
         void execute_misc_opcode();
         void execute_bit_opcode();
         void execute_ix_opcode();
-        void execute_ix_bit_opcode();
+        void execute_ix_iy_bit_opcode();
         void execute_iy_opcode();
-        void execute_iy_bit_opcode();
 };
 #endif
