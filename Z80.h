@@ -29,7 +29,7 @@ class Z80 {
 
         enum INST_TYPE {ADD, ADC, SUB, SBC, COMP, TEST, BIT, AND, OR, XOR, IO, NONE};
         enum FLAG_BITS { S_BIT = 0x80, Z_BIT = 0x40, X1_BIT = 0x20, H_BIT = 0x10, X2_BIT = 0x08, PV_BIT = 0x04, N_BIT = 0x02, C_BIT = 0x01};
-
+        enum INDEX_REG {IX_REGISTER, IY_REGISTER};
         // State variables
         bool Halt;
 
@@ -117,6 +117,8 @@ class Z80 {
         void clear_registers();
         void setFlag(FLAG_BITS f);
         void clearFlag(FLAG_BITS f);
+        unsigned short getIndexReg(INDEX_REG r);
+        void setIndexReg(INDEX_REG r, unsigned short v);
         void decode_main_instruction();
         void decode_misc_instruction();
         void decode_bit_instruction();
@@ -127,8 +129,7 @@ class Z80 {
         void execute_main_opcode();
         void execute_misc_opcode();
         void execute_bit_opcode();
-        void execute_ix_opcode();
+        void execute_index_opcode();
         void execute_ix_iy_bit_opcode();
-        void execute_iy_opcode();
 };
 #endif

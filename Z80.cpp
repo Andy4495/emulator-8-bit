@@ -306,3 +306,14 @@ void Z80::setSP(unsigned char msb, unsigned char lsb) {
 void Z80::setPC(unsigned char msb, unsigned char lsb) {
     PC = (msb<<8) + lsb;
 }
+
+unsigned short Z80::getIndexReg(INDEX_REG r) {
+  if (r == IX_REGISTER) return getIX();
+  else return getIY();
+}
+
+void Z80::setIndexReg(INDEX_REG r, unsigned short v) {
+  if (r == IX_REGISTER) setIX(v);
+  else setIY(v);
+}
+
