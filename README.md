@@ -13,7 +13,7 @@ There are many other open source emulators available. This emulator is not meant
 
 ## Work In Progress
 
-The emulator is not complete. The following major updates still need to be completed before I consider it a good first release:
+The emulator is not complete. The following updates still need to be completed before I consider it a good first release:
 
 - All opcodes have decoding and execution code implemented, with the exception of:
   - DAA instruction (opcode 0x27)
@@ -21,13 +21,6 @@ The emulator is not complete. The following major updates still need to be compl
   - DAA incomplete (H and N flags in particular may be a little tricky)
   - Flag updates for 16-bit ADD, SUB, ADC, SBC instructions (main, misc, IX, and IY)
   - Other cases (check all opcodes)
-- HALT state handler in main execute method
-  - Currently handled in the main emulator module, but should be part of the CPU class implementation
-  - HALT should act like a breakpoint
-- Automated test suite
-  - All valid opcodes
-  - Corner cases
-  - All flag update conditions
 
 The above items are planned to be completed before starting on the [Future Functionality](#future-functionality) items below.
 
@@ -124,6 +117,13 @@ The Z80 CPU is defined by a class (`Z80.h`). This class contains:
 - Support additional file formats such as S-Records which would allow specific memory locations to be defined by the file.
 - Interrupts (maskable and non-maskable)
 - Support additonal processor types
+- HALT state handler in main execute method
+  - Currently handled in the main emulator module, but should be part of the CPU class implementation
+  - HALT should act like a breakpoint
+- Automated test suite
+  - All valid opcodes
+  - Corner cases
+  - All flag update conditions
 
 ## References
 
