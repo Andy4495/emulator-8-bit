@@ -51,8 +51,10 @@ The Makefile also has the following targets defined:
 ```text
    make debug    # Adds -g to the compiler options to create debugging information
    make verbose  # Adds --verbose to the compiler and linker options
-   make clean    # Removes object and linker files
+   make clean    # Removes the executable, object, and linker files
 ```
+
+`make` can be run from either the top-level directory or the `src` folder.
 
 ## Implementation Details
 
