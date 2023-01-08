@@ -13,9 +13,10 @@ There are many other open source emulators available. This emulator is not meant
 
 ## Work In Progress
 
-The emulator is not complete. The following updates still need to be completed before I consider it a good first release:
+All opcodes have decoding and execution code implemented, but are not fully tested.
 
-- All opcodes have decoding and execution code implemented, but are not fully tested.
+The following updates still need to be completed before I consider it a good first release:
+
 - Flag update handling
   - H and N flags in particular
   - Flag updates for 16-bit ADD, SUB, ADC, SBC instructions (main, misc, IX, and IY)
