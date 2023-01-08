@@ -519,7 +519,6 @@ void Z80::execute_main_opcode() {
         // *****************************************************************************
         
         // DAA (0x27)
-        /// *** Need to implement *** ///
         case 0x27:
             adjustment = 0;
             upperN = (A & 0xf0) >> 4;
@@ -570,6 +569,7 @@ void Z80::execute_main_opcode() {
                     adjustment = 0x66;
                     setFlag(C_BIT);
             }
+            else
             // Case V
             if (((testFlag(N_BIT) == 1) && (testFlag(C_BIT) == 0) && (testFlag(H_BIT) == 1) && 
                 (upperN >= 0x0) && (upperN <= 0x8) && 
@@ -596,8 +596,8 @@ void Z80::execute_main_opcode() {
             else
             // Any combination beyond the above cases are not covered by the operation table for the DAA instruction
                 cout << "Undefined adjustment for DAA 0x27 - N:"   << (unsigned int) testFlag(N_BIT) <<
-                " C: " << (unsigned int) testFlag(C_BIT) << " H: " << testFlag(H_BIT) <<
-                "A: 0x" << (unsigned int) A << endl;
+                " C: " << (unsigned int) testFlag(C_BIT) << " H: " << (unsigned int) testFlag(H_BIT) <<
+                " A: 0x" << (unsigned int) A << endl;
 
             update_flags(S_BIT|Z_BIT|PV_BIT, BIT, A, 0);
             break;
