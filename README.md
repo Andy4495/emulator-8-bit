@@ -15,10 +15,9 @@ There are many other open source emulators available. This emulator is not meant
 
 The emulator is not complete. The following updates still need to be completed before I consider it a good first release:
 
-- All opcodes have decoding and execution code implemented, with the exception of:
-  - DAA instruction (opcode 0x27)
+- All opcodes have decoding and execution code implemented, but are not fully tested.
 - Flag update handling
-  - DAA incomplete (H and N flags in particular may be a little tricky)
+  - H and N flags in particular
   - Flag updates for 16-bit ADD, SUB, ADC, SBC instructions (main, misc, IX, and IY)
   - Other cases (check all opcodes)
 

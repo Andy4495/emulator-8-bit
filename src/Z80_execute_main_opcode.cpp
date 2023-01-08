@@ -19,6 +19,9 @@ void Z80::execute_main_opcode() {
     unsigned char *r = nullptr, *r_ = nullptr;   // Temporary storage when decoding register field in opcode
     unsigned char Temp;
     unsigned short Temp16;
+    unsigned char adjustment;  // used by DAA
+    unsigned char upperN;      // used by DAA
+    unsigned char lowerN;      // used by DAA
 
     switch (IR[0]) {
 
@@ -518,6 +521,85 @@ void Z80::execute_main_opcode() {
         // DAA (0x27)
         /// *** Need to implement *** ///
         case 0x27:
+            adjustment = 0;
+            upperN = (A & 0xf0) >> 4;
+            lowerN =  A & 0x0f;
+            // Case I
+            if ((testFlag(C_BIT) == 0) && (testFlag(H_BIT) == 0) && 
+                (upperN >= 0x0) && (upperN <= 0x9) && 
+                (lowerN >= 0x0) && (lowerN <= 0x9)) {
+                    adjustment = 0x00;
+                    clearFlag(C_BIT);
+            }
+            else
+            // Case II
+            if (((testFlag(C_BIT) == 0) && (testFlag(H_BIT) == 0) && 
+                (upperN >= 0x0) && (upperN <= 0x8) && 
+                (lowerN >= 0xa) && (lowerN <= 0xf)) || 
+               ((testFlag(C_BIT) == 0) && (testFlag(H_BIT) == 1) && 
+                (upperN >= 0x0) && (upperN <= 0x9) && 
+                (lowerN >= 0x0) && (lowerN <= 0x3))) {
+                    adjustment = 0x06;
+                    clearFlag(C_BIT);
+            }
+            else
+            // Case III
+            if (((testFlag(N_BIT) == 0) && (testFlag(C_BIT) == 0) && (testFlag(H_BIT) == 0) && 
+                (upperN >= 0xa) && (upperN <= 0xf) && 
+                (lowerN >= 0x0) && (lowerN <= 0x9)) || 
+               ((testFlag(C_BIT) == 1) && (testFlag(H_BIT) == 0) && 
+                (upperN >= 0x0) && (upperN <= 0x2) && 
+                (lowerN >= 0x0) && (lowerN <= 0x9))) {
+                    adjustment = 0x60;
+                    setFlag(C_BIT);
+            }
+            else
+            // Case IV
+            if (((testFlag(N_BIT) == 0) && (testFlag(C_BIT) == 0) && (testFlag(H_BIT) == 0) && 
+                (upperN >= 0x9) && (upperN <= 0xf) && 
+                (lowerN >= 0xa) && (lowerN <= 0xf)) || 
+               ((testFlag(N_BIT) == 0) && (testFlag(C_BIT) == 0) && (testFlag(H_BIT) == 1) && 
+                (upperN >= 0xa) && (upperN <= 0xf) && 
+                (lowerN >= 0x0) && (lowerN <= 0x3)) || 
+               ((testFlag(C_BIT) == 1) && (testFlag(H_BIT) == 0) && 
+                (upperN >= 0x0) && (upperN <= 0x2) && 
+                (lowerN >= 0xa) && (lowerN <= 0xf)) ||
+               ((testFlag(C_BIT) == 1) && (testFlag(H_BIT) == 1) && 
+                (upperN >= 0x0) && (upperN <= 0x3) && 
+                (lowerN >= 0x0) && (lowerN <= 0x3))) {
+                    adjustment = 0x66;
+                    setFlag(C_BIT);
+            }
+            // Case V
+            if (((testFlag(N_BIT) == 1) && (testFlag(C_BIT) == 0) && (testFlag(H_BIT) == 1) && 
+                (upperN >= 0x0) && (upperN <= 0x8) && 
+                (lowerN >= 0x6) && (lowerN <= 0xf))) {
+                    adjustment = 0xFA;
+                    clearFlag(C_BIT);
+            }
+            else
+            // Case VI
+            if (((testFlag(N_BIT) == 1) && (testFlag(C_BIT) == 1) && (testFlag(H_BIT) == 0) && 
+                (upperN >= 0x7) && (upperN <= 0xf) && 
+                (lowerN >= 0x0) && (lowerN <= 0x9))) {
+                    adjustment = 0xA0;
+                    setFlag(C_BIT);
+            }
+            else
+            // Case VII
+            if (((testFlag(N_BIT) == 1) && (testFlag(C_BIT) == 1) && (testFlag(H_BIT) == 1) && 
+                (upperN >= 0x6) && (upperN <= 0x7) && 
+                (lowerN >= 0x6) && (lowerN <= 0xf))) {
+                    adjustment = 0xA0;
+                    setFlag(C_BIT);
+            }
+            else
+            // Any combination beyond the above cases are not covered by the operation table for the DAA instruction
+                cout << "Undefined adjustment for DAA 0x27 - N:"   << (unsigned int) testFlag(N_BIT) <<
+                " C: " << (unsigned int) testFlag(C_BIT) << " H: " << testFlag(H_BIT) <<
+                "A: 0x" << (unsigned int) A << endl;
+
+            update_flags(S_BIT|Z_BIT|PV_BIT, BIT, A, 0);
             break;
 
         // CPL (0x2F)
