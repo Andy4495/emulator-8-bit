@@ -23,9 +23,9 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
     // this emulator only supports Z80, so Z180 instructions are left unimplemented.
 
     unsigned char *r  = nullptr;   // Temporary storage when decoding register field in opcode
-    unsigned char *r_ = nullptr;
     unsigned short Temp16;
     unsigned char  Temp8;
+    unsigned char  TempC;
 
     switch (IR[1]) {
 
@@ -94,13 +94,22 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                     break;
             }
             *r = in[C];
-            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, IO, *r, 0);
+            update_S(*r);
+            update_Z(*r);
+            clearFlag(H_BIT);
+            update_P(*r);
+            clearFlag(N_BIT);
             break;
         
         // IN (C) (0xED70)
         // Undocumented. Reads input port pointed to by C and updates flags only; does not retain value read from port
         case 0x70:
-            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, IO, *r, 0);
+            Temp8 = in[C];
+            update_S(Temp8);
+            update_Z(Temp8);
+            clearFlag(N_BIT);
+            update_P(Temp8);
+            clearFlag(H_BIT);
             break;
 
         // INI (0xEDA2)
@@ -259,21 +268,23 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         // LD A, I (0xED57)
         case 0x57:
             A = I;
-            /// update_flags(S_BIT|Z_BIT, ADD, A, 0);
+            update_S(A);
+            update_Z(A);
             clearFlag(H_BIT);
-            clearFlag(N_BIT);
             if (IFF2 == 1) setFlag(PV_BIT);
             else clearFlag(PV_BIT);
+            clearFlag(N_BIT);
             break;
 
         // LD A, R (0xED5F)
         case 0x5f:
             A = R;
-            /// update_flags(S_BIT|Z_BIT, ADD, A, 0);
+            update_S(A);
+            update_Z(A);
             clearFlag(H_BIT);
-            clearFlag(N_BIT);
             if (IFF2 == 1) setFlag(PV_BIT);
             else clearFlag(PV_BIT);
+            clearFlag(N_BIT);
             break;
 
         // LD I, A (0xED47)
@@ -365,7 +376,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             clearFlag(N_BIT);
             break;
 
-        // LDIR (0xEDB8)
+        // LDDR (0xEDB8)
         case 0xb8:
             memory[(D>>8) + E] = memory[(H>>8) + L];
             E--;
@@ -385,46 +396,53 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // CPI (0xEDA1)
         case 0xa1:
-            /// update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            update_S(A - memory[getHL()]);
+            update_Z(A - memory[getHL()]);
             L++;
             if (L == 0) H++;
             C--;
             if (C == 0xff) B--;
             if (B | C) setFlag(PV_BIT);
             else clearFlag(PV_BIT);
+            /// Implement H flag
             setFlag(N_BIT);
             break;
 
         // CPIR (0xEDB1)
         case 0xb1:
-            /// update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            update_S(A - memory[getHL()]);
+            update_Z(A - memory[getHL()]);
             L++;
             if (L == 0) H++;
             C--;
             if (C == 0xff) B--;
             if (B | C) {
                 setFlag(PV_BIT);
-                PC -=2;
+                PC -= 2;
             }
             else clearFlag(PV_BIT);
+            /// implement H flag
             setFlag(N_BIT);
             break;
             
         // CPD (0xEDA9)
         case 0xa9:
-            /// update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            update_S(A - memory[getHL()]);
+            update_Z(A - memory[getHL()]);
             L--;
             if (L == 0xff) H--;
             C--;
             if (C == 0xff) B--;
             if (B | C) setFlag(PV_BIT);
             else clearFlag(PV_BIT);
+            /// Implement H flag
             setFlag(N_BIT);
             break;
 
         // CPDR (0xEDB9)
         case 0xb9:
-            /// update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            update_S(A - memory[getHL()]);
+            update_Z(A - memory[getHL()]);
             L--;
             if (L == 0xff) H--;
             C--;
@@ -435,14 +453,20 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             }
             else clearFlag(PV_BIT);
             setFlag(N_BIT);
+            /// Implement H flag
             break;
 
         // NEG (0xED44)
         case 0x44:
             if (A == 0x80) setFlag(PV_BIT);
             else clearFlag(PV_BIT);
+            if (A) setFlag(C_BIT);
+            else clearFlag(C_BIT);
             A = 0 - A;
-            /// update_flags(S_BIT|Z_BIT|H_BIT|N_BIT|C_BIT, SUB, 0, A);
+            update_S(A);
+            update_Z(A);
+            /// Implement H flag
+            setFlag(N_BIT);
             break;
 
         // IM 0 (0xED46)
@@ -472,12 +496,16 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                 case 0b11: setHL(getHL() + SP      + testFlag(C_BIT)); break;
                 default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
             }
-            /// Need to implement condition bits ///
+            if (getHL() & 0x8000) setFlag(S_BIT); else clearFlag(S_BIT);
+            if (getHL() == 0)     setFlag(Z_BIT); else clearFlag(Z_BIT);
+            /// Need to implemnt H flag
+            /// Need to implement 16-bit overflow check
             break;
 
         // SBC HL, ss  (0x42, 0x52, 0x62, 0x72)
         case 0x42: case 0x52: case 0x62: case 0x72:
             Temp16 = getHL();
+            TempC  = testFlag(C_BIT);
             // Determine which register we are working on:
             // Opcode 0  1  s  s  0  0  1  0
             switch ((IR[1] & 0x30) >> 4) {
@@ -487,7 +515,10 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                 case 0b11: setHL(getHL() - SP      - testFlag(C_BIT)); break;
                 default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
             }
-            /// Need to implement condition bits ///
+            if (getHL() & 0x8000) setFlag(S_BIT); else clearFlag(S_BIT);
+            if (getHL() == 0)     setFlag(Z_BIT); else clearFlag(Z_BIT);
+            /// Need to implemnt H flag
+            /// Need to implement 16-bit overflow check
             break;
 
         // RLD (0xED6F)
@@ -499,9 +530,11 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             else clearFlag(S_BIT);
             if (A == 0) setFlag(Z_BIT);
             else clearFlag(Z_BIT);
+            update_S(A);
+            update_Z(A);
             clearFlag(H_BIT);
+            update_P(A);
             clearFlag(N_BIT);
-            /// update_flags(PV_BIT, BIT, A, 0);
             break;
 
         // RRD (0xED67)
@@ -509,13 +542,11 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             Temp8 = A; 
             A = (A & 0xf0) | (memory[getHL()] & 0x0f);
             memory[getHL()] = ((memory[getHL()] & 0xf0) >> 4) + ((Temp8 & 0x0f) << 4);
-            if (A & 0x80) setFlag(S_BIT);
-            else clearFlag(S_BIT);
-            if (A == 0) setFlag(Z_BIT);
-            else clearFlag(Z_BIT);
+            update_S(A);
+            update_Z(A);
             clearFlag(H_BIT);
+            update_P(A);
             clearFlag(N_BIT);
-            /// update_flags(PV_BIT, BIT, A, 0);
             break;
 
         // RETI (0xED4D)

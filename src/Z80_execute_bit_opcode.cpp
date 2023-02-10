@@ -58,7 +58,11 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r << 1;
             *r = (*r & 0xFE) | testFlag(C_BIT);
-            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            update_S(*r);
+            update_Z(*r);
+            clearFlag(H_BIT);
+            update_P(*r);
+            clearFlag(N_BIT);
             break;
 
         // RL r    (0xCB10 - 0xCB17)
@@ -100,11 +104,15 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r << 1;
             *r = (*r & 0xFE) | tempC;
-            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            update_S(*r);
+            update_Z(*r);
+            clearFlag(H_BIT);
+            update_P(*r);
+            clearFlag(N_BIT);
             break;
 
         // RRC r     (0xCB08 - 0xCB0f)
-        // RLC (HL)  (0xCB0e)
+        // RRC (HL)  (0xCB0e)
         case 0x08: case 0x09: case 0x0a: case 0x0b: case 0x0c: case 0x0d: case 0x0e: case 0x0f:
             // Opcode 0  0  0  0  1  r  r  r
             // Decode the register, r
@@ -141,7 +149,11 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
             *r = (*r & 0x7f) | (testFlag(C_BIT) << 7);
-            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            update_S(*r);
+            update_Z(*r);
+            clearFlag(H_BIT);
+            update_P(*r);
+            clearFlag(N_BIT);
             break;
 
         // RR  r    (0xCB18 - 0xCB1F)
@@ -183,7 +195,11 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
             *r = (*r & 0x7F) | (tempC << 7);
-            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            update_S(*r);
+            update_Z(*r);
+            clearFlag(H_BIT);
+            update_P(*r);
+            clearFlag(N_BIT);
             break;
 
         // SLA r     (0xCB20 - 0xCB27)
@@ -223,7 +239,11 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             }
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r << 1;
-            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            update_S(*r);
+            update_Z(*r);
+            clearFlag(H_BIT);
+            update_P(*r);
+            clearFlag(N_BIT);
             break;
 
         // SRA  r    (0xCB28 - 0xCB2F)
@@ -265,7 +285,11 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
             *r = (*r & 0x7F) | tempC;
-            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            update_S(*r);
+            update_Z(*r);
+            clearFlag(H_BIT);
+            update_P(*r);
+            clearFlag(N_BIT);
             break;
 
         // Undocumented "Shift Left Set", sometimes listed as SLL "Shift Left Logical"
@@ -308,7 +332,11 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r << 1;
             *r |= 0x01;
-            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            update_S(*r);
+            update_Z(*r);
+            clearFlag(N_BIT);
+            update_P(*r);
+            clearFlag(H_BIT);
             break;
 
         // SRL  r    (0xCB38 - 0xCB3F)
@@ -349,7 +377,11 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
             *r = (*r & 0x7F);
-            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            clearFlag(S_BIT);
+            update_Z(*r);
+            clearFlag(H_BIT);
+            update_P(*r);
+            clearFlag(N_BIT);
             break;
 
         // BIT b, r (0xCB40 - 0xCB7F)

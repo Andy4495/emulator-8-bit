@@ -87,10 +87,9 @@ class Z80 {
         unsigned char get_next_byte();
         void execute();
         void print_fetched_instruction();
-///        void update_flags(unsigned char f_list, INST_TYPE t, unsigned char val1, unsigned char val2);
         void update_C(INST_TYPE t,  unsigned short val1, unsigned short val2);
-///        void update_N(INST_TYPE t);
-        void update_PV(INST_TYPE t, unsigned char val1, unsigned char val2);
+        void update_P(unsigned char v);
+        void update_V(INST_TYPE t, unsigned char val1, unsigned char val2);
 ///        void update_H(INST_TYPE t,  unsigned char val, unsigned char val2);
         void update_Z(unsigned char val);
         void update_S(unsigned char val);

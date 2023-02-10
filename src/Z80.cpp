@@ -125,32 +125,85 @@ void Z80::update_C(INST_TYPE t, unsigned short val1, unsigned short val2) {
     }
 }
 
-void Z80::update_PV(INST_TYPE t, unsigned char val1, unsigned char val2) {
+void Z80::update_V(INST_TYPE t, unsigned char val1, unsigned char val2) {
     switch (t) {
         case ADD:
-          if ((val1 & 0x80) != (val2 & 0x80)) clearFlag(PV_BIT);   // operands are diffent signs, no overflow
-          else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) setFlag(PV_BIT);
-          else clearFlag(PV_BIT);
+            // operands with different signs --> no overflow
+            if ((val1 & 0x80) != (val2 & 0x80)) clearFlag(PV_BIT);
+            else {
+                // both operands negative, result positive --> overflow
+                if ((val1 & 0x80))
+                    if ((val1 + val2) & 0x80) clearFlag(PV_BIT);
+                    else setFlag(PV_BIT);
+                else {
+                    // both operands positive, result negative --> overflow
+                    if ((val1 + val2) & 0x80) setFlag(PV_BIT);
+                    else clearFlag(PV_BIT);
+                }
+            }
           break;
         case ADC:
+            // operands with different signs --> no overflow
+            if ((val1 & 0x80) != (val2 & 0x80)) clearFlag(PV_BIT);
+            else {
+                // both operands negative, result positive --> overflow
+                if ((val1 & 0x80))
+                    if ((val1 + val2 + testFlag(C_BIT)) & 0x80) clearFlag(PV_BIT);
+                    else setFlag(PV_BIT);
+                else {
+                    // both operands positive, result negative --> overflow
+                    if ((val1 + val2 + testFlag(C_BIT)) & 0x80) setFlag(PV_BIT);
+                    else clearFlag(PV_BIT);
+                }
+            }
           break;
         case SUB:
-          if ((val1 & 0x80) == (val2 & 0x80)) clearFlag(PV_BIT);   // operands are same signs, no overflow
-          else if (((int) val1 + (int) val2 > 127) || ((int) val1 + (int) val2 < -128)) setFlag(PV_BIT);
-          else clearFlag(PV_BIT);
-          break;
+            // operands are same signs, no overflow
+            if ((val1 & 0x80) == (val2 & 0x80)) clearFlag(PV_BIT);
+            // with different signs, need to check result
+            else if (((int) val1 - (int) val2 > 127) || ((int) val1 - (int) val2 < -128)) setFlag(PV_BIT);
+            else clearFlag(PV_BIT);
+            break;
         case SBC:
-          break;
+            // operands are same signs, no overflow
+            if ((val1 & 0x80) == (val2 & 0x80)) clearFlag(PV_BIT);
+            // with different signs, need to check result
+            else if (((int) val1 - (int) val2 - testFlag(C_BIT) > 127)   || 
+                     ((int) val1 - (int) val2 - testFlag(C_BIT) < -128)) {
+                        setFlag(PV_BIT);
+                     }
+            else clearFlag(PV_BIT);
+            break;
         case COMP:
-          break;
+            // operands are same signs, no overflow
+            if ((val1 & 0x80) == (val2 & 0x80)) clearFlag(PV_BIT);
+            // with different signs, need to check result
+            else if (((int) val1 - (int) val2 > 127) || ((int) val1 - (int) val2 < -128)) setFlag(PV_BIT);
+            else clearFlag(PV_BIT);
+            break;
         case TEST:
           break;
         case BIT:
-          /// Implement even/odd parity check
           break;
         default:  // NONE - Flag not affected
           break;
     }
+}
+
+void Z80::update_P(unsigned char v) {
+    int count = 0;
+
+    if (v & 0x01) count++;
+    if (v & 0x02) count++;
+    if (v & 0x04) count++;
+    if (v & 0x08) count++;
+    if (v & 0x10) count++;
+    if (v & 0x20) count++;
+    if (v & 0x40) count++;
+    if (v & 0x80) count++;
+
+    if (count % 2) clearFlag(PV_BIT);  // odd
+    else           setFlag(PV_BIT);    // even
 }
 
 void Z80::update_Z(unsigned char val) {

@@ -273,24 +273,26 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: ADD A, r" << endl; break;
             }
+            update_V(ADD, A, *r);
             update_C(ADD, A, *r);
             if ((A & 0xf) + (*r & 0xf) > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
             A += *r;
             update_S(A);
             update_Z(A);
+            /// Implement H Flag
             clearFlag(N_BIT);
-            /// Add Overflow (P/V) update
             break;
 
         // ADD A, n    (0xC6)
         case 0xc6:
+            update_V(ADD, A, IR[1]);
             update_C(ADD, A, IR[1]);
             if ((A & 0xf) + (IR[1] & 0xf) > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
             A += IR[1];
             update_S(A);
             update_Z(A);
+            /// Implement H Flag
             clearFlag(N_BIT);
-            /// Add Overflow (P/V) update
             break;
 
         // ADC A, r instructions (0x88 - 0x8D, 0x8F)
@@ -311,25 +313,27 @@ void Z80::execute_main_opcode() {
                 default: cout << "Invalid opcode: ADC A, r" << endl; break;
             }
             Temp = testFlag(C_BIT);
-            update_C(ADD, A, *r);
+            update_V(ADC, A, *r);
+            update_C(ADC, A, *r);
             if ((A & 0xf) + (*r & 0xf) + Temp > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
             A = A + *r + Temp;
             update_S(A);
             update_Z(A);
+            /// Implement H flag
             clearFlag(N_BIT);
-            /// Add Overflow (P/V) update
             break;
 
         // ADC A, n    (0xCE)
         case 0xce:
             Temp = testFlag(C_BIT);
-            update_C(ADD, A, IR[1]);
+            update_V(ADC, A, IR[1]);
+            update_C(ADC, A, IR[1]);
             if ((A & 0xf) + (IR[1] & 0xf) + Temp > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
             A = A + IR[1] + Temp;
             update_S(A);
             update_Z(A);
+            /// Implement H flag
             clearFlag(N_BIT);
-            /// Add Overflow (P/V) update
             break;
 
         // SUB A, r instructions (0x90 - 0x95, 0x97)
@@ -349,22 +353,22 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: SUB A, r" << endl; break;
             }
+            update_V(SUB, A, *r);
             update_C(SUB, A, *r);
             A = A - *r;
             update_S(A);
             update_Z(A);
-            /// Overflow (P/V) update
             /// Half carry (H) update
             setFlag(N_BIT); 
             break;
 
         // SUB A, n    (0xD6)
         case 0xd6:
+            update_V(SUB, A, IR[1]);
             update_C(SUB, A, IR[1]);
             A = A - IR[1];
             update_S(A);
             update_Z(A);
-            /// Overflow (P/V) update
             /// Half carry (H) update
             setFlag(N_BIT); 
             break;
@@ -387,24 +391,24 @@ void Z80::execute_main_opcode() {
                 default: cout << "Invalid opcode: SBC A, r" << endl; break;
             }
             Temp = testFlag(C_BIT);
+            update_V(SBC, A, *r);
             update_C(SBC, A, *r);
             A = A - *r - Temp;
             update_S(A);
             update_Z(A);
             /// add Half carry (H)
-            /// add overflow (P/V)
             setFlag(N_BIT);
             break;
 
         // SBC A, n    (0xDE)
         case 0xde:
             Temp = testFlag(C_BIT);
+            update_V(SBC, A, IR[1]);
             update_C(SBC, A, IR[1]);
             A = A - IR[1] - Temp;
             update_S(A);
             update_Z(A);
             /// add Half carry (H)
-            /// add overflow (P/V)
             setFlag(N_BIT);
             break;
 
@@ -429,7 +433,7 @@ void Z80::execute_main_opcode() {
             update_S(A);
             update_Z(A);
             setFlag(H_BIT);
-            /// Add Overflow (P/V) update
+            update_P(A);
             clearFlag(N_BIT);
             clearFlag(C_BIT);
             break;
@@ -440,7 +444,7 @@ void Z80::execute_main_opcode() {
             update_S(A);
             update_Z(A);
             setFlag(H_BIT);
-            /// Add Overflow (P/V) update
+            update_P(A);
             clearFlag(N_BIT);
             clearFlag(C_BIT);
             break;
@@ -466,7 +470,7 @@ void Z80::execute_main_opcode() {
             update_S(A);
             update_Z(A);
             clearFlag(H_BIT);
-            /// Add Overflow (P/V) update
+            update_P(A);
             clearFlag(N_BIT);
             clearFlag(C_BIT);
             break;
@@ -477,7 +481,7 @@ void Z80::execute_main_opcode() {
             update_S(A);
             update_Z(A);
             clearFlag(H_BIT);
-            /// Add Overflow (P/V) update
+            update_P(A);
             clearFlag(N_BIT);
             clearFlag(C_BIT);
             break;
@@ -503,7 +507,7 @@ void Z80::execute_main_opcode() {
             update_S(A);
             update_Z(A);
             clearFlag(H_BIT);
-            /// Add Overflow (P/V) update
+            update_P(A);
             clearFlag(N_BIT);
             clearFlag(C_BIT);
             break;
@@ -514,7 +518,7 @@ void Z80::execute_main_opcode() {
             update_S(A);
             update_Z(A);
             clearFlag(H_BIT);
-            /// Add Parity (P/V) update
+            update_P(A);
             clearFlag(N_BIT);
             clearFlag(C_BIT);
             break;
@@ -540,7 +544,7 @@ void Z80::execute_main_opcode() {
             update_S(A - *r);
             update_Z(A - *r);
             /// Add Half Carry (H)
-            /// Add Overflow (P/V)
+            update_V(SUB, A, *r);
             setFlag(N_BIT);
             update_C(SUB, A, *r);
             break;
@@ -551,7 +555,7 @@ void Z80::execute_main_opcode() {
             update_S(A - IR[1]);
             update_Z(A - IR[1]);
             /// Add Half Carry (H)
-            /// Add Overflow (P/V)
+            update_V(SUB, A, IR[1]);
             setFlag(N_BIT);
             update_C(SUB, A, IR[1]);
             break;
@@ -691,7 +695,7 @@ void Z80::execute_main_opcode() {
                 " A: 0x" << (unsigned int) A << endl;
             update_S(A);
             update_Z(A);
-            /// Add Overflow (P/V) update
+            update_P(A);
             break;
 
         // CPL (0x2F)
@@ -761,7 +765,10 @@ void Z80::execute_main_opcode() {
                 case 0b11: setHL(getHL() + SP);      break;
                 default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
             }
-            /// IMplement H bit update
+            if (getHL() & 0x8000) setFlag(S_BIT); else clearFlag(S_BIT);
+            if (getHL()) clearFlag(Z_BIT); else setFlag(Z_BIT);
+            /// IMplement H bit update 16 bit
+            /// Implement V bit 16 bit
             clearFlag(N_BIT);
             /// IMplement C bit update
             break;

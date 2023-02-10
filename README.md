@@ -18,12 +18,11 @@ All opcodes have decoding and execution code implemented, but are not fully test
 The following updates still need to be completed before I consider it a good first release:
 
 - Flag update handling
-  - H and N flags in particular
+  - Implement H flag handler and update affected opcodes
   - Flag updates for 16-bit ADD, SUB, ADC, SBC instructions (main, misc, IX, and IY)
-  - Lines with `/// update_flags` need updates
-    - Review Z80.h and Z80.cpp-- changes to signatures for the various update_flags() methods
+    - 16 bit overflow check (8-bit overflow check implemented)
   - Other cases (check all opcodes)
-  - Clean up compiler warnings
+  - Clean up compiler warnings (if any)
 
 The above items are planned to be completed before starting on the [Future Functionality](#future-functionality) items below.
 
