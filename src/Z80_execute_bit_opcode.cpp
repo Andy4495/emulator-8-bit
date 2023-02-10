@@ -58,7 +58,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r << 1;
             *r = (*r & 0xFE) | testFlag(C_BIT);
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // RL r    (0xCB10 - 0xCB17)
@@ -100,7 +100,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r << 1;
             *r = (*r & 0xFE) | tempC;
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // RRC r     (0xCB08 - 0xCB0f)
@@ -141,7 +141,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
             *r = (*r & 0x7f) | (testFlag(C_BIT) << 7);
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // RR  r    (0xCB18 - 0xCB1F)
@@ -183,7 +183,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
             *r = (*r & 0x7F) | (tempC << 7);
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // SLA r     (0xCB20 - 0xCB27)
@@ -223,7 +223,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             }
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r << 1;
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // SRA  r    (0xCB28 - 0xCB2F)
@@ -265,7 +265,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
             *r = (*r & 0x7F) | tempC;
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // Undocumented "Shift Left Set", sometimes listed as SLL "Shift Left Logical"
@@ -308,7 +308,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r << 1;
             *r |= 0x01;
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // SRL  r    (0xCB38 - 0xCB3F)
@@ -349,7 +349,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
             *r = (*r & 0x7F);
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // BIT b, r (0xCB40 - 0xCB7F)

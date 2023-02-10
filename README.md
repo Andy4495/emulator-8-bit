@@ -20,7 +20,10 @@ The following updates still need to be completed before I consider it a good fir
 - Flag update handling
   - H and N flags in particular
   - Flag updates for 16-bit ADD, SUB, ADC, SBC instructions (main, misc, IX, and IY)
+  - Lines with `/// update_flags` need updates
+    - Review Z80.h and Z80.cpp-- changes to signatures for the various update_flags() methods
   - Other cases (check all opcodes)
+  - Clean up compiler warnings
 
 The above items are planned to be completed before starting on the [Future Functionality](#future-functionality) items below.
 
@@ -129,8 +132,9 @@ The Z80 CPU is defined by a class (`Z80.h`). This class contains:
 
 ## References
 
+- Z80 [User Manual][13]
+  - **Note**: The Z80 User Manual has many errors, ambiguities, and inconsistencies. It is sometimes necessary to consult other references (or experiment on an actual chip) to determine the correct behavior for certain opcodes.
 - [Z80 Info][5]: Comprehensive source of Z80 information: hardware, compilers, assemblers, complers
-- Z80 [user manual][13]
 - Z80 [opcode table][4]
 - Z80 undocumented opcodes [writeup][18]
 - zasm - Z80 assembler: [online version][6] and [local install version][7]

@@ -104,63 +104,23 @@ void Z80::print_fetched_instruction() {
     cout << instr_string << endl;
 }
 
-void Z80::update_flags(unsigned char f_list, INST_TYPE t, unsigned char val1, unsigned char val2) {
-    if (f_list & S_BIT) {
-        update_S(t, val1);
-    }
-    if (f_list & Z_BIT) {
-        update_Z(t, val1);
-    }
-    if (f_list & H_BIT) {
-        update_H(t, val1, val2);
-    }
-    if (f_list & PV_BIT) {
-        update_PV(t, val1, val2);
-    }
-    if (f_list & N_BIT) {
-        update_N(t);
-    }
-    if (f_list & C_BIT) {
-        update_C(t, val1);
-    }
-}
-
 // Methods for updating the various bits in the Flags register
-void Z80::update_C(INST_TYPE t, unsigned char val) {
+void Z80::update_C(INST_TYPE t, unsigned short val1, unsigned short val2) {
     switch (t) {
         case ADD:
-          break;
+          if ((val1 + val2) & 0x0100) setFlag(C_BIT); else clearFlag(C_BIT);
         case ADC:
-          break;
-        case SUB:
-          break;
-        case SBC:
+          if ((val1 + val2 + testFlag(C_BIT)) & 0x0100) setFlag(C_BIT); else clearFlag(C_BIT);
           break;
         case COMP:
-          break;
-        case TEST:
-          break;
-        case BIT:
-          break;
-        default:  // NONE - Flag not affected
-          break;
-    }
-}
-
-void Z80::update_N(INST_TYPE t) {
-    switch (t) {
-        case ADD:
-        case ADC:
-        case BIT:
-          clearFlag(N_BIT);
-          break;
         case SUB:
-        case SBC:
-          setFlag(N_BIT);
-          break;
-        case COMP:
         case TEST:
-        default:  // NONE - Flag not affected
+          if (val2 > val1) setFlag(C_BIT); else clearFlag(C_BIT);
+          break;
+        case SBC:
+          if ((val2 + testFlag(C_BIT)) > val1) setFlag(C_BIT); else clearFlag(C_BIT);
+          break;
+        default:  // Instruction type not supported
           break;
     }
 }
@@ -193,65 +153,14 @@ void Z80::update_PV(INST_TYPE t, unsigned char val1, unsigned char val2) {
     }
 }
 
-void Z80::update_H(INST_TYPE t, unsigned char val1, unsigned char val2) {
-    // It is important that the calling function masks val so that it is only a 4-bit value
-    switch (t) {
-        case ADD:
-          if (((val1 & 0x0f) + (val2 &0x0f)) > 0x0f) setFlag(H_BIT); else clearFlag(H_BIT);
-          break;
-        case ADC:
-          break;
-        case SUB:
-          if ((val1 & 0xf) < (val2 & 0x0f)) setFlag(H_BIT); else clearFlag(H_BIT);
-          break;
-        case SBC:
-          break;
-        case COMP:
-          break;
-        case TEST:
-          break;
-        case BIT: 
-          clearFlag(H_BIT); 
-          break;
-        default:  // NONE - Flag not affected
-          break;
-    }
+void Z80::update_Z(unsigned char val) {
+    if (val == 0) setFlag(Z_BIT); 
+    else clearFlag(Z_BIT);
 }
 
-void Z80::update_Z(INST_TYPE t, unsigned char val) {
-    switch (t) {
-        case ADD:
-        case ADC:
-        case SUB:
-        case SBC:
-        case BIT:
-          if (val == 0) setFlag(Z_BIT); else clearFlag(Z_BIT);
-          break;
-        case COMP:
-          break;
-        case TEST:
-          break;
-        default:  // NONE - Flag not affected
-          break;
-    }
-}
-
-void Z80::update_S(INST_TYPE t, unsigned char val) {
-    switch (t) {
-        case ADD:
-        case ADC:
-        case SUB:
-        case SBC:
-        case BIT:
-          if (val & 0x80) setFlag(S_BIT); else clearFlag(S_BIT);
-          break;
-        case COMP:
-          break;
-        case TEST:
-          break;
-        default:  // NONE - Flag not affected
-          break;
-    }
+void Z80::update_S(unsigned char val) {
+    if (val & 0x80) setFlag(S_BIT); 
+    else clearFlag(S_BIT);
 }
 
 unsigned short Z80::getIX() {

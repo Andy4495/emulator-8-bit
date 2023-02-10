@@ -94,13 +94,13 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                     break;
             }
             *r = in[C];
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, IO, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, IO, *r, 0);
             break;
         
         // IN (C) (0xED70)
         // Undocumented. Reads input port pointed to by C and updates flags only; does not retain value read from port
         case 0x70:
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, IO, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, IO, *r, 0);
             break;
 
         // INI (0xEDA2)
@@ -259,7 +259,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         // LD A, I (0xED57)
         case 0x57:
             A = I;
-            update_flags(S_BIT|Z_BIT, ADD, A, 0);
+            /// update_flags(S_BIT|Z_BIT, ADD, A, 0);
             clearFlag(H_BIT);
             clearFlag(N_BIT);
             if (IFF2 == 1) setFlag(PV_BIT);
@@ -269,7 +269,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         // LD A, R (0xED5F)
         case 0x5f:
             A = R;
-            update_flags(S_BIT|Z_BIT, ADD, A, 0);
+            /// update_flags(S_BIT|Z_BIT, ADD, A, 0);
             clearFlag(H_BIT);
             clearFlag(N_BIT);
             if (IFF2 == 1) setFlag(PV_BIT);
@@ -385,7 +385,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // CPI (0xEDA1)
         case 0xa1:
-            update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            /// update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
             L++;
             if (L == 0) H++;
             C--;
@@ -397,7 +397,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // CPIR (0xEDB1)
         case 0xb1:
-            update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            /// update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
             L++;
             if (L == 0) H++;
             C--;
@@ -412,7 +412,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             
         // CPD (0xEDA9)
         case 0xa9:
-            update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            /// update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
             L--;
             if (L == 0xff) H--;
             C--;
@@ -424,7 +424,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // CPDR (0xEDB9)
         case 0xb9:
-            update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
+            /// update_flags(S_BIT|H_BIT|Z_BIT, SUB, A, memory[(H>>8) + L]);
             L--;
             if (L == 0xff) H--;
             C--;
@@ -442,7 +442,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             if (A == 0x80) setFlag(PV_BIT);
             else clearFlag(PV_BIT);
             A = 0 - A;
-            update_flags(S_BIT|Z_BIT|H_BIT|N_BIT|C_BIT, SUB, 0, A);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|N_BIT|C_BIT, SUB, 0, A);
             break;
 
         // IM 0 (0xED46)
@@ -501,7 +501,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             else clearFlag(Z_BIT);
             clearFlag(H_BIT);
             clearFlag(N_BIT);
-            update_flags(PV_BIT, BIT, A, 0);
+            /// update_flags(PV_BIT, BIT, A, 0);
             break;
 
         // RRD (0xED67)
@@ -515,7 +515,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             else clearFlag(Z_BIT);
             clearFlag(H_BIT);
             clearFlag(N_BIT);
-            update_flags(PV_BIT, BIT, A, 0);
+            /// update_flags(PV_BIT, BIT, A, 0);
             break;
 
         // RETI (0xED4D)

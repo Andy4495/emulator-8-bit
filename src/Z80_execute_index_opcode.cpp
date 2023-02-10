@@ -81,13 +81,13 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // INC (IX/Y + d)           (0x34)
         case 0x34:
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, ADD, memory[getIndexReg(idx) + IR[2]], 1);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, ADD, memory[getIndexReg(idx) + IR[2]], 1);
             memory[getIndexReg(idx) + IR[2]] = memory[getIndexReg(idx) + IR[2]] + 1;
             break;
             
         // DEC (IX/Y + d)           (0x35)
         case 0x35:
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, SUB, memory[getIndexReg(idx) + IR[2]], 1);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, SUB, memory[getIndexReg(idx) + IR[2]], 1);
             memory[getIndexReg(idx) + IR[2]] = memory[getIndexReg(idx) + IR[2]] - 1;
             break;
 
@@ -168,51 +168,51 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // ADD A, (IX/Y + d)         (0x86)
         case 0x86:
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, memory[getIndexReg(idx) + IR[2]]);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, memory[getIndexReg(idx) + IR[2]]);
             A += memory[getIndexReg(idx) + IR[2]];
             break;
 
         // ADC A, (IX/Y + d)         (0x8E)
         case 0x8e:
             Temp = testFlag(C_BIT); // Save the carry bit
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, memory[getIndexReg(idx) + IR[2]] + Temp);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, memory[getIndexReg(idx) + IR[2]] + Temp);
             A += memory[getIndexReg(idx) + IR[2]] + Temp;
             break;
 
         // SUB A, (IX/Y + d)         (0x96)
         case 0x96:
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, memory[getIndexReg(idx) + IR[2]]);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, memory[getIndexReg(idx) + IR[2]]);
             A += memory[getIndexReg(idx) - IR[2]];
             break;
 
         // SBC A, (IX/Y + d)         (0x9E)
         case 0x9e:
             Temp = testFlag(C_BIT); // Save the carry bit
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, memory[getIndexReg(idx) + IR[2]] - Temp);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, memory[getIndexReg(idx) + IR[2]] - Temp);
             A += memory[getIndexReg(idx) + IR[2]] + Temp;
             break;
 
         // AND A, (IX/Y + d)         (0xA6)
         case 0xa6:
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, AND, A, memory[getIndexReg(idx) + IR[2]]);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, AND, A, memory[getIndexReg(idx) + IR[2]]);
             A &= memory[getIndexReg(idx) + IR[2]];
             break;
 
         // XOR A, (IX/Y + d)         (0xAE)
         case 0xae:
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, XOR, A, memory[getIndexReg(idx) + IR[2]]);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, XOR, A, memory[getIndexReg(idx) + IR[2]]);
             A ^= memory[getIndexReg(idx) + IR[2]];
             break;
 
         // OR A, (IX/Y + d)         (0xB6)
         case 0xb6:
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, memory[getIndexReg(idx) + IR[2]]);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, memory[getIndexReg(idx) + IR[2]]);
             A |= memory[getIndexReg(idx) + IR[2]];
             break;
 
         // CP A, (IX/Y + d)         (0xBE)
         case 0xbe:
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, memory[getIndexReg(idx) + IR[2]]);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, memory[getIndexReg(idx) + IR[2]]);
             break;
 
         // POP IX/Y     (0xE1)
@@ -268,7 +268,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: INC r" << endl; break;
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, *r, 1);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, *r, 1);
             (*r)++;
             break;
 
@@ -285,7 +285,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: DEC r" << endl; break;
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, *r, 1);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, *r, 1);
             (*r)--;
             break;
 
@@ -355,7 +355,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: ADD A, r" << endl; break;
             }
             A += *r;
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, *r);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADD, A, *r);
             break;
 
         // ADC A, r instructions (0x88 - 0x8D, 0x8F)
@@ -372,7 +372,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: ADC A, r" << endl; break;
             }
             A = A + *r + testFlag(C_BIT);
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADC, A, *r);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, ADC, A, *r);
             break;
 
         // SUB A, r instructions (0x90 - 0x95, 0x97)
@@ -389,7 +389,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: SUB A, r" << endl; break;
             }
             A = A - *r;
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, *r);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, *r);
             break;
 
         // SBC A, r instructions (0x98 - 0x9D, 0x9F)
@@ -406,7 +406,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: SBC A, r" << endl; break;
             }
             A = A - *r - testFlag(C_BIT);
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SBC, A, *r);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SBC, A, *r);
             break;
 
         // AND A, r instructions (0xA0 - 0xA5, 0xA7)
@@ -423,7 +423,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: AND A, r" << endl; break;
             }
             A = A & *r;
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, AND, A, *r);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, AND, A, *r);
             break;
 
         // XOR A, r instructions (0xA8 - 0xAD, 0xAF)
@@ -440,7 +440,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: XOR A, r" << endl; break;
             }
             A = A ^ *r;
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, XOR, A, *r);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, XOR, A, *r);
             break;
 
         // OR A, r instructions (0xB0 - 0xB5, 0xB7)
@@ -457,7 +457,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: OR A, r" << endl; break;
             }
             A = A | *r;
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, OR, A, *r);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, OR, A, *r);
             break;
 
         // CP r instructions (0xB8 - 0xBD, 0xBF)
@@ -475,7 +475,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: CP r" << endl; break;
             }
             // Compare only; register contents unchanged
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, *r);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT|C_BIT, SUB, A, *r);
             break;
 
         default: 

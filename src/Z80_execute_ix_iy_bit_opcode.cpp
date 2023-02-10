@@ -64,7 +64,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
             break;
 
         // RL (IX/IY + d), r    (0xXDCBdd10 - 0xXDCBdd17)
@@ -108,7 +108,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
             break;
 
         // RRC (IX/IY + d), r     (0xXDCBdd08 - 0xXDCBdd0f)
@@ -150,7 +150,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
             break;
 
         // RR  (IX/IY + d), r    (0xXDCBdd18 - 0xXDCBdd1F)
@@ -192,7 +192,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, memory[index], 0);
             break;
 
         // SLA (IX/IY + d), r     (0xXDCBdd20 - 0xXDCBdd27)
@@ -234,7 +234,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // SRA  (IX/IY + d), r    (0xXDCBdd28 - 0xXDCBdd2F)
@@ -277,7 +277,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // Undocumented "Shift Left Set", sometimes listed as SLL "Shift Left Logical"
@@ -321,7 +321,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // SRL  (IX/IY + d), r    (0xXDCBdd38 - 0xXDCBdd3F)
@@ -363,7 +363,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
+            /// update_flags(S_BIT|Z_BIT|H_BIT|PV_BIT|N_BIT, BIT, *r, 0);
             break;
 
         // BIT (IX/IY + d) (0xXDCBdd40 - 0xXDCBdd7F)
