@@ -18,7 +18,6 @@ using namespace std;
 void Z80::execute_main_opcode() {
     unsigned char *r = nullptr, *r_ = nullptr;   // Temporary storage when decoding register field in opcode
     unsigned char Temp;
-    unsigned short Temp16;
     unsigned char adjustment;  // used by DAA
     unsigned char upperN;      // used by DAA
     unsigned char lowerN;      // used by DAA
@@ -274,24 +273,24 @@ void Z80::execute_main_opcode() {
                 default: cout << "Invalid opcode: ADD A, r" << endl; break;
             }
             update_V(ADD, A, *r);
+            update_H(ADD, A, *r);
             update_C(ADD, A, *r);
             if ((A & 0xf) + (*r & 0xf) > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
             A += *r;
             update_S(A);
             update_Z(A);
-            /// Implement H Flag
             clearFlag(N_BIT);
             break;
 
         // ADD A, n    (0xC6)
         case 0xc6:
             update_V(ADD, A, IR[1]);
+            update_H(ADD, A, IR[1]);
             update_C(ADD, A, IR[1]);
             if ((A & 0xf) + (IR[1] & 0xf) > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
             A += IR[1];
             update_S(A);
             update_Z(A);
-            /// Implement H Flag
             clearFlag(N_BIT);
             break;
 
@@ -314,12 +313,12 @@ void Z80::execute_main_opcode() {
             }
             Temp = testFlag(C_BIT);
             update_V(ADC, A, *r);
+            update_H(ADC, A, *r);
             update_C(ADC, A, *r);
             if ((A & 0xf) + (*r & 0xf) + Temp > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
             A = A + *r + Temp;
             update_S(A);
             update_Z(A);
-            /// Implement H flag
             clearFlag(N_BIT);
             break;
 
@@ -327,12 +326,12 @@ void Z80::execute_main_opcode() {
         case 0xce:
             Temp = testFlag(C_BIT);
             update_V(ADC, A, IR[1]);
+            update_H(ADC, A, IR[1]);
             update_C(ADC, A, IR[1]);
             if ((A & 0xf) + (IR[1] & 0xf) + Temp > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
             A = A + IR[1] + Temp;
             update_S(A);
             update_Z(A);
-            /// Implement H flag
             clearFlag(N_BIT);
             break;
 
@@ -354,22 +353,22 @@ void Z80::execute_main_opcode() {
                 default: cout << "Invalid opcode: SUB A, r" << endl; break;
             }
             update_V(SUB, A, *r);
+            update_H(SUB, A, *r);
             update_C(SUB, A, *r);
             A = A - *r;
             update_S(A);
             update_Z(A);
-            /// Half carry (H) update
             setFlag(N_BIT); 
             break;
 
         // SUB A, n    (0xD6)
         case 0xd6:
             update_V(SUB, A, IR[1]);
+            update_H(SUB, A, IR[1]);
             update_C(SUB, A, IR[1]);
             A = A - IR[1];
             update_S(A);
             update_Z(A);
-            /// Half carry (H) update
             setFlag(N_BIT); 
             break;
 
@@ -392,11 +391,11 @@ void Z80::execute_main_opcode() {
             }
             Temp = testFlag(C_BIT);
             update_V(SBC, A, *r);
+            update_H(SBC, A, *r);
             update_C(SBC, A, *r);
             A = A - *r - Temp;
             update_S(A);
             update_Z(A);
-            /// add Half carry (H)
             setFlag(N_BIT);
             break;
 
@@ -404,11 +403,11 @@ void Z80::execute_main_opcode() {
         case 0xde:
             Temp = testFlag(C_BIT);
             update_V(SBC, A, IR[1]);
+            update_H(SBC, A, IR[1]);
             update_C(SBC, A, IR[1]);
             A = A - IR[1] - Temp;
             update_S(A);
             update_Z(A);
-            /// add Half carry (H)
             setFlag(N_BIT);
             break;
 
@@ -543,7 +542,7 @@ void Z80::execute_main_opcode() {
             // Compare only; register contents unchanged
             update_S(A - *r);
             update_Z(A - *r);
-            /// Add Half Carry (H)
+            update_H(SUB, A, *r);
             update_V(SUB, A, *r);
             setFlag(N_BIT);
             update_C(SUB, A, *r);
@@ -554,7 +553,7 @@ void Z80::execute_main_opcode() {
             // Compare only; register contents unchanged
             update_S(A - IR[1]);
             update_Z(A - IR[1]);
-            /// Add Half Carry (H)
+            update_H(SUB, A, IR[1]);
             update_V(SUB, A, IR[1]);
             setFlag(N_BIT);
             update_C(SUB, A, IR[1]);
@@ -578,7 +577,7 @@ void Z80::execute_main_opcode() {
                 default: cout << "Invalid opcode: INC r" << endl; break;
             }
             if (*r == 0x7f) setFlag(PV_BIT); else clearFlag(PV_BIT);
-            /// Add half carry (H)
+            update_H(ADD, *r, 1);
             (*r)++;
             update_S(*r);
             update_Z(*r);
@@ -603,10 +602,10 @@ void Z80::execute_main_opcode() {
                 default: cout << "Invalid opcode: DEC r" << endl; break;
             }
             if (*r == 0x80) setFlag(PV_BIT); else clearFlag(PV_BIT);
+            update_H(SUB, *r, 1);
             (*r)--;
             update_S(*r);
             update_Z(*r);
-            /// Add half-carry (H)
             setFlag(N_BIT);
             break;
 
@@ -693,6 +692,7 @@ void Z80::execute_main_opcode() {
                 cout << "Undefined adjustment for DAA 0x27 - N:"   << (unsigned int) testFlag(N_BIT) <<
                 " C: " << (unsigned int) testFlag(C_BIT) << " H: " << (unsigned int) testFlag(H_BIT) <<
                 " A: 0x" << (unsigned int) A << endl;
+            A += adjustment;
             update_S(A);
             update_Z(A);
             update_P(A);
@@ -755,7 +755,6 @@ void Z80::execute_main_opcode() {
         
         // ADD HL, ss  (0x09, 0x19, 0x29, 0x39)
         case 0x09: case 0x19: case 0x29: case 0x39:
-            Temp16 = getHL();
             // Determine which register we are working on:
             // Opcode 0  0  s  s  1  0  0  1
             switch ((IR[0] & 0x30) >> 4) {
@@ -765,12 +764,9 @@ void Z80::execute_main_opcode() {
                 case 0b11: setHL(getHL() + SP);      break;
                 default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
             }
-            if (getHL() & 0x8000) setFlag(S_BIT); else clearFlag(S_BIT);
-            if (getHL()) clearFlag(Z_BIT); else setFlag(Z_BIT);
             /// IMplement H bit update 16 bit
-            /// Implement V bit 16 bit
             clearFlag(N_BIT);
-            /// IMplement C bit update
+            /// IMplement C bit update 16 bit
             break;
 
         // INC ss (0x03, 0x013, 0x23, 0x33)

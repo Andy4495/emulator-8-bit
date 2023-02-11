@@ -44,7 +44,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                     default: cout << "Invalid opcode: ADD IX/Y, ss" << endl; break;
                 }
             }
-            /// Need to implement condition bits, may need another state ///
+            /// Need to implement condition bits 16 bits
             break;
 
         // LD IX/Y, nn instructions (0x21)
@@ -84,7 +84,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             memory[getIndexReg(idx) + IR[2]] = memory[getIndexReg(idx) + IR[2]] + 1;
             update_S(memory[getIndexReg(idx) + IR[2]]);
             update_Z(memory[getIndexReg(idx) + IR[2]]);
-            /// Implement H flag
+            update_H(ADD, memory[getIndexReg(idx) + IR[2]], 1);
             if (memory[getIndexReg(idx) + IR[2]] == 0x80) setFlag(PV_BIT); else clearFlag(PV_BIT);
             clearFlag(N_BIT);
             break;
@@ -94,7 +94,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             memory[getIndexReg(idx) + IR[2]] = memory[getIndexReg(idx) + IR[2]] - 1;
             update_S(memory[getIndexReg(idx) + IR[2]]);
             update_Z(memory[getIndexReg(idx) + IR[2]]);
-            /// Implement H flag
+            update_H(SUB, memory[getIndexReg(idx) + IR[2]], 1);
             if (memory[getIndexReg(idx) + IR[2]] == 0x7f) setFlag(PV_BIT); else clearFlag(PV_BIT);
             clearFlag(N_BIT);
             break;
@@ -177,11 +177,11 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         // ADD A, (IX/Y + d)         (0x86)
         case 0x86:
             update_V(ADD, A, memory[getIndexReg(idx) + IR[2]]);
+            update_H(ADD, A, memory[getIndexReg(idx) + IR[2]]);
             update_C(ADD, A, memory[getIndexReg(idx) + IR[2]]);
             A += memory[getIndexReg(idx) + IR[2]];
             update_S(A);
             update_Z(A);
-            /// Implement H flag
             clearFlag(N_BIT);
             break;
 
@@ -189,22 +189,22 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         case 0x8e:
             Temp = testFlag(C_BIT); // Save the carry bit
             update_V(ADC, A, memory[getIndexReg(idx) + IR[2]]);
+            update_H(ADC, A, memory[getIndexReg(idx) + IR[2]]);
             update_C(ADC, A, memory[getIndexReg(idx) + IR[2]]);
             A += memory[getIndexReg(idx) + IR[2]] + Temp;
             update_S(A);
             update_Z(A);
-            /// Implement H flag
             clearFlag(N_BIT);
             break;
 
         // SUB A, (IX/Y + d)         (0x96)
         case 0x96:
             update_C(SUB, A, memory[getIndexReg(idx) + IR[2]]);
+            update_H(SUB, A, memory[getIndexReg(idx) + IR[2]]);
             update_V(SUB, A, memory[getIndexReg(idx) + IR[2]]);
             A += memory[getIndexReg(idx) + IR[2]];
             update_S(A);
             update_Z(A);
-            /// implemenet H bit
             setFlag(N_BIT);
             break;
 
@@ -212,11 +212,11 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         case 0x9e:
             Temp = testFlag(C_BIT); // Save the carry bit
             update_V(SBC, A, memory[getIndexReg(idx) + IR[2]]);
+            update_H(SBC, A, memory[getIndexReg(idx) + IR[2]]);
             update_C(SBC, A, memory[getIndexReg(idx) + IR[2]]);
             A += memory[getIndexReg(idx) + IR[2]] + Temp;
             update_S(A);
             update_Z(A);
-            /// Implement H flag
             setFlag(N_BIT);
             break;
 
@@ -257,7 +257,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         case 0xbe:
             update_S(A - memory[getIndexReg(idx) + IR[2]]);
             update_Z(A - memory[getIndexReg(idx) + IR[2]]);
-            /// Need to implement H flag
+            update_H(SUB, A, memory[getIndexReg(idx) + IR[2]]);
             update_V(SUB, A, memory[getIndexReg(idx) + IR[2]]);
             setFlag(N_BIT);
             update_C(SUB, A, memory[getIndexReg(idx) + IR[2]]);
@@ -319,7 +319,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             (*r)++;
             update_S(*r);
             update_Z(*r);
-            /// Implement H flag
+            update_H(ADD, *r, 1);
             if (*r == 0x80) setFlag(PV_BIT); else clearFlag(PV_BIT);
             clearFlag(N_BIT);
             break;
@@ -340,7 +340,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             (*r)--;
             update_S(*r);
             update_Z(*r);
-            /// Implement H flag
+            update_H(SUB, *r, 1);
             if (*r == 0x7f) setFlag(PV_BIT); else clearFlag(PV_BIT);
             clearFlag(N_BIT);
             break;
@@ -411,11 +411,11 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: ADD A, r" << endl; break;
             }
             update_V(ADD, A, *r);
+            update_H(ADD, A, *r);
             update_C(ADD, A, *r);
             A += *r;
             update_S(A);
             update_Z(A);
-            /// Implement H flag
             clearFlag(N_BIT);
             break;
 
@@ -434,11 +434,11 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             }
             Temp = testFlag(C_BIT);
             update_V(ADC, A, *r);
+            update_H(ADC, A, *r);
             update_C(ADC, A, *r);
             A = A + *r + Temp;
             update_S(A);
             update_Z(A);
-            /// Implement H Flag
             clearFlag(N_BIT);
             break;
 
@@ -455,12 +455,12 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: SUB A, r" << endl; break;
             }
-            update_C(SUB, A, *r);
             update_V(SUB, A, *r);
+            update_H(SUB, A, *r);
+            update_C(SUB, A, *r);
             A = A - *r;
             update_S(A);
             update_Z(A);
-            /// Implement H bit
             setFlag(N_BIT);
             break;
 
@@ -479,11 +479,11 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             }
             Temp = testFlag(C_BIT);
             update_V(SBC, A, *r);
+            update_H(SBC, A, *r);
             update_C(SBC, A, *r);
             A = A - *r - Temp;
             update_S(A);
             update_Z(A);
-            /// Need to implement H flag
             setFlag(N_BIT);
             break;
 
@@ -570,7 +570,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             // Compare only; register contents unchanged
             update_S(A - *r);
             update_Z(A - *r);
-            /// Implement H flag
+            update_H(SUB, A, *r);
             update_V(SUB, A, *r);
             setFlag(N_BIT);
             update_C(SUB, A, *r);

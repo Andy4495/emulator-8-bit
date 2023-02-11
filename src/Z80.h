@@ -27,7 +27,7 @@ class Z80 {
         char mnemonic[MAX_MNEMONIC_LENGTH + 1];
         char instr_string[MAX_TEXT_LENGTH + 1];
 
-        enum INST_TYPE {ADD, ADC, SUB, SBC, COMP, TEST, BIT, AND, OR, XOR, IO, NONE};
+        enum INST_TYPE {ADD, ADC, SUB, SBC};
         enum FLAG_BITS { S_BIT = 0x80, Z_BIT = 0x40, X1_BIT = 0x20, H_BIT = 0x10, X2_BIT = 0x08, PV_BIT = 0x04, N_BIT = 0x02, C_BIT = 0x01};
         enum INDEX_REG {IX_REGISTER, IY_REGISTER};
         // State variables
@@ -90,7 +90,7 @@ class Z80 {
         void update_C(INST_TYPE t,  unsigned short val1, unsigned short val2);
         void update_P(unsigned char v);
         void update_V(INST_TYPE t, unsigned char val1, unsigned char val2);
-///        void update_H(INST_TYPE t,  unsigned char val, unsigned char val2);
+        void update_H(INST_TYPE t, unsigned char val1, unsigned char val2);
         void update_Z(unsigned char val);
         void update_S(unsigned char val);
         unsigned short getIX();

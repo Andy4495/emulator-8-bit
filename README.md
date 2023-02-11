@@ -19,10 +19,11 @@ The following updates still need to be completed before I consider it a good fir
 
 - Flag update handling
   - Implement H flag handler and update affected opcodes
-  - Flag updates for 16-bit ADD, SUB, ADC, SBC instructions (main, misc, IX, and IY)
-    - 16 bit overflow check (8-bit overflow check implemented)
-  - Other cases (check all opcodes)
-  - Clean up compiler warnings (if any)
+  - Flag updates for 16-bit ADD HL, ss; ADD IX, pp; ADD IY, rr; SBC HL, ss; ADC HL, ss
+- Visual check of all opcode operations
+- Clean up compiler warnings (if any)
+- Only a general test will be run on release 1.0 (no core dumps, cursory check of opcodes)
+  - A complete test of all opcodes will be done later
 
 The above items are planned to be completed before starting on the [Future Functionality](#future-functionality) items below.
 

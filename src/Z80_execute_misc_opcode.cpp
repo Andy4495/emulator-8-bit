@@ -23,7 +23,6 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
     // this emulator only supports Z80, so Z180 instructions are left unimplemented.
 
     unsigned char *r  = nullptr;   // Temporary storage when decoding register field in opcode
-    unsigned short Temp16;
     unsigned char  Temp8;
     unsigned char  TempC;
 
@@ -404,7 +403,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             if (C == 0xff) B--;
             if (B | C) setFlag(PV_BIT);
             else clearFlag(PV_BIT);
-            /// Implement H flag
+            update_H(SUB, A, memory[getHL()]);
             setFlag(N_BIT);
             break;
 
@@ -421,7 +420,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                 PC -= 2;
             }
             else clearFlag(PV_BIT);
-            /// implement H flag
+            update_H(SUB, A, memory[getHL()]);
             setFlag(N_BIT);
             break;
             
@@ -435,7 +434,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             if (C == 0xff) B--;
             if (B | C) setFlag(PV_BIT);
             else clearFlag(PV_BIT);
-            /// Implement H flag
+            update_H(SUB, A, memory[getHL()]);
             setFlag(N_BIT);
             break;
 
@@ -453,7 +452,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             }
             else clearFlag(PV_BIT);
             setFlag(N_BIT);
-            /// Implement H flag
+            update_H(SUB, A, memory[getHL()]);
             break;
 
         // NEG (0xED44)
@@ -465,7 +464,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             A = 0 - A;
             update_S(A);
             update_Z(A);
-            /// Implement H flag
+            update_H(SUB, 0, A);
             setFlag(N_BIT);
             break;
 
@@ -486,7 +485,6 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             
         // ADC HL, ss  (0x4A, 0x5A, 0x6A, 0x7A)
         case 0x4a: case 0x5a: case 0x6a: case 0x7a:
-            Temp16 = getHL();
             // Determine which register we are working on:
             // Opcode 0  1  s  s  1  0  1  0
             switch ((IR[1] & 0x30) >> 4) {
@@ -498,27 +496,26 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             }
             if (getHL() & 0x8000) setFlag(S_BIT); else clearFlag(S_BIT);
             if (getHL() == 0)     setFlag(Z_BIT); else clearFlag(Z_BIT);
-            /// Need to implemnt H flag
+            /// Need to implemnt H flag 16 bit
             /// Need to implement 16-bit overflow check
             break;
 
         // SBC HL, ss  (0x42, 0x52, 0x62, 0x72)
         case 0x42: case 0x52: case 0x62: case 0x72:
-            Temp16 = getHL();
             TempC  = testFlag(C_BIT);
+            /// Need to implement 16-bit overflow flag
             // Determine which register we are working on:
             // Opcode 0  1  s  s  0  0  1  0
             switch ((IR[1] & 0x30) >> 4) {
-                case 0b00: setHL(getHL() - getBC() - testFlag(C_BIT)); break;
-                case 0b01: setHL(getHL() - getDE() - testFlag(C_BIT)); break;
-                case 0b10: setHL(getHL() - getHL() - testFlag(C_BIT)); break;
-                case 0b11: setHL(getHL() - SP      - testFlag(C_BIT)); break;
+                case 0b00: setHL(getHL() - getBC() - TempC); break;
+                case 0b01: setHL(getHL() - getDE() - TempC); break;
+                case 0b10: setHL(getHL() - getHL() - TempC); break;
+                case 0b11: setHL(getHL() - SP      - TempC); break;
                 default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
             }
             if (getHL() & 0x8000) setFlag(S_BIT); else clearFlag(S_BIT);
             if (getHL() == 0)     setFlag(Z_BIT); else clearFlag(Z_BIT);
-            /// Need to implemnt H flag
-            /// Need to implement 16-bit overflow check
+            /// Need to implemnt H flag 16 bit
             break;
 
         // RLD (0xED6F)

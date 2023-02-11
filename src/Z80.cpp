@@ -105,16 +105,14 @@ void Z80::print_fetched_instruction() {
 }
 
 // Methods for updating the various bits in the Flags register
-void Z80::update_C(INST_TYPE t, unsigned short val1, unsigned short val2) {
+void Z80::update_C(INST_TYPE t, const unsigned short val1, const unsigned short val2) {
     switch (t) {
         case ADD:
           if ((val1 + val2) & 0x0100) setFlag(C_BIT); else clearFlag(C_BIT);
         case ADC:
           if ((val1 + val2 + testFlag(C_BIT)) & 0x0100) setFlag(C_BIT); else clearFlag(C_BIT);
           break;
-        case COMP:
         case SUB:
-        case TEST:
           if (val2 > val1) setFlag(C_BIT); else clearFlag(C_BIT);
           break;
         case SBC:
@@ -125,7 +123,7 @@ void Z80::update_C(INST_TYPE t, unsigned short val1, unsigned short val2) {
     }
 }
 
-void Z80::update_V(INST_TYPE t, unsigned char val1, unsigned char val2) {
+void Z80::update_V(INST_TYPE t, const unsigned char val1, const unsigned char val2) {
     switch (t) {
         case ADD:
             // operands with different signs --> no overflow
@@ -174,23 +172,31 @@ void Z80::update_V(INST_TYPE t, unsigned char val1, unsigned char val2) {
                      }
             else clearFlag(PV_BIT);
             break;
-        case COMP:
-            // operands are same signs, no overflow
-            if ((val1 & 0x80) == (val2 & 0x80)) clearFlag(PV_BIT);
-            // with different signs, need to check result
-            else if (((int) val1 - (int) val2 > 127) || ((int) val1 - (int) val2 < -128)) setFlag(PV_BIT);
-            else clearFlag(PV_BIT);
-            break;
-        case TEST:
-          break;
-        case BIT:
-          break;
         default:  // NONE - Flag not affected
           break;
     }
 }
 
-void Z80::update_P(unsigned char v) {
+void Z80::update_H(INST_TYPE t, const unsigned char val1, const unsigned char val2) {
+    switch (t) {
+        case ADD: 
+            if ((val1 & 0x0f) + (val2 & 0x0f) > 0x0f) setFlag(H_BIT); else clearFlag(H_BIT);
+            break;
+        case ADC: 
+            if ((val1 & 0x0f) + (val2 & 0x0f) + testFlag(C_BIT) > 0x0f)  setFlag(H_BIT); else clearFlag(H_BIT);
+            break;
+        case SUB:
+            if ((val1 & 0x0f) < (val2 & 0x0f)) setFlag(H_BIT); else clearFlag(H_BIT);
+            break;
+        case SBC: 
+            if ((val1 & 0x0f) < ((val2 & 0x0f) + testFlag(C_BIT))) setFlag(H_BIT); else clearFlag(H_BIT);
+            break;
+        default:
+            break;
+    }
+}
+
+void Z80::update_P(const unsigned char v) {
     int count = 0;
 
     if (v & 0x01) count++;
@@ -206,12 +212,12 @@ void Z80::update_P(unsigned char v) {
     else           setFlag(PV_BIT);    // even
 }
 
-void Z80::update_Z(unsigned char val) {
+void Z80::update_Z(const unsigned char val) {
     if (val == 0) setFlag(Z_BIT); 
     else clearFlag(Z_BIT);
 }
 
-void Z80::update_S(unsigned char val) {
+void Z80::update_S(const unsigned char val) {
     if (val & 0x80) setFlag(S_BIT); 
     else clearFlag(S_BIT);
 }
