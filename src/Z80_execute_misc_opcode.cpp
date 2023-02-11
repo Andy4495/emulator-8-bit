@@ -4,6 +4,7 @@
 
    0.1  11/29/22  Andy4495  Initial Creation
    0.2  12/22/22  Andy4495  Additional implementation
+   v0.1.0    02/11/23  Andy4495 Read for first "release"
 */
 
 // Z80 core definitions
@@ -487,32 +488,36 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         case 0x4a: case 0x5a: case 0x6a: case 0x7a:
             // Determine which register we are working on:
             // Opcode 0  1  s  s  1  0  1  0
+            TempC = testFlag(C_BIT);
             switch ((IR[1] & 0x30) >> 4) {
                 case 0b00: // BC
-                    if ((getHL() & 0x0fff) + (getBC() & 0x0fff) + testFlag(C_BIT) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getHL() + (unsigned int) getBC() + (unsigned int) testFlag(C_BIT) > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
-                    setHL(getHL() + getBC() + testFlag(C_BIT)); 
+                    if ((getHL() & 0x0fff) + (getBC() & 0x0fff) + TempC > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    update_V16(ADC, getHL(), getBC());
+                    if ((unsigned int) getHL() + (unsigned int) getBC() + (unsigned int) TempC > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setHL(getHL() + getBC() + TempC); /// Temporary comment
                     break;
                 case 0b01: // DE
-                    if ((getHL() & 0x0fff) + (getDE() & 0x0fff) + testFlag(C_BIT) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getHL() + (unsigned int) getDE() + (unsigned int) testFlag(C_BIT) > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
-                    setHL(getHL() + getDE() + testFlag(C_BIT)); 
+                    if ((getHL() & 0x0fff) + (getDE() & 0x0fff) + TempC > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    update_V16(ADC, getHL(), getDE());
+                    if ((unsigned int) getHL() + (unsigned int) getDE() + (unsigned int) TempC > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setHL(getHL() + getDE() + TempC); 
                     break;
                 case 0b10: // HL
-                    if ((getHL() & 0x0fff) + (getHL() & 0x0fff) + testFlag(C_BIT) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getHL() + (unsigned int) getHL() + (unsigned int) testFlag(C_BIT) > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
-                    setHL(getHL() + getHL() + testFlag(C_BIT)); 
+                    if ((getHL() & 0x0fff) + (getHL() & 0x0fff) + TempC > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    update_V16(ADC, getHL(), getHL());
+                    if ((unsigned int) getHL() + (unsigned int) getHL() + (unsigned int) TempC > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setHL(getHL() + getHL() + TempC); 
                     break; 
                 case 0b11: // SP
-                    if ((getHL() & 0x0fff) + (SP & 0x0fff) + testFlag(C_BIT) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getHL() + (unsigned int) SP + (unsigned int) testFlag(C_BIT) > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
-                    setHL(getHL() + SP      + testFlag(C_BIT)); 
+                    if ((getHL() & 0x0fff) + (SP & 0x0fff) + TempC > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    update_V16(ADC, getHL(), SP);
+                    if ((unsigned int) getHL() + (unsigned int) SP + (unsigned int) TempC > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setHL(getHL() + SP      + TempC); 
                     break;
                 default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
             }
             if (getHL() & 0x8000) setFlag(S_BIT); else clearFlag(S_BIT);
             if (getHL() == 0)     setFlag(Z_BIT); else clearFlag(Z_BIT);
-            /// Need to implement 16-bit overflow check
             break;
 
         // SBC HL, ss  (0x42, 0x52, 0x62, 0x72)
@@ -523,23 +528,27 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             // Opcode 0  1  s  s  0  0  1  0
             switch ((IR[1] & 0x30) >> 4) {
                 case 0b00: // BC
-                    if ((getHL() & 0x0fff) < (getBC() & 0x0fff) + testFlag(C_BIT)) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getHL() < (unsigned int) getBC() + testFlag(C_BIT)) setFlag(C_BIT); else clearFlag(C_BIT);
+                    if ((getHL() & 0x0fff) < (getBC() & 0x0fff) + TempC) setFlag(H_BIT); else clearFlag(H_BIT);
+                    update_V16(SBC, getHL(), getBC());
+                    if ((unsigned int) getHL() < (unsigned int) getBC() + TempC) setFlag(C_BIT); else clearFlag(C_BIT);
                     setHL(getHL() - getBC() - TempC); 
                     break;
                 case 0b01: // DE
-                    if ((getHL() & 0x0fff) < (getDE() & 0x0fff) + testFlag(C_BIT)) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getHL() < (unsigned int) getDE() + testFlag(C_BIT)) setFlag(C_BIT); else clearFlag(C_BIT);
+                    if ((getHL() & 0x0fff) < (getDE() & 0x0fff) + TempC) setFlag(H_BIT); else clearFlag(H_BIT);
+                    update_V16(SBC, getHL(), getDE());
+                    if ((unsigned int) getHL() < (unsigned int) getDE() + TempC) setFlag(C_BIT); else clearFlag(C_BIT);
                     setHL(getHL() - getDE() - TempC); 
                     break;
                 case 0b10: // HL
-                    if ((getHL() & 0x0fff) < (getHL() & 0x0fff) + testFlag(C_BIT)) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getHL() < (unsigned int) getHL() + testFlag(C_BIT)) setFlag(C_BIT); else clearFlag(C_BIT);
+                    if ((getHL() & 0x0fff) < (getHL() & 0x0fff) + TempC) setFlag(H_BIT); else clearFlag(H_BIT);
+                    update_V16(SBC, getHL(), getHL());
+                    if ((unsigned int) getHL() < (unsigned int) getHL() + TempC) setFlag(C_BIT); else clearFlag(C_BIT);
                     setHL(getHL() - getHL() - TempC); 
                     break;
                 case 0b11: // SP
-                    if ((getHL() & 0x0fff) < (SP & 0x0fff) + testFlag(C_BIT)) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getHL() < (unsigned int) SP + testFlag(C_BIT)) setFlag(C_BIT); else clearFlag(C_BIT);
+                    if ((getHL() & 0x0fff) < (SP & 0x0fff) + TempC) setFlag(H_BIT); else clearFlag(H_BIT);
+                    update_V16(SBC, getHL(), SP);
+                    if ((unsigned int) getHL() < (unsigned int) SP + TempC) setFlag(C_BIT); else clearFlag(C_BIT);
                     setHL(getHL() - SP      - TempC); 
                     break;
                 default: cout << "Invalid opcode: ADD HL, ss" << endl; break;

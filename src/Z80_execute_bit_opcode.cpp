@@ -4,6 +4,7 @@
 
    0.1  11/29/22  Andy4495  Initial Creation
    0.2  12/22/22  Andy4495  Additional implementation
+   v0.1.0    02/11/23  Andy4495 Read for first "release"
 */
 
 // Z80 core definitions
@@ -55,9 +56,10 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
+            tempC = testFlag(C_BIT);
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r << 1;
-            *r = (*r & 0xFE) | testFlag(C_BIT);
+            *r = (*r & 0xFE) | tempC;
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);
@@ -146,9 +148,10 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
+            tempC = testFlag(C_BIT);
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
-            *r = (*r & 0x7f) | (testFlag(C_BIT) << 7);
+            *r = (*r & 0x7f) | (tempC << 7);
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);

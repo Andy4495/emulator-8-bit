@@ -4,6 +4,7 @@
 
    0.1  11/29/22  Andy4495  Initial Creation
    0.2  12/22/22  Andy4495  Additional implementation
+   v0.1.0    02/11/23  Andy4495 Read for first "release"
 */
 
 // Z80 core definitions
@@ -818,6 +819,7 @@ void Z80::execute_main_opcode() {
         case 0x07: 
             if (A & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             A = A << 1;
+            // Carry contains previous bit 7, so rotate that over to bit 0
             if (testFlag(C_BIT)) A |= 0x01; else A &= 0xfe;
             clearFlag(H_BIT);
             clearFlag(N_BIT);
@@ -837,6 +839,7 @@ void Z80::execute_main_opcode() {
         case 0x0f:
             if (A & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             A = A >> 1; 
+            // Carry contains previous bit 0, so rotate that over to bit 7
             if (testFlag(C_BIT)) A |= 0x80; else A &= 0x7f;
             clearFlag(H_BIT);
             clearFlag(N_BIT);

@@ -15,16 +15,24 @@ There are many other open source emulators available. This emulator is not meant
 
 All opcodes have decoding and execution code implemented, but are not fully tested.
 
-The following updates still need to be completed before I consider it a good first release:
+The disassembler functionality should be very close to correct (i.e., displaying the correct mnemonic for each opcode).
 
-- Flag update handling
-  - Overflow (V) Flag updates for 16-bit SBC HL, ss; ADC HL, ss
-- Visual check of all opcode operations
+I expect to find some defects in the opcode execution and in handling of the processor flags.
+
+This is still a "pre-release" (version less than 1.0.0), because I expect to tweak the formatting of the program output while I test.
+
+Next steps:
+
+- More thorough testing of all opcode execution and processor flag updates
+- Visual review of all opcode implementation
 - Clean up compiler warnings (if any)
-- Only a general test will be run on release 1.0 (no core dumps, cursory check of opcodes)
-  - A complete test of all opcodes will be done later
+- Hooks to allow for automated testing. This may include:
+  - Updating command line options
+  - Updating output formatting
+  - Changing list of options in interactive mode
+  - Moving certain operations currently handled by the main program loop into the Z80 processor class
 
-The above items are planned to be completed before starting on the [Future Functionality](#future-functionality) items below.
+See also the [Future Functionality](#future-functionality) items below.
 
 ## Usage
 
@@ -76,12 +84,14 @@ I have not tried it on other platforms, but there is no machine dependent code. 
 4. Loop:
     - Fetch and decode instruction
     - Execute instruction
-    - Display machine state (depending on configuration and menu choice)
     - Continue loop until breakpoint or HALT reached
+    - Display machine state (depending on configuration and menu choice)
 
 ### Defining the CPU
 
 The CPU opcodes are defined in several tables implemented with arrays of structs for the main and extended opcodes (`Z80_opcodes.h`). Each entry contains the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode value is represented by the array index.
+
+Zilog-documented and undocumented opcodes are defined and supported by the emulator.
 
 The Z80 CPU is defined by a class (`Z80.h`). This class contains:
 

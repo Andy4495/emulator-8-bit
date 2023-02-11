@@ -3,6 +3,7 @@
 # MIT License
 #
 # 0.1  11/29/22  Andy4495  Initial Creation
+# v0.1.0    02/11/23  Andy4495 Read for first "release"
 
 SUBDIRS = src
 

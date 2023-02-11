@@ -4,6 +4,7 @@
 
    0.1  11/29/22  Andy4495  Initial Creation
    0.2  12/22/22  Andy4495  Additional implementation
+   v0.1.0    02/11/23  Andy4495 Read for first "release"
 */
 
 // Z80 core definitions
@@ -60,6 +61,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     break;
             }
             if (memory[index] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
+            // Carry flag contains previous bit 7, so rotate into bit 0
             memory[index] = ((memory[index] << 1) & 0xfe) | testFlag(C_BIT);
             if (r != nullptr) {
                 *r = memory[index];
@@ -199,8 +201,9 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
+            tempC = testFlag(C_BIT);
             if (memory[index] & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
-            memory[index] = ((memory[index] << 1) & 0x7f) | (testFlag(C_BIT) << 7);
+            memory[index] = ((memory[index] << 1) & 0x7f) | (tempC << 7);
             if (r != nullptr) {
                 *r = memory[index];
             }

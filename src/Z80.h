@@ -4,6 +4,7 @@
 
    0.1  11/29/22  Andy4495  Initial Creation
    0.2  12/22/22  Andy4495  Additional implementation
+   v0.1.0    02/11/23  Andy4495 Read for first "release"
 */
 
 #ifndef Z80_H
@@ -90,6 +91,7 @@ class Z80 {
         void update_C(INST_TYPE t,  unsigned short val1, unsigned short val2);
         void update_P(unsigned char v);
         void update_V(INST_TYPE t, unsigned char val1, unsigned char val2);
+        void update_V16(INST_TYPE t, unsigned short val1, unsigned short val2);
         void update_H(INST_TYPE t, unsigned char val1, unsigned char val2);
         void update_Z(unsigned char val);
         void update_S(unsigned char val);

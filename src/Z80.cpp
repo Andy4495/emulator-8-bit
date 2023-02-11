@@ -4,6 +4,7 @@
 
    0.1  11/29/22  Andy4495  Initial Creation
    0.2  12/22/22  Andy4495  Additional implementation
+   v0.1.0    02/11/23  Andy4495 Read for first "release"
 */
 
 // Z80 core definitions
@@ -177,6 +178,61 @@ void Z80::update_V(INST_TYPE t, const unsigned char val1, const unsigned char va
     }
 }
 
+void Z80::update_V16(INST_TYPE t, unsigned short val1, unsigned short val2) {
+    switch (t) {
+        case ADD:
+            // operands with different signs --> no overflow
+            if ((val1 & 0x8000) != (val2 & 0x8000)) clearFlag(PV_BIT);
+            else {
+                // both operands negative, result positive --> overflow
+                if ((val1 & 0x8000))
+                    if ((val1 + val2) & 0x8000) clearFlag(PV_BIT);
+                    else setFlag(PV_BIT);
+                else {
+                    // both operands positive, result negative --> overflow
+                    if ((val1 + val2) & 0x8000) setFlag(PV_BIT);
+                    else clearFlag(PV_BIT);
+                }
+            }
+          break;
+        case ADC:
+            // operands with different signs --> no overflow
+            if ((val1 & 0x8000) != (val2 & 0x8000)) clearFlag(PV_BIT);
+            else {
+                // both operands negative, result positive --> overflow
+                if ((val1 & 0x8000))
+                    if ((val1 + val2 + testFlag(C_BIT)) & 0x8000) clearFlag(PV_BIT);
+                    else setFlag(PV_BIT);
+                else {
+                    // both operands positive, result negative --> overflow
+                    if ((val1 + val2 + testFlag(C_BIT)) & 0x8000) setFlag(PV_BIT);
+                    else clearFlag(PV_BIT);
+                }
+            }
+          break;
+        case SUB:
+            // operands are same signs, no overflow
+            if ((val1 & 0x8000) == (val2 & 0x8000)) clearFlag(PV_BIT);
+            // with different signs, need to check result
+            else if (((int) val1 - (int) val2 > 0x7fff) || ((int) val1 - (int) val2 < -32768)) setFlag(PV_BIT);
+            else clearFlag(PV_BIT);
+            break;
+        case SBC:
+            // operands are same signs, no overflow
+            if ((val1 & 0x8000) == (val2 & 0x8000)) clearFlag(PV_BIT);
+            // with different signs, need to check result
+            else if (((int) val1 - (int) val2 - testFlag(C_BIT) > 0x7fff)   || 
+                     ((int) val1 - (int) val2 - testFlag(C_BIT) < -32768)) {
+                        setFlag(PV_BIT);
+                     }
+            else clearFlag(PV_BIT);
+            break;
+        default:  // NONE - Flag not affected
+          break;
+    }
+}
+
+
 void Z80::update_H(INST_TYPE t, const unsigned char val1, const unsigned char val2) {
     switch (t) {
         case ADD: 
@@ -235,7 +291,7 @@ unsigned short Z80::getBC() {
 }
 
 unsigned short Z80::getDE() {
-    return (D<<8) + C;
+    return (D<<8) + E;
 }
 
 unsigned short Z80::getHL() {
@@ -243,27 +299,27 @@ unsigned short Z80::getHL() {
 }
 
 void Z80::setIX(unsigned short v) {
-    IXH = ((v & 0xff00)>8);
+    IXH = ((v & 0xff00)>>8);
     IXL = v & 0x00ff;
 }
 
 void Z80::setIY(unsigned short v) {
-    IYH = ((v & 0xff00)>8);
+    IYH = ((v & 0xff00)>>8);
     IYL = v & 0x00ff;
 }
 
 void Z80::setBC(unsigned short v) {
-    B = ((v & 0xff00)>8);
+    B = ((v & 0xff00)>>8);
     C = v & 0x00ff;
 }
 
 void Z80::setDE(unsigned short v) {
-    D = ((v & 0xff00)>8);
+    D = ((v & 0xff00)>>8);
     E = v & 0x00ff;
 }
 
 void Z80::setHL(unsigned short v) {
-    H = ((v & 0xff00)>8);
+    H = ((v & 0xff00)>>8);
     L = v & 0x00ff;
 }
 
