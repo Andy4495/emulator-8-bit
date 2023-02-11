@@ -29,22 +29,34 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
     switch (IR[1]) {
 
-        // ADD IX/Y, ss  (0x09, 0x19, 0x29, 0x39)
+        // ADD IX/Y, pp  (0x09, 0x19, 0x29, 0x39)
         case 0x09: case 0x19: case 0x29: case 0x39:
             // Determine which register we are working on:
             // Opcode 0  0  s  s  1  0  0  1
-            if ((IR[1] & 0x30) == 0x30) { // Need special handling for SP since it is modeled as 16 bits instead of two 8-bit registers
-                setIndexReg(idx, getIndexReg(idx) + SP);   // IX/Y += SP
+            switch ((IR[1] & 0x30) >> 4) {
+                case 0b00: // BC
+                    if ((getIndexReg(idx) & 0x0fff) + (getBC() & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    if ((unsigned int) getIndexReg(idx) + (unsigned int) getBC() > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setIndexReg(idx, getIndexReg(idx) + getBC()); 
+                    break;
+                case 0b01: // DE
+                    if ((getIndexReg(idx) & 0x0fff) + (getDE() & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    if ((unsigned int) getIndexReg(idx) + (unsigned int) getDE() > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setIndexReg(idx, getIndexReg(idx) + getDE()); 
+                    break;
+                case 0b10: // IX/Y
+                    if ((getIndexReg(idx) & 0x0fff) + (getIndexReg(idx) & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    if ((unsigned int) getIndexReg(idx) + (unsigned int) getIndexReg(idx) > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setIndexReg(idx, getIndexReg(idx) + getIndexReg(idx));
+                    break; 
+                case 0b11: // SP
+                    if ((getIndexReg(idx) & 0x0fff) + (SP & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    if ((unsigned int) getIndexReg(idx) + (unsigned int) SP > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setIndexReg(idx, getIndexReg(idx) + SP);
+                    break;
+                default: cout << "Invalid opcode: ADD IX/Y, ss" << endl; break;
             }
-            else {
-                switch ((IR[1] & 0x30) >> 4) {
-                    case 0b00: r = &B; r_ = &C; setIndexReg(idx, getIndexReg(idx) + getBC()); break;
-                    case 0b01: r = &D; r_ = &E; setIndexReg(idx, getIndexReg(idx) + getDE()); break;
-                    case 0b10: r = &H; r_ = &L; setIndexReg(idx, getIndexReg(idx) + getHL()); break;
-                    default: cout << "Invalid opcode: ADD IX/Y, ss" << endl; break;
-                }
-            }
-            /// Need to implement condition bits 16 bits
+            clearFlag(N_BIT);
             break;
 
         // LD IX/Y, nn instructions (0x21)

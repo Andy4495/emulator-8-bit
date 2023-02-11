@@ -758,15 +758,29 @@ void Z80::execute_main_opcode() {
             // Determine which register we are working on:
             // Opcode 0  0  s  s  1  0  0  1
             switch ((IR[0] & 0x30) >> 4) {
-                case 0b00: setHL(getHL() + getBC()); break;
-                case 0b01: setHL(getHL() + getDE()); break;
-                case 0b10: setHL(getHL() + getHL()); break;
-                case 0b11: setHL(getHL() + SP);      break;
+                case 0b00: // BC
+                    if ((getHL() & 0x0fff) + (getBC() & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    if ((unsigned int) getHL() + (unsigned int) getBC() > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setHL(getHL() + getBC()); 
+                    break;
+                case 0b01: // DE
+                    if ((getHL() & 0x0fff) + (getDE() & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    if ((unsigned int) getHL() + (unsigned int) getDE() > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setHL(getHL() + getDE()); 
+                    break;
+                case 0b10: // HL
+                    if ((getHL() & 0x0fff) + (getHL() & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    if ((unsigned int) getHL() + (unsigned int) getHL() > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setHL(getHL() + getHL()); 
+                    break;
+                case 0b11: // SP
+                    if ((getHL() & 0x0fff) + (SP & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
+                    if ((unsigned int) getHL() + (unsigned int) SP > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    setHL(getHL() + SP);      
+                    break;
                 default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
             }
-            /// IMplement H bit update 16 bit
             clearFlag(N_BIT);
-            /// IMplement C bit update 16 bit
             break;
 
         // INC ss (0x03, 0x013, 0x23, 0x33)

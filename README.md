@@ -18,8 +18,7 @@ All opcodes have decoding and execution code implemented, but are not fully test
 The following updates still need to be completed before I consider it a good first release:
 
 - Flag update handling
-  - Implement H flag handler and update affected opcodes
-  - Flag updates for 16-bit ADD HL, ss; ADD IX, pp; ADD IY, rr; SBC HL, ss; ADC HL, ss
+  - Overflow (V) Flag updates for 16-bit SBC HL, ss; ADC HL, ss
 - Visual check of all opcode operations
 - Clean up compiler warnings (if any)
 - Only a general test will be run on release 1.0 (no core dumps, cursory check of opcodes)
@@ -138,6 +137,7 @@ The Z80 CPU is defined by a class (`Z80.h`). This class contains:
 - Z80 [opcode table][4]
 - Z80 undocumented opcodes [writeup][18]
 - zasm - Z80 assembler: [online version][6] and [local install version][7]
+- [Z80 emulator project][19] which includes test cases and a substantial reference list
 - [SDCC][8] - Small Device C Compiler and [manual][9]
 - [hex2bin][10] - Tool for converting [Intex Hex][11] or [Motorola S-Record][12] files to binary
 - [C++ reference][1]
@@ -166,6 +166,7 @@ The software and other files in this repository are released under what is commo
 [14]: https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps
 [15]: https://devblogs.microsoft.com/commandline/the-windows-subsystem-for-linux-in-the-microsoft-store-is-now-generally-available-on-windows-10-and-11/
 [18]: http://www.myquest.nl/z80undocumented/z80-documented-v0.91.pdf
+[19]: https://github.com/redcode/Z80
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)
