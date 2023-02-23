@@ -19,7 +19,7 @@ using namespace std;
 void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,2] = 0xFDCBdd
 
     unsigned char *r = nullptr;   // Temporary storage when decoding register field in opcode
-    unsigned char tempC;          // Temporarily store carry bit for rotate operations
+    unsigned char temp;          // Temporarily store carry bit for rotate operations
     unsigned char index;          // Array index into memory[] array based on IX or IY plus displacement in opcode
 
     if (IR[0] == 0xDD) index = getIX() + IR[2];
@@ -107,10 +107,10 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            tempC = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
 
             if (memory[index] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
-            memory[index] = ((memory[index] << 1) & 0xfe) | tempC;
+            memory[index] = ((memory[index] << 1) & 0xfe) | temp;
             if (r != nullptr) {
                 *r = memory[index];
             }
@@ -201,9 +201,9 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            tempC = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             if (memory[index] & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
-            memory[index] = ((memory[index] << 1) & 0x7f) | (tempC << 7);
+            memory[index] = ((memory[index] << 1) & 0x7f) | (temp << 7);
             if (r != nullptr) {
                 *r = memory[index];
             }
@@ -294,9 +294,9 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            tempC = memory[index] & 0x80;    // Save the sign bit
+            temp = memory[index] & 0x80;    // Save the sign bit
             if (memory[index] & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
-            memory[index] = ((memory[index] >> 1) & 0x7f) | tempC;
+            memory[index] = ((memory[index] >> 1) & 0x7f) | temp;
             if (r != nullptr) {
                 *r = memory[index];
             }

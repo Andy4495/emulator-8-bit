@@ -105,6 +105,44 @@ void Z80::print_fetched_instruction() {
     cout << instr_string << endl;
 }
 
+void Z80::print_registers() {
+    cout << hex << "A: " << (unsigned int) A 
+    <<  " B: " << (unsigned int) B 
+    <<  " C: " << (unsigned int) C
+    <<  " D: " << (unsigned int) D
+    <<  " E: " << (unsigned int) E
+    <<  " H: " << (unsigned int) H
+    <<  " L: " << (unsigned int) L 
+    << " IX: " << (unsigned short) getIX()
+    << " IY: " << (unsigned short) getIY()
+    << " SP: " << (unsigned short) SP
+    << "  I: " << (unsigned int)   I
+    << "  R: " << (unsigned int)   R
+    << endl;
+}
+
+void Z80::print_flags() {
+    cout << "SZXH XPNC: "
+    << (unsigned int) testFlag(Z80::S_BIT)
+    << (unsigned int) testFlag(Z80::Z_BIT)
+    << (unsigned int) testFlag(Z80::X1_BIT)
+    << (unsigned int) testFlag(Z80::H_BIT)
+    << " "
+    << (unsigned int) testFlag(Z80::X2_BIT)
+    << (unsigned int) testFlag(Z80::PV_BIT)
+    << (unsigned int) testFlag(Z80::N_BIT)
+    << (unsigned int) testFlag(Z80::C_BIT)
+    << endl;
+}
+
+void Z80::print_memory(unsigned short start, unsigned short end) {
+
+}
+
+bool Z80::halted() {
+    return Halt;
+}
+
 // Methods for updating the various bits in the Flags register
 void Z80::update_C(INST_TYPE t, const unsigned short val1, const unsigned short val2) {
     switch (t) {

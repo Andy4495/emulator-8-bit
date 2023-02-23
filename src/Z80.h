@@ -21,16 +21,35 @@
 
 class Z80 {
     public:
+        Z80(unsigned short ramstart=0x8000, unsigned short ramend=0xffff, unsigned short romstart=0x0000, unsigned short romend=0x7fff);
+        void load_memory(const char* fname);
+        void cold_reset();
+        void warm_reset();
+        void run_from_address(unsigned short addr);
+        void fetch_and_decode();
+        void execute();
+        void print_fetched_instruction();
+        void print_registers();
+        void print_flags();
+        void print_memory(unsigned short start, unsigned short end);
+        bool halted();  // If true, the CPU is halted
+
+    private:
         unsigned char memory[MAX_MEMORY] = {0};
         unsigned char in[MAX_IO] = {0};
         unsigned char out[MAX_IO] = {0};
         unsigned int instr_length;
         char mnemonic[MAX_MNEMONIC_LENGTH + 1];
         char instr_string[MAX_TEXT_LENGTH + 1];
+        unsigned short _ramstart;
+        unsigned short _ramend;
+        unsigned short _romstart;
+        unsigned short _romend;
 
         enum INST_TYPE {ADD, ADC, SUB, SBC};
         enum FLAG_BITS { S_BIT = 0x80, Z_BIT = 0x40, X1_BIT = 0x20, H_BIT = 0x10, X2_BIT = 0x08, PV_BIT = 0x04, N_BIT = 0x02, C_BIT = 0x01};
         enum INDEX_REG {IX_REGISTER, IY_REGISTER};
+
         // State variables
         bool Halt;
 
@@ -77,17 +96,10 @@ class Z80 {
         unsigned char IFF2;
         // Interrupt Mode
         unsigned char INT_MODE;
+        char fetched[MAX_FETCHED_LENGTH + 1];
 
-        Z80(unsigned short ramstart=0x8000, unsigned short ramend=0xffff, unsigned short romstart=0x0000, unsigned short romend=0x7fff);
-        void load_memory(const char* fname);
-        void cold_reset();
-        void warm_reset();
         unsigned char  testFlag(FLAG_BITS f);
-        void run_from_address(unsigned short addr);
-        void fetch_and_decode();
         unsigned char get_next_byte();
-        void execute();
-        void print_fetched_instruction();
         void update_C(INST_TYPE t,  unsigned short val1, unsigned short val2);
         void update_P(unsigned char v);
         void update_V(INST_TYPE t, unsigned char val1, unsigned char val2);
@@ -107,14 +119,6 @@ class Z80 {
         void setHL(unsigned short v);
         void setSP(unsigned char msb, unsigned char lsb);
         void setPC(unsigned char msb, unsigned char lsb);
-
-    private:
-        unsigned short _ramstart;
-        unsigned short _ramend;
-        unsigned short _romstart;
-        unsigned short _romend;
-        char fetched[MAX_FETCHED_LENGTH + 1];
-
         void clear_registers();
         void setFlag(FLAG_BITS f);
         void clearFlag(FLAG_BITS f);

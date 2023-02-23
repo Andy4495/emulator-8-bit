@@ -18,7 +18,7 @@ using namespace std;
 
 void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
     unsigned char *r = nullptr;   // Temporary storage when decoding register field in opcode
-    unsigned char tempC;          // Temporarily store carry bit for rotate operations
+    unsigned char temp;          // Temporarily store carry bit for rotate operations
 
     switch (IR[1]) {
         // RLC r     (0xCB00 - 0xCB07)
@@ -56,10 +56,10 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
-            tempC = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r << 1;
-            *r = (*r & 0xFE) | tempC;
+            *r = (*r & 0xFE) | temp;
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);
@@ -102,10 +102,10 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
-            tempC = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r << 1;
-            *r = (*r & 0xFE) | tempC;
+            *r = (*r & 0xFE) | temp;
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);
@@ -148,10 +148,10 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
-            tempC = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
-            *r = (*r & 0x7f) | (tempC << 7);
+            *r = (*r & 0x7f) | (temp << 7);
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);
@@ -194,10 +194,10 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
-            tempC = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
-            *r = (*r & 0x7F) | (tempC << 7);
+            *r = (*r & 0x7F) | (temp << 7);
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);
@@ -284,10 +284,10 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
-            tempC = *r & 0x80;    // Save the sign bit
+            temp = *r & 0x80;    // Save the sign bit
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             *r = *r >> 1;
-            *r = (*r & 0x7F) | tempC;
+            *r = (*r & 0x7F) | temp;
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);

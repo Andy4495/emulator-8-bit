@@ -105,7 +105,7 @@ int main(int argc, char** argv)
     }
 
     int state = 1;
-    while ((state < 12) && (!cpu.Halt)) { // Limit the number if times we fetch and decode
+    while ((state < 12) && (!cpu.halted())) { // Limit the number if times we fetch and decode
     ///    cout << "State: " << state << " PC: " << hex << cpu.PC << endl; /// debug
         cpu.fetch_and_decode();
         if (disassemble_mode == false) cpu.execute();
@@ -113,33 +113,11 @@ int main(int argc, char** argv)
         state++;
     }
 
-    if (cpu.Halt) cout << "CPU Halted." << endl;
+    if (cpu.halted()) cout << "CPU Halted." << endl;
 
-    cout << hex << "A: " << (unsigned int) cpu.A 
-    <<  " B: " << (unsigned int) cpu.B 
-    <<  " C: " << (unsigned int) cpu.C
-    <<  " D: " << (unsigned int) cpu.D
-    <<  " E: " << (unsigned int) cpu.E
-    <<  " H: " << (unsigned int) cpu.H
-    <<  " L: " << (unsigned int) cpu.L 
-    << " IX: " << (unsigned short) cpu.getIX()
-    << " IY: " << (unsigned short) cpu.getIY()
-    << " SP: " << (unsigned short) cpu.SP
-    << "  I: " << (unsigned int)   cpu.I
-    << "  R: " << (unsigned int)   cpu.R
-    << endl;
+    cpu.print_registers();
 
-    cout << "SZXH XPNC: "
-    << (unsigned int) cpu.testFlag(Z80::S_BIT)
-    << (unsigned int) cpu.testFlag(Z80::Z_BIT)
-    << (unsigned int) cpu.testFlag(Z80::X1_BIT)
-    << (unsigned int) cpu.testFlag(Z80::H_BIT)
-    << " "
-    << (unsigned int) cpu.testFlag(Z80::X2_BIT)
-    << (unsigned int) cpu.testFlag(Z80::PV_BIT)
-    << (unsigned int) cpu.testFlag(Z80::N_BIT)
-    << (unsigned int) cpu.testFlag(Z80::C_BIT)
-    << endl;
+    cpu.print_flags();
 
     return 0;
 }

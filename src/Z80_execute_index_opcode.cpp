@@ -19,13 +19,13 @@ using namespace std;
 void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
     unsigned char *r = nullptr, *r_ = nullptr;   // Temporary storage when decoding register field in opcode
-    unsigned char Temp;
-    unsigned char* IndexH;
-    unsigned char* IndexL;
+    unsigned char temp;
+    unsigned char* indexH;
+    unsigned char* indexL;
     INDEX_REG idx;
 
-    if (IR[0] == 0xdd) { IndexH = &IXH; IndexL = &IXL; idx = IX_REGISTER;}
-    else               { IndexH = &IYH; IndexL = &IYL; idx = IY_REGISTER;}
+    if (IR[0] == 0xdd) { indexH = &IXH; indexL = &IXL; idx = IX_REGISTER;}
+    else               { indexH = &IYH; indexL = &IYL; idx = IY_REGISTER;}
 
 
     switch (IR[1]) {
@@ -62,14 +62,14 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // LD IX/Y, nn instructions (0x21)
         case 0x21:
-            *IndexH = IR[3];
-            *IndexL = IR[2];
+            *indexH = IR[3];
+            *indexL = IR[2];
             break;
 
         // LD (nn), IX/Y (0x22)
         case 0x22:
-            memory[(IR[2]<<8) + IR[1] + 1] = *IndexH;
-            memory[(IR[2]<<8) + IR[1]]     = *IndexL;
+            memory[(IR[2]<<8) + IR[1] + 1] = *indexH;
+            memory[(IR[2]<<8) + IR[1]]     = *indexL;
             // Condition bits affected: None
             break;
 
@@ -81,8 +81,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // LD IX/Y, (nn)  (0x2A)
         case 0x3a: 
-            *IndexH = memory[(IR[2]<<8) + IR[1] + 1];
-            *IndexL = memory[(IR[2]<<8) + IR[1]];
+            *indexH = memory[(IR[2]<<8) + IR[1] + 1];
+            *indexL = memory[(IR[2]<<8) + IR[1]];
             // Condition bits affected: None
             break;
 
@@ -200,11 +200,11 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // ADC A, (IX/Y + d)         (0x8E)
         case 0x8e:
-            Temp = testFlag(C_BIT); // Save the carry bit
+            temp = testFlag(C_BIT); // Save the carry bit
             update_V(ADC, A, memory[getIndexReg(idx) + IR[2]]);
             update_H(ADC, A, memory[getIndexReg(idx) + IR[2]]);
             update_C(ADC, A, memory[getIndexReg(idx) + IR[2]]);
-            A += memory[getIndexReg(idx) + IR[2]] + Temp;
+            A += memory[getIndexReg(idx) + IR[2]] + temp;
             update_S(A);
             update_Z(A);
             clearFlag(N_BIT);
@@ -223,11 +223,11 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // SBC A, (IX/Y + d)         (0x9E)
         case 0x9e:
-            Temp = testFlag(C_BIT); // Save the carry bit
+            temp = testFlag(C_BIT); // Save the carry bit
             update_V(SBC, A, memory[getIndexReg(idx) + IR[2]]);
             update_H(SBC, A, memory[getIndexReg(idx) + IR[2]]);
             update_C(SBC, A, memory[getIndexReg(idx) + IR[2]]);
-            A += memory[getIndexReg(idx) + IR[2]] + Temp;
+            A += memory[getIndexReg(idx) + IR[2]] + temp;
             update_S(A);
             update_Z(A);
             setFlag(N_BIT);
@@ -278,32 +278,32 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // POP IX/Y     (0xE1)
         case 0xe1:
-            *IndexH  = memory[SP++];
-            *IndexL = memory[SP++];
+            *indexH  = memory[SP++];
+            *indexL = memory[SP++];
             // Condition bits affected: None
             break;   
 
         // EX (SP), IX/Y (0xE3)
         case 0xe3:
-            Temp         = *IndexH;
-            *IndexH          = memory[SP+1];
-            memory[SP+1] = Temp;
-            Temp         = *IndexL;
-            *IndexL          = memory[SP];
-            memory[SP]   = Temp;
+            temp         = *indexH;
+            *indexH          = memory[SP+1];
+            memory[SP+1] = temp;
+            temp         = *indexL;
+            *indexL          = memory[SP];
+            memory[SP]   = temp;
             // Condition bits affected: None
             break;
 
         // PUSH IX/Y     (0xE5)
         case 0xe5:
-            memory[--SP] = *IndexH;
-            memory[--SP] = *IndexL;
+            memory[--SP] = *indexH;
+            memory[--SP] = *indexL;
             // Condition bits affected: None
             break;      
 
         // JP (IX/Y)    (0xE9)
         case 0xe9:
-            setPC(*IndexH, *IndexL);
+            setPC(*indexH, *indexL);
             break;
 
         // LD SP, IX/Y   (0xF9)
@@ -324,8 +324,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: INC r" << endl; break;
             }
@@ -345,8 +345,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: DEC r" << endl; break;
             }
@@ -366,8 +366,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: LD r, n" << endl; break;
             }
@@ -391,8 +391,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r_ = &C; break;
                 case 0b010: r_ = &D; break;
                 case 0b011: r_ = &E; break;
-                case 0b100: r_ = IndexH; break;
-                case 0b101: r_ = IndexL; break;
+                case 0b100: r_ = indexH; break;
+                case 0b101: r_ = indexL; break;
                 case 0b111: r_ = &A; break;
                 default: cout << "Invalid opcode: LD r, r' r'" << endl; break;
             }
@@ -401,8 +401,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: LD r, r' r" << endl; break;
             }
@@ -418,8 +418,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: ADD A, r" << endl; break;
             }
@@ -440,16 +440,16 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: ADC A, r" << endl; break;
             }
-            Temp = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             update_V(ADC, A, *r);
             update_H(ADC, A, *r);
             update_C(ADC, A, *r);
-            A = A + *r + Temp;
+            A = A + *r + temp;
             update_S(A);
             update_Z(A);
             clearFlag(N_BIT);
@@ -463,8 +463,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: SUB A, r" << endl; break;
             }
@@ -485,16 +485,16 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: SBC A, r" << endl; break;
             }
-            Temp = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             update_V(SBC, A, *r);
             update_H(SBC, A, *r);
             update_C(SBC, A, *r);
-            A = A - *r - Temp;
+            A = A - *r - temp;
             update_S(A);
             update_Z(A);
             setFlag(N_BIT);
@@ -508,8 +508,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: AND A, r" << endl; break;
             }
@@ -530,8 +530,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: XOR A, r" << endl; break;
             }
@@ -552,8 +552,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: OR A, r" << endl; break;
             }
@@ -574,8 +574,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b001: r = &C; break;
                 case 0b010: r = &D; break;
                 case 0b011: r = &E; break;
-                case 0b100: r = IndexH; break;
-                case 0b101: r = IndexL; break;
+                case 0b100: r = indexH; break;
+                case 0b101: r = indexL; break;
                 case 0b110: r = &memory[getHL()]; break;   // (HL)
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: CP r" << endl; break;

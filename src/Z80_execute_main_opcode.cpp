@@ -18,7 +18,7 @@ using namespace std;
 
 void Z80::execute_main_opcode() {
     unsigned char *r = nullptr, *r_ = nullptr;   // Temporary storage when decoding register field in opcode
-    unsigned char Temp;
+    unsigned char temp;
     unsigned char adjustment;  // used by DAA
     unsigned char upperN;      // used by DAA
     unsigned char lowerN;      // used by DAA
@@ -200,57 +200,57 @@ void Z80::execute_main_opcode() {
         //
         // EX DE, HL (0xEB)
         case 0xeb:
-            Temp = D;
+            temp = D;
             D  = H;
-            H  = Temp;
-            Temp = E;
+            H  = temp;
+            temp = E;
             E  = L;
-            L  = Temp;
+            L  = temp;
             // Condition bits affected: None
             break;
 
         // EX AF, AF'  (0x08)
         case 0x08:
-            Temp   = A;
+            temp   = A;
             A      = Aprime;
-            Aprime = Temp;
-            Temp   = F;
+            Aprime = temp;
+            temp   = F;
             F      = Fprime;
-            Fprime = Temp;
+            Fprime = temp;
             // Condition bits affected: None
             break;
 
         // EXX (0xD9)
         case 0xd9:
-            Temp     = B;
+            temp     = B;
             B      = Bprime;
-            Bprime = Temp;
-            Temp     = C;
+            Bprime = temp;
+            temp     = C;
             C      = Cprime;
-            Cprime = Temp;
-            Temp     = D;
+            Cprime = temp;
+            temp     = D;
             D      = Dprime;
-            Dprime = Temp;
-            Temp     = E;
+            Dprime = temp;
+            temp     = E;
             E      = Eprime;
-            Eprime = Temp;
-            Temp     = H;
+            Eprime = temp;
+            temp     = H;
             H      = Hprime;
-            Hprime = Temp;
-            Temp     = L;
+            Hprime = temp;
+            temp     = L;
             L      = Lprime;
-            Lprime = Temp;
+            Lprime = temp;
             // Condition bits affected: None
             break;
 
         // EX (SP), HL (0xE3)
         case 0xe3:
-            Temp         = H;
+            temp         = H;
             H            = memory[SP+1];
-            memory[SP+1] = Temp;
-            Temp         = L;
+            memory[SP+1] = temp;
+            temp         = L;
             L            = memory[SP];
-            memory[SP]   = Temp;
+            memory[SP]   = temp;
             // Condition bits affected: None
             break;
 
@@ -312,12 +312,12 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: ADC A, r" << endl; break;
             }
-            Temp = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             update_V(ADC, A, *r);
             update_H(ADC, A, *r);
             update_C(ADC, A, *r);
-            if ((A & 0xf) + (*r & 0xf) + Temp > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
-            A = A + *r + Temp;
+            if ((A & 0xf) + (*r & 0xf) + temp > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
+            A = A + *r + temp;
             update_S(A);
             update_Z(A);
             clearFlag(N_BIT);
@@ -325,12 +325,12 @@ void Z80::execute_main_opcode() {
 
         // ADC A, n    (0xCE)
         case 0xce:
-            Temp = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             update_V(ADC, A, IR[1]);
             update_H(ADC, A, IR[1]);
             update_C(ADC, A, IR[1]);
-            if ((A & 0xf) + (IR[1] & 0xf) + Temp > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
-            A = A + IR[1] + Temp;
+            if ((A & 0xf) + (IR[1] & 0xf) + temp > 0xf) setFlag(H_BIT); else clearFlag(H_BIT);
+            A = A + IR[1] + temp;
             update_S(A);
             update_Z(A);
             clearFlag(N_BIT);
@@ -390,11 +390,11 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: SBC A, r" << endl; break;
             }
-            Temp = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             update_V(SBC, A, *r);
             update_H(SBC, A, *r);
             update_C(SBC, A, *r);
-            A = A - *r - Temp;
+            A = A - *r - temp;
             update_S(A);
             update_Z(A);
             setFlag(N_BIT);
@@ -402,11 +402,11 @@ void Z80::execute_main_opcode() {
 
         // SBC A, n    (0xDE)
         case 0xde:
-            Temp = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             update_V(SBC, A, IR[1]);
             update_H(SBC, A, IR[1]);
             update_C(SBC, A, IR[1]);
-            A = A - IR[1] - Temp;
+            A = A - IR[1] - temp;
             update_S(A);
             update_Z(A);
             setFlag(N_BIT);
@@ -734,6 +734,8 @@ void Z80::execute_main_opcode() {
         // HALT (0x76)
         case 0x76: 
             Halt = true;
+            // Halt remains in effect until an interrupt is received
+            // Actual Z80 executes NOPs while halted to keep memory refreshed
             // Condition bits affected: None
             break;
 
@@ -827,10 +829,10 @@ void Z80::execute_main_opcode() {
 
         // RLA (0x17)
         case 0x17:
-            Temp = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             if (A & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
             A = A << 1; 
-            if (Temp) A |= 0x01; else A &= 0xfe;
+            if (temp) A |= 0x01; else A &= 0xfe;
             clearFlag(H_BIT);
             clearFlag(N_BIT);
             break;
@@ -847,10 +849,10 @@ void Z80::execute_main_opcode() {
 
         // RRA (0x1F)
         case 0x1f:
-            Temp = testFlag(C_BIT);
+            temp = testFlag(C_BIT);
             if (A & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
             A = A >> 1;
-            if (Temp) A |= 0x80; else A &= 0x7f;
+            if (temp) A |= 0x80; else A &= 0x7f;
             clearFlag(H_BIT);
             clearFlag(N_BIT);
             break;
