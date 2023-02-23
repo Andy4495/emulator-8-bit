@@ -66,7 +66,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         case 0x40: case 0x48: case 0x50: case 0x58: case 0x60: case 0x68: case 0x78:
             // Determine the register to use
             // Opcode: 0  1  r  r  r  0  0  0
-            switch ((IR[1] & 0x38) << 3) {
+            switch ((IR[1] & 0x38) >> 3) {
                 case 0b000:
                     r = &B;
                     break;
@@ -173,7 +173,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         case 0x41: case 0x49: case 0x51: case 0x59: case 0x61: case 0x69: case 0x79:
             // Determine the register to use
             // Opcode: 0  1  r  r  r  0  0  1
-            switch ((IR[1] & 0x38) << 3) {
+            switch ((IR[1] & 0x38) >> 3) {
                 case 0b000:
                     r = &B;
                     break;

@@ -870,7 +870,7 @@ void Z80::execute_main_opcode() {
         case 0xc2:
             // Determine which flag to check
             // Opcode 1  1  c  c  c  0  1  0
-            switch ((IR[0] & 0x38)) {
+            switch ((IR[0] & 0x38) >> 3) {
                 case 0b000:  // NZ (Z == 0)
                     if (!testFlag(Z_BIT)) setPC(IR[2], IR[1]);
                     break;
@@ -976,7 +976,7 @@ void Z80::execute_main_opcode() {
         case 0xc4: case 0xcc: case 0xd4: case 0xdc: case 0xe4: case 0xec: case 0xf4: case 0xfc:
         // Determine which flag to check
         // Opcode: 1  1  c  c  c  1  0  0
-            switch ((IR[0] & 0x38)) {
+            switch ((IR[0] & 0x38) >> 3) {
                 case 0b000:  // NZ (Z == 0)
                     if (!testFlag(Z_BIT)) {memory[--SP] = (PC>>8); memory[--SP] = (PC & 0xFF); setPC(IR[2], IR[1]);}
                     break;
@@ -1019,7 +1019,7 @@ void Z80::execute_main_opcode() {
         case 0xc0: case 0xc8: case 0xd0: case 0xd8: case 0xe0: case 0xe8: case 0xf0: case 0xf8:
         // Determine which flag to check
         // Opcode: 1  1  c  c  c  0  0  0
-            switch ((IR[0] & 0x38)) {
+            switch ((IR[0] & 0x38) >> 3) {
                 case 0b000:  // NZ (Z == 0)
                     if (!testFlag(Z_BIT)) {setPC(memory[SP+1], memory[SP]); SP += 2;}
                     break;
