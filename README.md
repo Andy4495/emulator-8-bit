@@ -7,7 +7,7 @@ This is a simple Z80 CPU emulator and disassembler.
 
 I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture.
 
-The emulator currently only supports the Z80. The Z80-specific code is encapsulated in a Z80 class, so it should be possible to support additional CPUs by creating classes specific for those CPUs.
+The emulator currently only supports the Z80. The Z80-specific code is encapsulated in a Z80 class. Additional CPUs can be emulated by creating classes specific for those CPUs by inheriting from the `abstract_CPU` class.
 
 There are many other open source emulators available. This emulator is not meant to replace any of those, and likely does not contain any features not already available. It was solely created as a learning exercise.
 
@@ -93,7 +93,7 @@ The CPU opcodes are defined in several tables implemented with arrays of structs
 
 Zilog-documented and undocumented opcodes are defined and supported by the emulator.
 
-The Z80 CPU is defined by a class (`Z80.h`). This class contains:
+The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base class (`abstract_CPU`). This class contains:
 
 - An array representing the memory (RAM and ROM) available to the processor
   - This is currently defined as a single structure of 65536 bytes (16-bit address space)
@@ -131,9 +131,9 @@ The Z80 CPU is defined by a class (`Z80.h`). This class contains:
 - Support additional file formats such as S-Records which would allow specific memory locations to be defined by the file.
 - Interrupts (maskable and non-maskable)
 - Support additonal processor types
-- HALT state handler in main execute method
-  - Currently handled in the main emulator module, but should be part of the CPU class implementation
-  - HALT should act like a breakpoint
+- HALT state handler improvements
+  - Since interrupts are not implemented, HALT just stops the emulator
+  - HALT should act like a breakpoint, in that execution can be continued after performing available debugging operations
 - Automated test suite
   - All valid opcodes
   - Corner cases

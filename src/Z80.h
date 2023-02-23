@@ -10,6 +10,8 @@
 #ifndef Z80_H
 #define Z80_H
 
+#include "abstract_cpu.h"
+
 /* Z80 Core Definitions */
 #define MAX_MEMORY 65536
 #define MAX_IO 256
@@ -19,7 +21,7 @@
 #define MAX_MNEMONIC_LENGTH 24
 #define MAX_TEXT_LENGTH 64
 
-class Z80 {
+class Z80 : public abstract_CPU {
     public:
         Z80(unsigned short ramstart=0x8000, unsigned short ramend=0xffff, unsigned short romstart=0x0000, unsigned short romend=0x7fff);
         void load_memory(const char* fname);

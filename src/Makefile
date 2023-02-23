@@ -26,7 +26,6 @@ SOURCE	= \
 	Z80_fetch_and_decode.cpp \
     Emulator.cpp
 
-HEADER	= Z80_opcodes.h Z80.h
 OUT	= emulator
 CC	 = g++
 FLAGS	 = -c -Wall -std=c++11
@@ -48,7 +47,7 @@ verbose: all
 Emulator.o: Emulator.cpp Z80.h
 	$(CC) $(FLAGS) Emulator.cpp 
 
-Z80.o: Z80.cpp Z80.h Z80_opcodes.h
+Z80.o: Z80.cpp Z80.h Z80_opcodes.h abstract_cpu.h
 	$(CC) $(FLAGS) Z80.cpp 
 
 Z80_execute.o: Z80_execute.cpp Z80.h
