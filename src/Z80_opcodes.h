@@ -589,7 +589,7 @@ const Z80_opcodes opcodes_IX_instructions[] = {
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "ADD  IX, IX"}, 
-    {2, OO,   "LD   IX, ($%02x%02x)"},
+    {4, OONN, "LD   IX, ($%02x%02x)"},
     {2, OO,   "DEC  IX" },
     {2, OO,   "INC  IXL"}, 
     {2, OO,   "DEC  IXL"},
@@ -1110,7 +1110,7 @@ const Z80_opcodes opcodes_IY_instructions[] = {
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "ADD  IY, IY"}, 
-    {2, OO,   "LD   IY, ($%02x%02x)"},
+    {4, OONN, "LD   IY, ($%02x%02x)"},
     {2, OO,   "DEC  IY" },
     {2, OO,   "INC  IYL"}, 
     {2, OO,   "DEC  IYL"},
