@@ -382,4 +382,3 @@ void Z80::setIndexReg(INDEX_REG r, unsigned short v) {
   if (r == IX_REGISTER) setIX(v);
   else setIY(v);
 }
-

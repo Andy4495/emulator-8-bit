@@ -597,4 +597,3 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
     }
 }
-
