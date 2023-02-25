@@ -143,6 +143,10 @@ bool Z80::halted() {
     return Halt;
 }
 
+unsigned short Z80::getPC() {
+    return PC;
+}
+
 // Methods for updating the various bits in the Flags register
 void Z80::update_C(INST_TYPE t, const unsigned short val1, const unsigned short val2) {
     switch (t) {

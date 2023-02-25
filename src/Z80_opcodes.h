@@ -41,7 +41,7 @@ const Z80_opcodes opcodes[] = {
     {1, O,    "DEC  BC"},
     {1, O,    "INC  C"},
     {1, O,    "DEC  C"},
-    {2, O,    "LD   C, "},
+    {2, ON,   "LD   C, $%02x"},
     {1, O,    "RRCA"},
     {2, JN,   "DJNZ $%04x"},           // DJNZ n       // 0x10
     {3, ONN,  "LD   DE, $%02x%02x"},   // LD DE, nn
@@ -49,7 +49,7 @@ const Z80_opcodes opcodes[] = {
     {1, O,    "INC  DE"},
     {1, O,    "INC  D"},
     {1, O,    "DEC  D"},
-    {2, O,    "LD   D, "},
+    {2, ON,   "LD   D, $%02x"},
     {1, O,    "RLA"},
     {2, JN,   "JR   $%04x"},           // JR d
     {1, O,    "ADD  HL, DE"},
@@ -73,7 +73,7 @@ const Z80_opcodes opcodes[] = {
     {1, O,    "DEC  HL"}, 
     {1, O,    "INC  L"}, 
     {1, O,    "DEC  L"},
-    {2, ON,   "LD   D, $%02x"},        // LD D, n
+    {2, ON,   "LD   L, $%02x"},
     {1, O,    "CPL"},
     {2, JN,   "JR   NC, $%04x"},       // JR NC, d     // 0x30
     {3, ONN,  "LD   SP, $%02x%02x"},   // LD SP, nn
@@ -241,12 +241,12 @@ const Z80_opcodes opcodes[] = {
     {2, ON,   "OUT  ($%02x), A"}, 
     {3, ONN,  "CALL NC, $%02x%02x"}, 
     {1, O,    "PUSH DE"}, 
-    {2, ON,   "SUB  %02x"}, 
+    {2, ON,   "SUB  $%02x"}, 
     {1, O,    "RST  $10"}, 
     {1, O,    "RET  C"},
     {1, O,    "EXX"}, 
     {3, ONN,  "JP   C, $%02x%02x"},
-    {2, ON,   "IN   A, ($%02x"},
+    {2, ON,   "IN   A, ($%02x)"},
     {3, ONN,  "CALL C, $%02x%02x"}, 
     {2, OO,   "IX INSTRUCTIONS"},      // 0xDD: IX Instructions; additional decoding required 
     {2, ON,   "SBC  A, $%02x"},
@@ -257,7 +257,7 @@ const Z80_opcodes opcodes[] = {
     {1, O,    "EX   (SP), HL"}, 
     {3, ONN,  "CALL PO, $%02x%02x"}, 
     {1, O,    "PUSH HL"}, 
-    {2, ON,   "AND  %02x"}, 
+    {2, ON,   "AND  $%02x"}, 
     {1, O,    "RST  $20"}, 
     {1, O,    "RET  PE"},
     {1, O,    "JP   (HL)"}, 
@@ -273,7 +273,7 @@ const Z80_opcodes opcodes[] = {
     {1, O,    "DI"}, 
     {3, ONN,  "CALL P, $%02x%02x"}, 
     {1, O,    "PUSH AF"}, 
-    {2, ON,   "OR   %02x"}, 
+    {2, ON,   "OR   $%02x"}, 
     {1, O,    "RST  $30"}, 
     {1, O,    "RET  M"},
     {1, O,    "LD   SP, HL"}, 

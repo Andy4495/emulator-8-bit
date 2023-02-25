@@ -35,6 +35,7 @@ class Z80 : public abstract_CPU {
         void print_flags();
         void print_memory(unsigned short start, unsigned short end);
         bool halted();  // If true, the CPU is halted
+        unsigned short getPC();
 
     private:
         unsigned char memory[MAX_MEMORY] = {0};

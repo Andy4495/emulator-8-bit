@@ -6,7 +6,7 @@
    0.2  12/22/22  Andy4495  Additional implementation
 */
 
-#define VERSION 0.10
+const char* VERSION = "v0.1.1";
 
 // 1. Read command line and parse arguments parseCommandLine()
 // 2. Read memory file (hex, s-record) loadProgram()
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     Z80 cpu;
 
     int choice = 0;
-    unsigned short addr;
+    unsigned short start_addr, end_addr;
     bool disassemble_mode = false;
 
     if (argc == 2) { // Use pathname passed on command line
@@ -60,9 +60,9 @@ int main(int argc, char** argv)
 
     while (choice == 0) {
         cout << "Select an option:" << endl;
-        cout << "1. Cold reset and run from $0000." << endl;
-        cout << "2. Warm reset and run from $0000." << endl;
-        cout << "3. Run from specific address." << endl;
+        cout << "1. Cold reset and run from $0000. Program will continue running until HALT." << endl;
+        cout << "2. Warm reset and run from $0000. Program will continue running until HALT." << endl;
+        cout << "3. Run from specific address. Program will continue running until HALT." << endl;
         cout << "4. Set breakpoint." << endl;
         cout << "5. Disassemble (do not run code)." << endl;
 
@@ -79,8 +79,8 @@ int main(int argc, char** argv)
 
             case 3: // Run from address
                 cout << "Enter starting address in hex: 0x";
-                cin >> hex >> addr >> dec;
-                cpu.run_from_address(addr);
+                cin >> hex >> start_addr >> dec;
+                cpu.run_from_address(start_addr);
                 break;
 
             case 4: // Set breakpoint
@@ -92,8 +92,10 @@ int main(int argc, char** argv)
             case 5: // Disassemble (do not execute)
                 disassemble_mode = true;
                 cout << "Enter starting address in hex: 0x";
-                cin >> hex >> addr >> dec;
-                cpu.run_from_address(addr);
+                cin >> hex >> start_addr >> dec;
+                cout << "Enter ending address in hex: 0x";
+                cin >> hex >> end_addr >> dec;
+                cpu.run_from_address(start_addr);
                 break;
 
             default: // Choice outside of range
@@ -104,13 +106,11 @@ int main(int argc, char** argv)
         }
     }
 
-    int state = 1;
-    while ((state < 12) && (!cpu.halted())) { // Limit the number if times we fetch and decode
-    ///    cout << "State: " << state << " PC: " << hex << cpu.PC << endl; /// debug
+    while (!cpu.halted()) {
         cpu.fetch_and_decode();
         if (disassemble_mode == false) cpu.execute();
         cpu.print_fetched_instruction();
-        state++;
+        if ((disassemble_mode == true) && ((cpu.getPC() > end_addr) || (cpu.getPC() == 0))) break;
     }
 
     if (cpu.halted()) cout << "CPU Halted." << endl;

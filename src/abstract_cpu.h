@@ -24,6 +24,7 @@ class abstract_CPU {
         virtual void print_flags() = 0;
         virtual void print_memory(unsigned short start, unsigned short end) = 0;
         virtual bool halted() = 0;  // If true, the CPU is halted
+        virtual unsigned short getPC() = 0; // The wrapper program may need to know the current program counter value
 };
 
 #endif

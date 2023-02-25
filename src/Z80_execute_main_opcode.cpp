@@ -690,9 +690,9 @@ void Z80::execute_main_opcode() {
             }
             else
             // Any combination beyond the above cases are not covered by the operation table for the DAA instruction
-                cout << "Undefined adjustment for DAA 0x27 - N:"   << (unsigned int) testFlag(N_BIT) <<
-                " C: " << (unsigned int) testFlag(C_BIT) << " H: " << (unsigned int) testFlag(H_BIT) <<
-                " A: 0x" << (unsigned int) A << endl;
+                cout << "Undefined adjustment for DAA 0x27 - N:"  << hex  << (unsigned short) testFlag(N_BIT) <<
+                " C: " << (unsigned short) testFlag(C_BIT) << " H: "      << (unsigned short) testFlag(H_BIT) <<
+                " A: 0x" << (unsigned short) A << endl;
             A += adjustment;
             update_S(A);
             update_Z(A);

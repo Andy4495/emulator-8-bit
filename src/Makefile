@@ -15,17 +15,6 @@ OBJS	= \
 	Z80_fetch_and_decode.o \
 	Emulator.o
 
-SOURCE	= \
-	Z80.cpp \
-	Z80_execute.cpp \
-	Z80_execute_bit_opcode.cpp \
-	Z80_execute_index_opcode.cpp \
-	Z80_execute_ix_iy_bit_opcode.cpp \
-	Z80_execute_misc_opcode.cpp \
-	Z80_execute_main_opcode.cpp \
-	Z80_fetch_and_decode.cpp \
-    Emulator.cpp
-
 OUT	= emulator
 CC	 = g++
 FLAGS	 = -c -Wall -std=c++11
