@@ -25,6 +25,7 @@ class abstract_CPU {
         virtual void print_memory(unsigned short start, unsigned short end) = 0;
         virtual bool halted() = 0;  // If true, the CPU is halted
         virtual unsigned short getPC() = 0; // The wrapper program may need to know the current program counter value
+        virtual void print_assembly() = 0; // This prints disassembled output so that it can be directly input to an assembler
 };
 
 #endif

@@ -57,7 +57,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Invalid opcode: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             if (memory[index] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
@@ -104,7 +104,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Invalid opcode: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             temp = testFlag(C_BIT);
@@ -152,7 +152,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Invalid opcode: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             if (memory[index] & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
@@ -198,7 +198,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Invalid opcode: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             temp = testFlag(C_BIT);
@@ -245,7 +245,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Invalid opcode: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             if (memory[index] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
@@ -291,7 +291,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Invalid opcode: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             temp = memory[index] & 0x80;    // Save the sign bit
@@ -340,7 +340,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Invalid opcode: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             if (memory[index] & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
@@ -386,7 +386,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Invalid opcode: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             if (memory[index] & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
@@ -457,7 +457,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Invalid opcode: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             // Decode the bit position, b
@@ -503,7 +503,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+                    cout << "Invalid opcode: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
             // Decode the bit position, b
@@ -512,7 +512,7 @@ void Z80::execute_ix_iy_bit_opcode() {  // IX: IR[0,1,2] = 0xDDCBdd, IY: IR[0,1,
             break;
 
         default: 
-            cout << "Execution not defined: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
+            cout << "Invalid opcode: 0xXDCBdd" << hex << setw(2) << (unsigned int) IR[3] << endl;
             break;
     }
 

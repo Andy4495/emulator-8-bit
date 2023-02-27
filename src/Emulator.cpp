@@ -48,13 +48,17 @@ int main(int argc, char** argv)
 
     int choice = 0;
     unsigned short start_addr, end_addr;
-    bool disassemble_mode = false;
+    unsigned short prevPC; 
+    enum DISASM_MODE {OFF, FULL, ASSEMBLY};
+    DISASM_MODE disassemble_mode = OFF;
 
     if (argc == 2) { // Use pathname passed on command line
+        cout << "Loading memory from file: " << argv[1] << " . . . ";
         cpu.load_memory(argv[1]);
     }
     else { // Use default filename
         cpu.load_memory("data.bin");
+        cout << "Loading memory from file: " << "data.bin" << " . . . ";
     }
     cout << "DONE." << endl;
 
@@ -65,6 +69,7 @@ int main(int argc, char** argv)
         cout << "3. Run from specific address. Program will continue running until HALT." << endl;
         cout << "4. Set breakpoint." << endl;
         cout << "5. Disassemble (do not run code)." << endl;
+        cout << "6. Disassemble into compilable assembly." << endl;
 
         cin >> choice;
 
@@ -86,15 +91,28 @@ int main(int argc, char** argv)
             case 4: // Set breakpoint
                 // Add code to input address 
                 // Add code to set a breakpoint
+                cout << "Not supported yet." << endl;
                 choice = 0;
                 break;
 
             case 5: // Disassemble (do not execute)
-                disassemble_mode = true;
+                disassemble_mode = FULL;
                 cout << "Enter starting address in hex: 0x";
                 cin >> hex >> start_addr >> dec;
                 cout << "Enter ending address in hex: 0x";
                 cin >> hex >> end_addr >> dec;
+                cpu.run_from_address(start_addr);
+                break;
+
+            case 6: // Disassemble into compilable assembly (same as above, but don't print address or fetched data)
+                disassemble_mode = ASSEMBLY;
+                cout << "Enter starting address in hex: 0x";
+                cin >> hex >> start_addr >> dec;
+                cout << "Enter ending address in hex: 0x";
+                cin >> hex >> end_addr >> dec;
+                prevPC = start_addr;
+                cout << endl << ";----- Program starts here ------" << endl;
+                cout << "      org    $" << hex << start_addr << endl;
                 cpu.run_from_address(start_addr);
                 break;
 
@@ -108,16 +126,19 @@ int main(int argc, char** argv)
 
     while (!cpu.halted()) {
         cpu.fetch_and_decode();
-        if (disassemble_mode == false) cpu.execute();
-        cpu.print_fetched_instruction();
-        if ((disassemble_mode == true) && ((cpu.getPC() > end_addr) || (cpu.getPC() == 0))) break;
+        if (disassemble_mode == OFF) cpu.execute();
+        if (disassemble_mode == ASSEMBLY) cpu.print_assembly(); else cpu.print_fetched_instruction();
+        // Check for some corner cases so that we don't wrap around memory
+        if ((disassemble_mode != OFF) && ((cpu.getPC() > end_addr) || (cpu.getPC() == 0) || (cpu.getPC() < prevPC))) break;
+        prevPC = cpu.getPC();
     }
 
     if (cpu.halted()) cout << "CPU Halted." << endl;
 
-    cpu.print_registers();
-
-    cpu.print_flags();
+    if (disassemble_mode == OFF) {
+        cpu.print_registers();
+        cpu.print_flags();
+    }
 
     return 0;
 }

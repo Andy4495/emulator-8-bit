@@ -62,4 +62,3 @@ Z80_fetch_and_decode.o: Z80_fetch_and_decode.cpp Z80.h Z80_opcodes.h
 
 clean:
 	rm -f $(OBJS) $(OUT)
-	

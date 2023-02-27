@@ -30,8 +30,6 @@ void Z80::load_memory(const char* fname) {
     unsigned int i = 0;
     char data;
 
-    cout << "Loading memory from file: " << fname << endl;
-
     ifstream memfile(fname,iostream::in|ios::binary);
     assert(memfile); // Check if open successful
 
@@ -91,7 +89,7 @@ unsigned char Z80::testFlag(FLAG_BITS f) {
 
 void Z80::run_from_address(unsigned short addr) {
     // Keep RAM and registers intact, start from addr passed into function
-    cout << "Starting from address: 0x" << hex << addr << endl;
+    cout << ";Starting from address: 0x" << hex << addr << endl;
     PC = addr;
     Halt = false;
 }
@@ -102,6 +100,12 @@ unsigned char Z80::get_next_byte() {
 
 void Z80::print_fetched_instruction() {
     snprintf(instr_string, MAX_TEXT_LENGTH, "%04x  %-s  %s", PC_of_Fetch, fetched, mnemonic);  // Same format for every opcode
+    cout << instr_string << endl;
+}
+
+// This is the same as print_fetched_instruction, except it doesn't print the address
+void Z80::print_assembly() {
+    snprintf(instr_string, MAX_TEXT_LENGTH, "      %s", mnemonic);  // Same format for every opcode
     cout << instr_string << endl;
 }
 

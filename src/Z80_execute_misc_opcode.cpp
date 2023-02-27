@@ -597,7 +597,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;
 
         default: 
-            cout << "Execution not defined: 0xed" << hex << setw(2) << (unsigned int) IR[1] << endl;
+            cout << "Invalid opcode: 0xed" << hex << setw(2) << (unsigned int) IR[1] << endl;
             break;
     }
 }

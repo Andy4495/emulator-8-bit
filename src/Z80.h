@@ -31,6 +31,7 @@ class Z80 : public abstract_CPU {
         void fetch_and_decode();
         void execute();
         void print_fetched_instruction();
+        void print_assembly();
         void print_registers();
         void print_flags();
         void print_memory(unsigned short start, unsigned short end);

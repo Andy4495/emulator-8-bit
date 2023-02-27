@@ -625,7 +625,7 @@ const Z80_opcodes opcodes_IX_instructions[] = {
     {2, OO,   "LD   C, E" },        
     {2, OO,   "LD   C, IXH"}, 
     {2, OO,   "LD   C, IXL"},
-    {3, OON,  "LD   C, (IX+$%02x"},
+    {3, OON,  "LD   C, (IX+$%02x)"},
     {2, OO,   "LD   C, A" },        
     {2, OO,   "LD   D, B" },           // 0xDD50
     {2, OO,   "LD   D, C" },        
@@ -641,7 +641,7 @@ const Z80_opcodes opcodes_IX_instructions[] = {
     {2, OO,   "LD   E, E" },        
     {2, OO,   "LD   E, IXH"}, 
     {2, OO,   "LD   E, IXL"},
-    {3, OON,  "LD   E, (IX+$%02x"},
+    {3, OON,  "LD   E, (IX+$%02x)"},
     {2, OO,   "LD   E, A" },        
     {2, OO,   "LD   IXH, B" },         // 0xDD60
     {2, OO,   "LD   IXH, C" },        
@@ -657,23 +657,23 @@ const Z80_opcodes opcodes_IX_instructions[] = {
     {2, OO,   "LD   IXL, E" },        
     {2, OO,   "LD   IXL, IXH"}, 
     {2, OO,   "LD   IXL, IXL"},
-    {3, OON,  "LD   L, (IX+$%02x"},
+    {3, OON,  "LD   L, (IX+$%02x)"},
     {2, OO,   "LD   IXL, A" },        
-    {3, OO,   "LD   (IX+$%02x), B" },  // 0xDD70
-    {3, OO,   "LD   (IX+$%02x), C" },        
-    {3, OO,   "LD   (IX+$%02x), D" },        
-    {3, OO,   "LD   (IX+$%02x), E" },        
-    {3, OO,   "LD   (IX+$%02x), IXH"},
-    {3, OO,   "LD   (IX+$%02x), IXL"}, 
+    {3, OON,  "LD   (IX+$%02x), B" },  // 0xDD70
+    {3, OON,  "LD   (IX+$%02x), C" },        
+    {3, OON,  "LD   (IX+$%02x), D" },        
+    {3, OON,  "LD   (IX+$%02x), E" },        
+    {3, OON,  "LD   (IX+$%02x), H"},
+    {3, OON,  "LD   (IX+$%02x), L"}, 
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
-    {3, OO,   "LD   (IX+$%02x), A" },        
+    {3, OON,  "LD   (IX+$%02x), A" },        
     {2, OO,   "LD   A, B" },        
     {2, OO,   "LD   A, C"}, 
     {2, OO,   "LD   A, D" },        
     {2, OO,   "LD   A, E" },        
     {2, OO,   "LD   A, IXH"}, 
     {2, OO,   "LD   A, IXL"},
-    {3, OON,  "LD   A, (IX+$%02x"},
+    {3, OON,  "LD   A, (IX+$%02x)"},
     {2, OO,   "LD   A, A" },        
     {2, OO,   "ADD  A, B" },           // 0xDD80
     {2, OO,   "ADD  A, C" },        
@@ -689,7 +689,7 @@ const Z80_opcodes opcodes_IX_instructions[] = {
     {2, OO,   "ADC  A, E" },        
     {2, OO,   "ADC  A, IXH"}, 
     {2, OO,   "ADC  A, IXL"},
-    {3, OON,  "ADC  A, (IX+$%02x"},
+    {3, OON,  "ADC  A, (IX+$%02x)"},
     {2, OO,   "ADC  A, A" },        
     {2, OO,   "SUB  A, B" },           // 0xDD90
     {2, OO,   "SUB  A, C" },        
@@ -705,7 +705,7 @@ const Z80_opcodes opcodes_IX_instructions[] = {
     {2, OO,   "SBC  A, E" },        
     {2, OO,   "SBC  A, IXH"}, 
     {2, OO,   "SBC  A, IXL"},
-    {3, OON,  "SBC  A, (IX+$%02x"},
+    {3, OON,  "SBC  A, (IX+$%02x)"},
     {2, OO,   "SBC  A, A" },        
     {2, OO,   "AND  A, B" },           // 0xDDA0
     {2, OO,   "AND  A, C" },        
@@ -721,7 +721,7 @@ const Z80_opcodes opcodes_IX_instructions[] = {
     {2, OO,   "XOR  A, E" },        
     {2, OO,   "XOR  A, IXH"}, 
     {2, OO,   "XOR  A, IXL"},
-    {3, OON,  "XOR  A, (IX+$%02x"},
+    {3, OON,  "XOR  A, (IX+$%02x)"},
     {2, OO,   "XOR  A, A" },        
     {2, OO,   "OR   A, B" },           // 0xDDB0
     {2, OO,   "OR   A, C" },        
@@ -737,7 +737,7 @@ const Z80_opcodes opcodes_IX_instructions[] = {
     {2, OO,   "CP   A, E" },        
     {2, OO,   "CP   A, IXH"}, 
     {2, OO,   "CP   A, IXL"},
-    {3, OON,  "CP   A, (IX+$%02x"},
+    {3, OON,  "CP   A, (IX+$%02x)"},
     {2, OO,   "CP   A, A" },        
     {2, OO,   "INVALID: NOP" },        // 0xDDC0
     {2, OO,   "INVALID: NOP" },
@@ -872,7 +872,7 @@ const Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
-    {2, OO,   "IN   B, (C)"},          // 0x40
+    {2, OO,   "IN   B, (C)"},          // 0xED40
     {2, OO,   "OUT  (C), B"},         
     {2, OO,   "SBC  HL, BC"},         
     {4, OONN, "LD   ($%02x%02x),  BC"},         
@@ -884,59 +884,59 @@ const Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "OUT  (C), C"},         
     {2, OO,   "ADC  HL, BC"},         
     {4, OONN, "LD   BC, ($%02x%02x)"},         
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x4c   
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED4c   
     {2, OO,   "RETI"},         
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x4e        
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED4e        
     {2, OO,   "LD   R, A"},         
-    {2, OO,   "IN   D, (C)"},          // 0x50
+    {2, OO,   "IN   D, (C)"},          // 0xED50
     {2, OO,   "OUT  (C), D"},         
     {2, OO,   "SBC  HL, DE"},         
     {4, OONN, "LD   ($%02x%02x),  DE"},         
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x54    
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x55    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED54    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED55    
     {2, OO,   "IM   1"},         
     {2, OO,   "LD   A, I"},         
     {2, OO,   "IN   E, (C)"},         
     {2, OO,   "OUT  (C), E"},         
     {2, OO,   "ADC  HL, DE"},         
     {4, OONN, "LD   DE, ($%02x%02x)"},     
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x5C 
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x5D 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED5C 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED5D 
     {2, OO,   "IM   2" }, 
     {2, OO,   "LD   A, R"},         
-    {2, OO,   "IN   H, (C)"},          // 0x60
+    {2, OO,   "IN   H, (C)"},          // 0xED60
     {2, OO,   "OUT  (C), H"},         
     {2, OO,   "SBC  HL, HL"},         
     {4, OONN, "LD   ($%02x%02x),  HL"},         
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x64    
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x65    
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x66    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED64    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED65    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED66    
     {2, OO,   "RRD"},         
     {2, OO,   "IN   L, (C)"},         
     {2, OO,   "OUT  (C), L"},         
     {2, OO,   "ADC  HL, HL"},         
     {4, OONN, "LD   HL, ($%02x%02x)"},     
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x6C 
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x6D 
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x6E 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED6C 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED6D 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED6E 
     {2, OO,   "RLD"},         
-    {2, OO,   "IN   (C)"},             // 0x70
+    {2, OO,   "IN   (C)"},             // 0xED70
     {2, OO,   "OUT  (C), 0"},         
     {2, OO,   "SBC  HL, SP"},         
     {4, OONN, "LD   ($%02x%02x),  SP"},         
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x74    
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x75    
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x76    
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x77    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED74    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED75    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED76    
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED77    
     {2, OO,   "IN   A, (C)"},         
     {2, OO,   "OUT  (C), A"},         
     {2, OO,   "ADC  HL, SP"},         
     {4, OONN, "LD   SP, ($%02x%02x)"},     
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x7C 
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x7D 
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x7E 
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x7E 
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x80
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED7C 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED7D 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED7E 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED7E 
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED80
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -952,7 +952,7 @@ const Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0x90
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xED90
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -968,7 +968,7 @@ const Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },    
-    {2, OO,   "LDI"},                  // 0xA0   
+    {2, OO,   "LDI"},                  // 0xEDA0   
     {2, OO,   "CPI"}, 
     {2, OO,   "INI"},
     {2, OO,   "OUTI"},
@@ -984,7 +984,7 @@ const Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
-    {2, OO,   "LDIR"},                 // 0xB0   
+    {2, OO,   "LDIR"},                 // 0xEDB0   
     {2, OO,   "CPIR"}, 
     {2, OO,   "INIR"},
     {2, OO,   "OTIR"},
@@ -1000,7 +1000,7 @@ const Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xC0
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xEDC0
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -1016,7 +1016,7 @@ const Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },    
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xD0
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xEDD0
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -1032,7 +1032,7 @@ const Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },    
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xE0
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xEDE0
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -1048,7 +1048,7 @@ const Z80_opcodes opcodes_misc_instructions[] = {
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },    
-    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xF0
+    {2, OO,   "INVALID: NOP" },        // Unimplemented opcode 0xEDF0
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
     {2, OO,   "INVALID: NOP" },       
@@ -1146,7 +1146,7 @@ const Z80_opcodes opcodes_IY_instructions[] = {
     {2, OO,   "LD   C, E" },        
     {2, OO,   "LD   C, IYH"}, 
     {2, OO,   "LD   C, IYL"},
-    {3, OON,  "LD   C, (IY+$%02x"},
+    {3, OON,  "LD   C, (IY+$%02x)"},
     {2, OO,   "LD   C, A" },        
     {2, OO,   "LD   D, B" },           // 0xFD50
     {2, OO,   "LD   D, C" },        
@@ -1162,7 +1162,7 @@ const Z80_opcodes opcodes_IY_instructions[] = {
     {2, OO,   "LD   E, E" },        
     {2, OO,   "LD   E, IYH"}, 
     {2, OO,   "LD   E, IYL"},
-    {3, OON,  "LD   E, (IY+$%02x"},
+    {3, OON,  "LD   E, (IY+$%02x)"},
     {2, OO,   "LD   E, A" },        
     {2, OO,   "LD   IYH, B" },         // 0xFD60
     {2, OO,   "LD   IYH, C" },        
@@ -1178,23 +1178,23 @@ const Z80_opcodes opcodes_IY_instructions[] = {
     {2, OO,   "LD   IYL, E" },        
     {2, OO,   "LD   IYL, IYH"}, 
     {2, OO,   "LD   IYL, IYL"},
-    {3, OON,  "LD   L, (IY+$%02x"},
+    {3, OON,  "LD   L, (IY+$%02x)"},
     {2, OO,   "LD   IYL, A" },        
-    {3, OO,   "LD   (IY+$%02x), B" },  // 0xFD70
-    {3, OO,   "LD   (IY+$%02x), C" },        
-    {3, OO,   "LD   (IY+$%02x), D" },        
-    {3, OO,   "LD   (IY+$%02x), E" },        
-    {3, OO,   "LD   (IY+$%02x), IYH"},
-    {3, OO,   "LD   (IY+$%02x), IYL"}, 
+    {3, OON,  "LD   (IY+$%02x), B" },  // 0xFD70
+    {3, OON,  "LD   (IY+$%02x), C" },        
+    {3, OON,  "LD   (IY+$%02x), D" },        
+    {3, OON,  "LD   (IY+$%02x), E" },        
+    {3, OON,  "LD   (IY+$%02x), H"},
+    {3, OON,  "LD   (IY+$%02x), L"}, 
     {2, OO,   "INVALID: NOP" },        // Unimplemented opcode
-    {3, OO,   "LD   (IY+$%02x), A" },        
+    {3, OON,  "LD   (IY+$%02x), A" },        
     {2, OO,   "LD   A, B" },        
     {2, OO,   "LD   A, C"}, 
     {2, OO,   "LD   A, D" },        
     {2, OO,   "LD   A, E" },        
     {2, OO,   "LD   A, IYH"}, 
     {2, OO,   "LD   A, IYL"},
-    {3, OON,  "LD   A, (IY+$%02x"},
+    {3, OON,  "LD   A, (IY+$%02x)"},
     {2, OO,   "LD   A, A" },        
     {2, OO,   "ADD  A, B" },           // 0xFD80
     {2, OO,   "ADD  A, C" },        
@@ -1210,7 +1210,7 @@ const Z80_opcodes opcodes_IY_instructions[] = {
     {2, OO,   "ADC  A, E" },        
     {2, OO,   "ADC  A, IYH"}, 
     {2, OO,   "ADC  A, IYL"},
-    {3, OON,  "ADC  A, (IY+$%02x"},
+    {3, OON,  "ADC  A, (IY+$%02x)"},
     {2, OO,   "ADC  A, A" },        
     {2, OO,   "SUB  A, B" },           // 0xFD90
     {2, OO,   "SUB  A, C" },        
@@ -1226,7 +1226,7 @@ const Z80_opcodes opcodes_IY_instructions[] = {
     {2, OO,   "SBC  A, E" },        
     {2, OO,   "SBC  A, IYH"}, 
     {2, OO,   "SBC  A, IYL"},
-    {3, OON,  "SBC  A, (IY+$%02x"},
+    {3, OON,  "SBC  A, (IY+$%02x)"},
     {2, OO,   "SBC  A, A" },        
     {2, OO,   "AND  A, B" },           // 0xFDA0
     {2, OO,   "AND  A, C" },        
@@ -1242,7 +1242,7 @@ const Z80_opcodes opcodes_IY_instructions[] = {
     {2, OO,   "XOR  A, E" },        
     {2, OO,   "XOR  A, IYH"}, 
     {2, OO,   "XOR  A, IYL"},
-    {3, OON,  "XOR  A, (IY+$%02x"},
+    {3, OON,  "XOR  A, (IY+$%02x)"},
     {2, OO,   "XOR  A, A" },        
     {2, OO,   "OR   A, B" },           // 0xFDB0
     {2, OO,   "OR   A, C" },        
@@ -1258,7 +1258,7 @@ const Z80_opcodes opcodes_IY_instructions[] = {
     {2, OO,   "CP   A, E" },        
     {2, OO,   "CP   A, IYH"}, 
     {2, OO,   "CP   A, IYL"},
-    {3, OON,  "CP   A, (IY+$%02x"},
+    {3, OON,  "CP   A, (IY+$%02x)"},
     {2, OO,   "CP   A, A" },        
     {2, OO,   "INVALID: NOP" },        // 0xFDC0
     {2, OO,   "INVALID: NOP" },

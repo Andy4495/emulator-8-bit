@@ -53,7 +53,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
             temp = testFlag(C_BIT);
@@ -99,7 +99,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
             temp = testFlag(C_BIT);
@@ -145,7 +145,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
             temp = testFlag(C_BIT);
@@ -191,7 +191,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
             temp = testFlag(C_BIT);
@@ -237,7 +237,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
@@ -281,7 +281,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
             temp = *r & 0x80;    // Save the sign bit
@@ -329,7 +329,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
             if (*r & 0x80) setFlag(C_BIT); else clearFlag(C_BIT);
@@ -374,7 +374,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
             if (*r & 0x01) setFlag(C_BIT); else clearFlag(C_BIT);
@@ -426,7 +426,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
             // Decode the bit position, b
@@ -477,7 +477,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
             // Decode the bit position, b
@@ -525,7 +525,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 default: 
                     r = nullptr;
-                    cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+                    cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
                     break;
             }
             // Decode the bit position, b
@@ -535,7 +535,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             break;
 
         default: 
-            cout << "Execution not defined: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
+            cout << "Invalid opcode: 0xcb" << hex << setw(2) << (unsigned int) IR[1] << endl;
             break;
     }
 }
