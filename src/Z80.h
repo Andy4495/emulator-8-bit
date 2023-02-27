@@ -131,10 +131,8 @@ class Z80 : public abstract_CPU {
         void decode_main_instruction();
         void decode_misc_instruction();
         void decode_bit_instruction();
-        void decode_ix_instruction();
-        void decode_ix_bit_instruction();
-        void decode_iy_instruction();
-        void decode_iy_bit_instruction();
+        void decode_index_instruction();
+        void decode_index_bit_instruction();
         void execute_main_opcode();
         void execute_misc_opcode();
         void execute_bit_opcode();

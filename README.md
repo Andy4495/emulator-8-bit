@@ -19,7 +19,7 @@ The disassembler functionality should be very close to correct (i.e., displaying
 
 I expect to find some defects in the opcode execution and in handling of the processor flags.
 
-This is still a "pre-release" (version less than 1.0.0), because I expect to tweak the formatting of the program output while I test.
+This is still a "pre-release" (version less than 1.0.0), because the formatting of the program output will be changing while I test.
 
 Next steps:
 
@@ -143,7 +143,7 @@ The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base c
 
 - Z80 [User Manual][13]
   - **Note**: The Z80 User Manual has many errors, ambiguities, and inconsistencies. It is sometimes necessary to consult other references (or experiment on an actual chip) to determine the correct behavior for certain opcodes.
-- [Z80 Info][5]: Comprehensive source of Z80 information: hardware, compilers, assemblers, complers
+- [Z80 Info][5]: Comprehensive source of Z80 information: hardware, compilers, assemblers, compilers
 - Z80 [opcode table][4]
 - Z80 undocumented opcodes [writeup][18]
 - zasm - Z80 assembler: [online version][6] and [local install version][7]
