@@ -1,0 +1,49 @@
+# Test disassembled code produced by the emulator
+
+name: Test Disassembler
+
+on: 
+  push:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: Message to display in job summary
+        required: false
+        type: string
+
+jobs:
+  test-disassembly: 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - name: Build the emulator
+        run: |
+          make
+      - name: Assemble test file
+        run: | 
+          cd tools
+          ./zasm --ixcbr2 test_disassembler_1.asm
+      - name: Disassemble the test file
+        run: | 
+          cd tools
+          ../emulator test_disassembler_1.rom > disassembled.asm <<EOF
+          6
+          0
+          736
+          EOF
+      - name: Remove non-assembly lines
+        run: |
+          cd tools
+          tail -n +12 disassembled.asm >disassembled_tail.asm
+      - name: Assemble disassembled code
+        run: |
+          cd tools
+          ./zasm --ixcbr2 disassembled_tail.asm
+      - name: Diff the files
+        run: |
+          cd tools
+          diff disassembled_tail.rom test_disassembler_1.rom
+      - name: Print the job summary
+        if: ${{ inputs.message }}
+        run: |
+          echo ${{ inputs.message }} >$GITHUB_STEP_SUMMARY

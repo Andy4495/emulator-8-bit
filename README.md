@@ -151,6 +151,10 @@ This emulator is based off the orignal Zilog-manufactured Z80 chips. The undocum
 zasm --ixcbr2 filename.asm
 ```
 
+## Automated Test
+
+There is a workflow action defined in `TestDisassembler.yml` which tests the disassembly functionality of the emulator. It takes the file `test_disassembler_1.asm`, assembles it with `zasm`, runs the assembled code through the emulator (disassembly mode), re-assembles the output from the emulator, and then compares the assembled code from the emulator against the assembled code from the original test file.
+
 ## References
 
 - Z80 [User Manual][13]
