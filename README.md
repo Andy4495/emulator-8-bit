@@ -139,6 +139,18 @@ The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base c
   - Corner cases
   - All flag update conditions
 
+## Assembler
+
+I have been using the [`zasm`][24] assembler for testing, mainly because it still appears to be in active development and it is fairly well documented. Disassembled code generated from my emulator can be assembled with `zasm`, and used as a "round-trip" test of any changes to verify that the opcodes are decoded into the correct mnemonics.
+
+I have included the `zasm` linux executable in this repo as a convenience in automated testing. See the file [zasm_LICENSE.txt][22] for licensing details specifically for `zasm`.
+
+This emulator is based off the orignal Zilog-manufactured Z80 chips. The undocumented opcodes behave a little differently depending on the manufacturer. In order to test the undocumented opcodes supported by this emulator, the `--ixcbr2` [command line option][23] should be used:
+
+```bash
+zasm --ixcbr2 filename.asm
+```
+
 ## References
 
 - Z80 [User Manual][13]
@@ -146,7 +158,8 @@ The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base c
 - [Z80 Info][5]: Comprehensive source of Z80 information: hardware, compilers, assemblers, compilers
 - Z80 [opcode table][4]
 - Z80 undocumented opcodes [writeup][18]
-- zasm - Z80 assembler: [online version][6] and [local install version][7]
+- [`zasm`][24] - Z80 assembler: [online version][6] or [download][7]
+  - GitHub [repo][20]
 - [Z80 emulator project][19] which includes test cases and a substantial reference list
 - [SDCC][8] - Small Device C Compiler and [manual][9]
 - [hex2bin][10] - Tool for converting [Intex Hex][11] or [Motorola S-Record][12] files to binary
@@ -157,7 +170,9 @@ The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base c
 
 ## License
 
-The software and other files in this repository are released under what is commonly called the [MIT License][100]. See the file [`LICENSE.txt`][101] in this repository.
+The `zasm` assembler is licensed under the BSD 2-Clause license. See [zasm_LICENSE.txt][22] in this repository or [LICENSE][21] in the source repository for details.
+
+The other software and files in this repository are released under what is commonly called the [MIT License][100]. See the file [`LICENSE.txt`][101] in this repository.
 
 [1]: https://en.cppreference.com/
 [2]: https://www.gnu.org/software/make/manual/make.html
@@ -177,6 +192,11 @@ The software and other files in this repository are released under what is commo
 [15]: https://devblogs.microsoft.com/commandline/the-windows-subsystem-for-linux-in-the-microsoft-store-is-now-generally-available-on-windows-10-and-11/
 [18]: http://www.myquest.nl/z80undocumented/z80-documented-v0.91.pdf
 [19]: https://github.com/redcode/Z80
+[20]: https://github.com/Megatokio/zasm
+[21]: https://raw.githubusercontent.com/Megatokio/zasm/master/LICENSE
+[22]: ./tools/zasm_LICENSE.txt
+[23]: https://k1.spdns.de/Develop/Projects/zasm/Documentation/z25.htm
+[24]: https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)
