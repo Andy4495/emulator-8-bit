@@ -48,7 +48,7 @@ No error checking is performed on the input file, except that a maximum of 65536
 
 *Future iterations may support additional file formats such as Intel Hex or Motorola S-Records which would allow specific memory locations to be defined by the file.*
 
-## Building
+## Building the Emulator
 
 The repository contains a Makefile to automate the build process. To build the `emulator` executable, simply run `make` at the command line:
 
@@ -174,7 +174,7 @@ There is a workflow action defined in `TestDisassembler.yml` which tests the dis
 
 ## License
 
-The `zasm` assembler is licensed under the BSD 2-Clause license. See [zasm_LICENSE.txt][22] in this repository or [LICENSE][21] in the source repository for details.
+The `zasm` assembler is released under the [BSD 2-Clause license][25]. See [zasm_LICENSE.txt][22] in this repository or [LICENSE][21] in the source repository for details.
 
 The other software and files in this repository are released under what is commonly called the [MIT License][100]. See the file [`LICENSE.txt`][101] in this repository.
 
@@ -201,6 +201,7 @@ The other software and files in this repository are released under what is commo
 [22]: ./tools/zasm_LICENSE.txt
 [23]: https://k1.spdns.de/Develop/Projects/zasm/Documentation/z25.htm
 [24]: https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html
+[25]: https://choosealicense.com/licenses/bsd-2-clause/
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)
