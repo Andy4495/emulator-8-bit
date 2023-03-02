@@ -1,4 +1,5 @@
 /* Z80 Emulator 
+   Copyright 2023 Andreas Taylor
    https://github.com/Andy4495/emulator-8-bit
    MIT License
 
@@ -7,52 +8,89 @@
    v0.1.0    02/11/23  Andy4495 Read for first "release"
 */
 
-// Z80 core definitions
 #include "Z80.h"
 #include <iostream>
 #include <fstream>
-using namespace std;
-
 #include <cassert>
 #include <iomanip>
+using std::cout;
+using std::endl;
+using std::setw;
+using std::hex;
 
 void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
-
-    unsigned char *r = nullptr, *r_ = nullptr;   // Temporary storage when decoding register field in opcode
-    unsigned char temp;
-    unsigned char* indexH;
-    unsigned char* indexL;
+    // Temporary storage when decoding register field in opcode
+    uint8_t *r = nullptr, *r_ = nullptr;
+    uint8_t temp;
+    uint8_t* indexH;
+    uint8_t* indexL;
     INDEX_REG idx;
 
-    if (IR[0] == 0xdd) { indexH = &IXH; indexL = &IXL; idx = IX_REGISTER;}
-    else               { indexH = &IYH; indexL = &IYL; idx = IY_REGISTER;}
-
+    if (IR[0] == 0xdd) {
+        indexH = &IXH;
+        indexL = &IXL;
+        idx = IX_REGISTER;
+    } else {
+        indexH = &IYH;
+        indexL = &IYL;
+        idx = IY_REGISTER;
+    }
 
     switch (IR[1]) {
-
         // ADD IX/Y, pp  (0x09, 0x19, 0x29, 0x39)
         case 0x09: case 0x19: case 0x29: case 0x39:
             // Determine which register we are working on:
             // Opcode 0  0  s  s  1  0  0  1
             switch ((IR[1] & 0x30) >> 4) {
-                case 0b00: // BC
-                    if ((getIndexReg(idx) & 0x0fff) + (getBC() & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getIndexReg(idx) + (unsigned int) getBC() > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
-                    setIndexReg(idx, getIndexReg(idx) + getBC()); 
+                case 0b00:  // BC
+                    if ((getIndexReg(idx) & 0x0fff) + (getBC() & 0x0fff)
+                       > 0xfff)
+                        setFlag(H_BIT);
+                    else
+                        clearFlag(H_BIT);
+                    if ((uint32_t) getIndexReg(idx) + (uint32_t) getBC()
+                       > (uint32_t) 0xffff)
+                        setFlag(C_BIT);
+                    else
+                        clearFlag(C_BIT);
+                    setIndexReg(idx, getIndexReg(idx) + getBC());
                     break;
-                case 0b01: // DE
-                    if ((getIndexReg(idx) & 0x0fff) + (getDE() & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getIndexReg(idx) + (unsigned int) getDE() > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
-                    setIndexReg(idx, getIndexReg(idx) + getDE()); 
+                case 0b01:  // DE
+                    if ((getIndexReg(idx) & 0x0fff) + (getDE() & 0x0fff)
+                       > 0xfff)
+                        setFlag(H_BIT);
+                    else
+                        clearFlag(H_BIT);
+                    if ((uint32_t) getIndexReg(idx) + (uint32_t) getDE()
+                       > (uint32_t) 0xffff)
+                        setFlag(C_BIT);
+                    else
+                        clearFlag(C_BIT);
+                    setIndexReg(idx, getIndexReg(idx) + getDE());
                     break;
-                case 0b10: // IX/Y
-                    if ((getIndexReg(idx) & 0x0fff) + (getIndexReg(idx) & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getIndexReg(idx) + (unsigned int) getIndexReg(idx) > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                case 0b10:  // IX/Y
+                    if ((getIndexReg(idx) & 0x0fff) +
+                        (getIndexReg(idx) & 0x0fff) > 0xfff)
+                            setFlag(H_BIT);
+                    else
+                            clearFlag(H_BIT);
+                    if ((uint32_t) getIndexReg(idx) +
+                        (uint32_t) getIndexReg(idx) > (uint32_t) 0xffff)
+                            setFlag(C_BIT);
+                    else
+                            clearFlag(C_BIT);
                     setIndexReg(idx, getIndexReg(idx) + getIndexReg(idx));
-                    break; 
-                case 0b11: // SP
-                    if ((getIndexReg(idx) & 0x0fff) + (SP & 0x0fff) > 0xfff) setFlag(H_BIT); else clearFlag(H_BIT);
-                    if ((unsigned int) getIndexReg(idx) + (unsigned int) SP > (unsigned int) 0xffff) setFlag(C_BIT); else clearFlag(C_BIT);
+                    break;
+                case 0b11:  // SP
+                    if ((getIndexReg(idx) & 0x0fff) + (SP & 0x0fff) > 0xfff)
+                        setFlag(H_BIT);
+                    else
+                        clearFlag(H_BIT);
+                    if ((uint32_t) getIndexReg(idx) + (uint32_t) SP
+                       > (uint32_t) 0xffff)
+                        setFlag(C_BIT);
+                    else
+                        clearFlag(C_BIT);
                     setIndexReg(idx, getIndexReg(idx) + SP);
                     break;
                 default: cout << "Invalid opcode: ADD IX/Y, ss" << endl; break;
@@ -68,8 +106,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // LD (nn), IX/Y (0x22)
         case 0x22:
-            memory[(IR[2]<<8) + IR[1] + 1] = *indexH;
-            memory[(IR[2]<<8) + IR[1]]     = *indexL;
+            memory[(IR[2] << 8) + IR[1] + 1] = *indexH;
+            memory[(IR[2] << 8) + IR[1]]     = *indexL;
             // Condition bits affected: None
             break;
 
@@ -80,9 +118,9 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
 
         // LD IX/Y, (nn)  (0x2A)
-        case 0x3a: 
-            *indexH = memory[(IR[2]<<8) + IR[1] + 1];
-            *indexL = memory[(IR[2]<<8) + IR[1]];
+        case 0x3a:
+            *indexH = memory[(IR[2] << 8) + IR[1] + 1];
+            *indexL = memory[(IR[2] << 8) + IR[1]];
             // Condition bits affected: None
             break;
 
@@ -94,21 +132,29 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // INC (IX/Y + d)           (0x34)
         case 0x34:
-            memory[getIndexReg(idx) + IR[2]] = memory[getIndexReg(idx) + IR[2]] + 1;
+            memory[getIndexReg(idx) + IR[2]]
+                = memory[getIndexReg(idx) + IR[2]] + 1;
             update_S(memory[getIndexReg(idx) + IR[2]]);
             update_Z(memory[getIndexReg(idx) + IR[2]]);
             update_H(ADD, memory[getIndexReg(idx) + IR[2]], 1);
-            if (memory[getIndexReg(idx) + IR[2]] == 0x80) setFlag(PV_BIT); else clearFlag(PV_BIT);
+            if (memory[getIndexReg(idx) + IR[2]] == 0x80)
+                setFlag(PV_BIT);
+            else
+                clearFlag(PV_BIT);
             clearFlag(N_BIT);
             break;
-            
+
         // DEC (IX/Y + d)           (0x35)
         case 0x35:
-            memory[getIndexReg(idx) + IR[2]] = memory[getIndexReg(idx) + IR[2]] - 1;
+            memory[getIndexReg(idx) + IR[2]]
+                = memory[getIndexReg(idx) + IR[2]] - 1;
             update_S(memory[getIndexReg(idx) + IR[2]]);
             update_Z(memory[getIndexReg(idx) + IR[2]]);
             update_H(SUB, memory[getIndexReg(idx) + IR[2]], 1);
-            if (memory[getIndexReg(idx) + IR[2]] == 0x7f) setFlag(PV_BIT); else clearFlag(PV_BIT);
+            if (memory[getIndexReg(idx) + IR[2]] == 0x7f)
+                setFlag(PV_BIT);
+            else
+                clearFlag(PV_BIT);
             clearFlag(N_BIT);
             break;
 
@@ -131,7 +177,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         case 0x56:
             D = memory[getIndexReg(idx) + IR[2]];
             break;
-           
+
         // LD E, (IX/Y + d)         (0x5E)
         case 0x5e:
             E = memory[getIndexReg(idx) + IR[2]];
@@ -200,7 +246,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // ADC A, (IX/Y + d)         (0x8E)
         case 0x8e:
-            temp = testFlag(C_BIT); // Save the carry bit
+            temp = testFlag(C_BIT);  // Save the carry bit
             update_V(ADC, A, memory[getIndexReg(idx) + IR[2]]);
             update_H(ADC, A, memory[getIndexReg(idx) + IR[2]]);
             update_C(ADC, A, memory[getIndexReg(idx) + IR[2]]);
@@ -223,7 +269,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // SBC A, (IX/Y + d)         (0x9E)
         case 0x9e:
-            temp = testFlag(C_BIT); // Save the carry bit
+            temp = testFlag(C_BIT);  // Save the carry bit
             update_V(SBC, A, memory[getIndexReg(idx) + IR[2]]);
             update_H(SBC, A, memory[getIndexReg(idx) + IR[2]]);
             update_C(SBC, A, memory[getIndexReg(idx) + IR[2]]);
@@ -281,7 +327,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             *indexH  = memory[SP++];
             *indexL = memory[SP++];
             // Condition bits affected: None
-            break;   
+            break;
 
         // EX (SP), IX/Y (0xE3)
         case 0xe3:
@@ -299,7 +345,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             memory[--SP] = *indexH;
             memory[--SP] = *indexL;
             // Condition bits affected: None
-            break;      
+            break;
 
         // JP (IX/Y)    (0xE9)
         case 0xe9:
@@ -317,8 +363,9 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         // ******************************* //
 
         // INC r instructions (0x04, 0x0C, 0x14, 0x1C, 0x24, 0x2C, 0x3C)
-        case 0x04: case 0x0c: case 0x14: case 0x1c: case 0x24: case 0x2c:       case 0x3c:
-            // Opcode 0  0  r  r  r  1  0  0 
+        case 0x04: case 0x0c: case 0x14: case 0x1c:
+        case 0x24: case 0x2c:            case 0x3c:
+            // Opcode 0  0  r  r  r  1  0  0
             switch ((IR[1] & 0x38) >> 3) {
                 case 0b000: r = &B; break;
                 case 0b001: r = &C; break;
@@ -333,13 +380,17 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             update_S(*r);
             update_Z(*r);
             update_H(ADD, *r, 1);
-            if (*r == 0x80) setFlag(PV_BIT); else clearFlag(PV_BIT);
+            if (*r == 0x80)
+                setFlag(PV_BIT);
+            else
+                clearFlag(PV_BIT);
             clearFlag(N_BIT);
             break;
 
         // DEC r instructions (0x05, 0x0D, 0x15, 0x1D, 0x25, 0x2D, 0x3D)
-        case 0x05: case 0x0d: case 0x15: case 0x1d: case 0x25: case 0x2d:       case 0x3d:
-            // Opcode 0  0  r  r  r  1  0  1 
+        case 0x05: case 0x0d: case 0x15: case 0x1d:
+        case 0x25: case 0x2d:            case 0x3d:
+            // Opcode 0  0  r  r  r  1  0  1
             switch ((IR[1] & 0x38) >> 3) {
                 case 0b000: r = &B; break;
                 case 0b001: r = &C; break;
@@ -354,12 +405,16 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             update_S(*r);
             update_Z(*r);
             update_H(SUB, *r, 1);
-            if (*r == 0x7f) setFlag(PV_BIT); else clearFlag(PV_BIT);
+            if (*r == 0x7f)
+                setFlag(PV_BIT);
+            else
+                clearFlag(PV_BIT);
             clearFlag(N_BIT);
             break;
 
         // LD r, n instructions (0x06/0x0e - 0x26/0x3e)
-        case 0x06: case 0x0e: case 0x16: case 0x1e: case 0x26: case 0x2e:       case 0x3e:
+        case 0x06: case 0x0e: case 0x16: case 0x1e:
+        case 0x26: case 0x2e:            case 0x3e:
             // Opcode 0  0  r  r  r  1  1  0
             switch ((IR[1] & 0x38) >> 3) {
                 case 0b000: r = &B; break;
@@ -375,15 +430,23 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             // Condition bits affected: None
             break;
 
-        // LD r, r' instructions (0x40 - 0x7f, not including 0xX6, 0xXE, 0x70 - 0x77)
-        case 0x40: case 0x41: case 0x42: case 0x43: case 0x44: case 0x45:       case 0x47:
-        case 0x48: case 0x49: case 0x4a: case 0x4b: case 0x4c: case 0x4d:       case 0x4f:
-        case 0x50: case 0x51: case 0x52: case 0x53: case 0x54: case 0x55:       case 0x57:
-        case 0x58: case 0x59: case 0x5a: case 0x5b: case 0x5c: case 0x5d:       case 0x5f:
-        case 0x60: case 0x61: case 0x62: case 0x63: case 0x64: case 0x65:       case 0x67:
-        case 0x68: case 0x69: case 0x6a: case 0x6b: case 0x6c: case 0x6d:       case 0x6f:
+        // LD r, r' instructions (0x40 - 0x7f,
+        // not including 0xX6, 0xXE, 0x70 - 0x77)
+        case 0x40: case 0x41: case 0x42: case 0x43:
+        case 0x44: case 0x45:            case 0x47:
+        case 0x48: case 0x49: case 0x4a: case 0x4b:
+        case 0x4c: case 0x4d:            case 0x4f:
+        case 0x50: case 0x51: case 0x52: case 0x53:
+        case 0x54: case 0x55:            case 0x57:
+        case 0x58: case 0x59: case 0x5a: case 0x5b:
+        case 0x5c: case 0x5d:            case 0x5f:
+        case 0x60: case 0x61: case 0x62: case 0x63:
+        case 0x64: case 0x65:            case 0x67:
+        case 0x68: case 0x69: case 0x6a: case 0x6b:
+        case 0x6c: case 0x6d:            case 0x6f:
         // 0x70 - 0x77 implemented separately
-        case 0x78: case 0x79: case 0x7a: case 0x7b: case 0x7c: case 0x7d:       case 0x7f:
+        case 0x78: case 0x79: case 0x7a: case 0x7b:
+        case 0x7c: case 0x7d:            case 0x7f:
             // Determine which registers we are working on:
             // Opcode 0  1  r  r  r  r' r' r'
             switch (IR[1] & 0x07) {
@@ -411,7 +474,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
 
         // ADD A, r instructions (0x80 - 0x85, 0x87)
-        case 0x80: case 0x81: case 0x82: case 0x83: case 0x84: case 0x85:       case 0x87:
+        case 0x80: case 0x81: case 0x82: case 0x83:
+        case 0x84: case 0x85:            case 0x87:
             // Opcode 1  0  0  0  0  r  r  r
             switch ((IR[1] & 0x07)) {
                 case 0b000: r = &B; break;
@@ -433,7 +497,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
 
         // ADC A, r instructions (0x88 - 0x8D, 0x8F)
-        case 0x88: case 0x89: case 0x8a: case 0x8b: case 0x8c: case 0x8d:       case 0x8f:
+        case 0x88: case 0x89: case 0x8a: case 0x8b:
+        case 0x8c: case 0x8d:            case 0x8f:
             // Opcode 1  0  0  0  1  r  r  r
             switch ((IR[1] & 0x07)) {
                 case 0b000: r = &B; break;
@@ -456,7 +521,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
 
         // SUB A, r instructions (0x90 - 0x95, 0x97)
-        case 0x90: case 0x91: case 0x92: case 0x93: case 0x94: case 0x95:       case 0x97:
+        case 0x90: case 0x91: case 0x92: case 0x93:
+        case 0x94: case 0x95:            case 0x97:
             // Opcode 1  0  0  1  0  r  r  r
             switch ((IR[1] & 0x07)) {
                 case 0b000: r = &B; break;
@@ -478,7 +544,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
 
         // SBC A, r instructions (0x98 - 0x9D, 0x9F)
-        case 0x98: case 0x99: case 0x9a: case 0x9b: case 0x9c: case 0x9d:       case 0x9f:
+        case 0x98: case 0x99: case 0x9a: case 0x9b:
+        case 0x9c: case 0x9d:            case 0x9f:
             // Opcode 1  0  0  1  1  r  r  r
             switch ((IR[1] & 0x07)) {
                 case 0b000: r = &B; break;
@@ -501,7 +568,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
 
         // AND A, r instructions (0xA0 - 0xA5, 0xA7)
-        case 0xa0: case 0xa1: case 0xa2: case 0xa3: case 0xa4: case 0xa5:       case 0xa7:
+        case 0xa0: case 0xa1: case 0xa2: case 0xa3:
+        case 0xa4: case 0xa5:            case 0xa7:
             // Opcode 1  0  1  0  0  r  r  r
             switch ((IR[1] & 0x07)) {
                 case 0b000: r = &B; break;
@@ -523,7 +591,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
 
         // XOR A, r instructions (0xA8 - 0xAD, 0xAF)
-        case 0xa8: case 0xa9: case 0xaa: case 0xab: case 0xac: case 0xad:       case 0xaf:
+        case 0xa8: case 0xa9: case 0xaa: case 0xab:
+        case 0xac: case 0xad:            case 0xaf:
             // Opcode 1  0  1  0  1  r  r  r
             switch ((IR[1] & 0x07)) {
                 case 0b000: r = &B; break;
@@ -545,7 +614,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
 
         // OR A, r instructions (0xB0 - 0xB5, 0xB7)
-        case 0xb0: case 0xb1: case 0xb2: case 0xb3: case 0xb4: case 0xb5:       case 0xb7:
+        case 0xb0: case 0xb1: case 0xb2: case 0xb3:
+        case 0xb4: case 0xb5:            case 0xb7:
             // Opcode 1  0  1  1  0  r  r  r
             switch ((IR[1] & 0x07)) {
                 case 0b000: r = &B; break;
@@ -567,7 +637,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
 
         // CP r instructions (0xB8 - 0xBD, 0xBF)
-        case 0xb8: case 0xb9: case 0xba: case 0xbb: case 0xbc: case 0xbd:       case 0xbf:
+        case 0xb8: case 0xb9: case 0xba: case 0xbb:
+        case 0xbc: case 0xbd:            case 0xbf:
             // Opcode 1  0  1  1  1  r  r  r
             switch ((IR[1] & 0x07)) {
                 case 0b000: r = &B; break;
@@ -589,7 +660,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             update_C(SUB, A, *r);
             break;
 
-        default: 
+        default:
             cout << "Invalid opcode: ";
             if (idx == IX_REGISTER) cout << "0xdd";
             else                    cout << "oxfd";

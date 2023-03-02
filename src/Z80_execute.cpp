@@ -1,4 +1,5 @@
 /* Z80 Emulator 
+   Copyright 2023 Andreas Taylor
    https://github.com/Andy4495/emulator-8-bit
    MIT License
 
@@ -7,35 +8,39 @@
    v0.1.0    02/11/23  Andy4495 Read for first "release"
 */
 
-// Z80 core definitions
 #include "Z80.h"
 #include <iostream>
 #include <fstream>
-using namespace std;
-
 #include <cassert>
 #include <iomanip>
+using std::cout;
+using std::endl;
 
 void Z80::execute() {
-    // Only increment lower 7 bits of R; upper bit is controlled with LD R, A instruction
+    // Only increment lower 7 bits of R; upper bit is controlled
+    // with LD R, A instruction
     R = (R & 0x80) | ((R + 1) & 0x7F);
     switch (IR[0]) {
-        case 0xCB: 
+        case 0xCB:
             execute_bit_opcode();
             break;
 
-        case 0xDD: 
-            if (IR[1] == 0xCB) execute_ix_iy_bit_opcode();
-            else execute_index_opcode();
+        case 0xDD:
+            if (IR[1] == 0xCB)
+                execute_ix_iy_bit_opcode();
+            else
+                execute_index_opcode();
             break;
 
-        case 0xED: 
+        case 0xED:
             execute_misc_opcode();
             break;
 
         case 0xFD:
-            if (IR[1] == 0xCB) execute_ix_iy_bit_opcode();
-            else execute_index_opcode();
+            if (IR[1] == 0xCB)
+                execute_ix_iy_bit_opcode();
+            else
+                execute_index_opcode();
             break;
 
         default:
