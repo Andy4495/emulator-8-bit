@@ -2,6 +2,7 @@
 
 [![Build](https://github.com/Andy4495/emulator-8-bit/actions/workflows/Build.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/Build.yml)
 [![Check Markdown Links](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml)
+[![Test Disassembler](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml)
 
 This is a simple Z80 CPU emulator and disassembler.
 
