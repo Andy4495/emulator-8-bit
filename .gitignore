@@ -4,3 +4,5 @@ a.out
 emulator
 data.bin*
 *.o
+*.rom
+*.lst
