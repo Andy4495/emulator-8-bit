@@ -26,11 +26,11 @@ jobs:
       - name: Disassemble the test file
         run: | 
           cd tools
-          ../emulator test_disassembler_1.rom > disassembled.asm <<EOF
-          6
-          0
-          736
-          EOF
+          echo "6" > options.txt
+          echo "0" >> options.txt
+          # The following calculates the ROM size by subtracting 1 from the file size
+          wc -c <test_disassembler_1.rom | awk '{printf "%x\n",  $1 - 1}' >> options.txt
+          ../emulator test_disassembler_1.rom > disassembled.asm <options.txt
       - name: Remove non-assembly lines
         run: |
           cd tools
