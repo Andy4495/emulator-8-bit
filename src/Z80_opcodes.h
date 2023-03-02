@@ -18,6 +18,7 @@
 // O -> Opcode
 // J -> Relative jump opcode
 // N -> Data byte
+// d -> displacement for index addressing
 enum OPCODE_STRUCTURE {O, OO, ON, ONN, JN, OON, OOd, OOdO, OOdN, OONN};
 
 struct Z80_opcodes {      // The opcode value is implicit in the array index defined below
