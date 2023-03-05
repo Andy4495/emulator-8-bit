@@ -22,6 +22,7 @@ jobs:
       - name: Assemble test file
         run: | 
           cd tools
+          chmod +x ./zasm
           ./zasm --ixcbr2 test_disassembler_1.asm
       - name: Disassemble the test file
         run: | 
