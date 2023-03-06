@@ -20,7 +20,7 @@ jobs:
         run: |
           git clone https://github.com/AlDanial/cloc.git
           echo '```' >$GITHUB_STEP_SUMMARY
-          ./cloc/cloc src >>$GITHUB_STEP_SUMMARY
+          ./cloc/cloc --exclude-lang=Text src tools | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >>$GITHUB_STEP_SUMMARY
       - name: make clean
         run: | 
