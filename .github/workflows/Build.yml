@@ -19,9 +19,7 @@ jobs:
       - name: install cloc
         run: |
           git clone https://github.com/AlDanial/cloc.git
-          echo "```"  >$GITHUB_STEP_SUMMARY
-          ./cloc/cloc . >>$GITHUB_STEP_SUMMARY
-          echo "```"  >>$GITHUB_STEP_SUMMARY
+          ./cloc/cloc . >$GITHUB_STEP_SUMMARY
       - name: make clean
         run: | 
           make clean
