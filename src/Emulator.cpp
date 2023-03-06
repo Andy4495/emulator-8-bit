@@ -41,7 +41,6 @@ using std::cout;
 using std::cin;
 using std::endl;
 using std::hex;
-using std::dec;
 
 // Main() function: where the execution of program begins
 int main(int argc, char** argv) {
@@ -95,7 +94,7 @@ int main(int argc, char** argv) {
 
             case 3:  // Run from address
                 cout << "Enter starting address in hex: 0x";
-                cin >> hex >> start_addr >> dec;
+                cin >> hex >> start_addr;
                 cpu.run_from_address(start_addr);
                 break;
 
@@ -109,9 +108,9 @@ int main(int argc, char** argv) {
             case 5:  // Disassemble (do not execute)
                 disassemble_mode = FULL;
                 cout << "Enter starting address in hex: 0x";
-                cin >> hex >> start_addr >> dec;
+                cin >> hex >> start_addr;
                 cout << "Enter ending address in hex: 0x";
-                cin >> hex >> end_addr >> dec;
+                cin >> hex >> end_addr;
                 cpu.run_from_address(start_addr);
                 break;
 
@@ -119,9 +118,9 @@ int main(int argc, char** argv) {
                      // (same as above, but don't print address or fetched data)
                 disassemble_mode = ASSEMBLY;
                 cout << "Enter starting address in hex: 0x";
-                cin >> hex >> start_addr >> dec;
+                cin >> hex >> start_addr;
                 cout << "Enter ending address in hex: 0x";
-                cin >> hex >> end_addr >> dec;
+                cin >> hex >> end_addr;
                 prevPC = start_addr;
                 cout << endl << ";----- Program starts here ------" << endl;
                 cout << "      org    $" << hex << start_addr << endl;

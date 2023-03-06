@@ -39,7 +39,7 @@ Emulator.o: Emulator.cpp Z80.h
 Z80.o: Z80.cpp Z80.h Z80_opcodes.h abstract_cpu.h
 	$(CC) $(FLAGS) Z80.cpp 
 
-Z80_execute.o: Z80_execute.cpp Z80.h
+Z80_execute.o: Z80_execute.cpp Z80.h abstract_cpu.h
 	$(CC) $(FLAGS) Z80_execute.cpp 
 
 Z80_execute_bit_opcode.o: Z80_execute_bit_opcode.cpp Z80.h
@@ -57,7 +57,7 @@ Z80_execute_misc_opcode.o: Z80_execute_misc_opcode.cpp Z80.h
 Z80_execute_main_opcode.o: Z80_execute_main_opcode.cpp Z80.h
 	$(CC) $(FLAGS) Z80_execute_main_opcode.cpp 
 
-Z80_fetch_and_decode.o: Z80_fetch_and_decode.cpp Z80.h Z80_opcodes.h
+Z80_fetch_and_decode.o: Z80_fetch_and_decode.cpp Z80.h Z80_opcodes.h abstract_cpu.h
 	$(CC) $(FLAGS) Z80_fetch_and_decode.cpp 
 
 clean:

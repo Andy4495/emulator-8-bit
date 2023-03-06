@@ -16,7 +16,6 @@
 #include <cassert>
 #include <cstdint>
 using std::cout;
-using std::cin;
 using std::endl;
 using std::hex;
 using std::ifstream;

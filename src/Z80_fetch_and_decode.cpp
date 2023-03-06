@@ -15,8 +15,6 @@
 #include <cstring>
 #include <cassert>
 using std::cout;
-using std::endl;
-using std::hex;
 
 enum index_reg {IX, IY};
 index_reg ix_or_iy;
