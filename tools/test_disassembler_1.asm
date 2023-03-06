@@ -935,8 +935,392 @@
 	srl (IY-$02),L
 	srl (IY-$03),A
 	 
-;To-do
 ; RR = ix iy,  R = b c d e h l a
-;	bit N,(RR+dis),R    
+; Note that while the zasm opcode list http://k1.spdns.de/Develop/Projects/zasm/Documentation/z79.htm
+; indicates that the DDCB BIT instructions store a result in a register, they just test a bit and 
+; do not store a result (beyond updating flags) -- see Section 3.5 in http://www.z80.info/zip/z80-documented.pdf
+; So... the actual mnemonic for opcodes 0xDDCBdd40 - 0xDDCBdd7F and 0xFDCBdd40 - 0xFDCBdd7F are all the same,
+; even though the zasm compiler considers them different. My emulator does not disassemble into the "register 
+; result" format for the bit instructions, because that is not what the instructions do. 
+; The "register result" format of the instructions are left here, but commented out, so that the automated
+; test process works properly.
+	bit 0,(IX+$01)  
+;	bit 0,(IX+$01),B   
+;	bit 0,(IX+$02),C    
+;	bit 0,(IX+$03),D    
+;	bit 0,(IX+$04),E    
+;	bit 0,(IX-$40),H    
+;	bit 0,(IX-$41),L    
+;	bit 0,(IX-$42),A    
+	bit 0,(IY+$01)
+;	bit 0,(IY+$01),B   
+;	bit 0,(IY+$02),C    
+;	bit 0,(IY+$03),D    
+;	bit 0,(IY+$04),E    
+;	bit 0,(IY-$40),H    
+;	bit 0,(IY-$41),L    
+;	bit 0,(IY-$42),A    
+ 
+	bit 1,(IX+$01)
+;	bit 1,(IX+$01),B   
+;	bit 1,(IX+$02),C    
+;	bit 1,(IX+$03),D    
+;	bit 1,(IX+$04),E    
+;	bit 1,(IX-$40),H    
+;	bit 1,(IX-$41),L    
+;	bit 1,(IX-$42),A    
+	bit 1,(IY+$01)
+;	bit 1,(IY+$01),B   
+;	bit 1,(IY+$02),C    
+;	bit 1,(IY+$03),D    
+;	bit 1,(IY+$04),E    
+;	bit 1,(IY-$40),H    
+;	bit 1,(IY-$41),L    
+;	bit 1,(IY-$42),A    
+
+	bit 2,(IX+$01)  
+;	bit 2,(IX+$01),B   
+;	bit 2,(IX+$02),C    
+;	bit 2,(IX+$03),D    
+;	bit 2,(IX+$04),E    
+;	bit 2,(IX-$40),H    
+;	bit 2,(IX-$41),L    
+;	bit 2,(IX-$42),A    
+	bit 2,(IY+$01)  
+;	bit 2,(IY+$01),B   
+;	bit 2,(IY+$02),C    
+;	bit 2,(IY+$03),D    
+;	bit 2,(IY+$04),E    
+;	bit 2,(IY-$40),H    
+;	bit 2,(IY-$41),L    
+;	bit 2,(IY-$42),A    
+
+	bit 3,(IX+$01) 
+;	bit 3,(IX+$01),B   
+;	bit 3,(IX+$02),C    
+;	bit 3,(IX+$03),D    
+;	bit 3,(IX+$04),E    
+;	bit 3,(IX-$40),H    
+;	bit 3,(IX-$41),L    
+;	bit 3,(IX-$42),A    
+	bit 3,(IY+$01)   
+;	bit 3,(IY+$01),B   
+;	bit 3,(IY+$02),C    
+;	bit 3,(IY+$03),D    
+;	bit 3,(IY+$04),E    
+;	bit 3,(IY-$40),H    
+;	bit 3,(IY-$41),L    
+;	bit 3,(IY-$42),A    
+
+;	bit 4,(IX+$01)  
+;	bit 4,(IX+$01),B   
+;	bit 4,(IX+$02),C    
+;	bit 4,(IX+$03),D    
+;	bit 4,(IX+$04),E    
+;	bit 4,(IX-$40),H    
+;	bit 4,(IX-$41),L    
+;	bit 4,(IX-$42),A    
+	bit 4,(IY+$01)
+;	bit 4,(IY+$01),B   
+;	bit 4,(IY+$02),C    
+;	bit 4,(IY+$03),D    
+;	bit 4,(IY+$04),E    
+;	bit 4,(IY-$40),H    
+;	bit 4,(IY-$41),L    
+;	bit 4,(IY-$42),A    
+
+	bit 5,(IX+$01)
+;	bit 5,(IX+$01),B   
+;	bit 5,(IX+$02),C    
+;	bit 5,(IX+$03),D    
+;	bit 5,(IX+$04),E    
+;	bit 5,(IX-$40),H    
+;	bit 5,(IX-$41),L    
+;	bit 5,(IX-$42),A    
+	bit 5,(IY+$01) 
+;	bit 5,(IY+$01),B   
+;	bit 5,(IY+$02),C    
+;	bit 5,(IY+$03),D    
+;	bit 5,(IY+$04),E    
+;	bit 5,(IY-$40),H    
+;	bit 5,(IY-$41),L    
+;	bit 5,(IY-$42),A    
+
+	bit 6,(IX+$01)
+;	bit 6,(IX+$01),B   
+;	bit 6,(IX+$02),C    
+;	bit 6,(IX+$03),D    
+;	bit 6,(IX+$04),E    
+;	bit 6,(IX-$40),H    
+;	bit 6,(IX-$41),L    
+;	bit 6,(IX-$42),A    
+	bit 6,(IY+$01)
+;	bit 6,(IY+$01),B   
+;	bit 6,(IY+$02),C    
+;	bit 6,(IY+$03),D    
+;	bit 6,(IY+$04),E    
+;	bit 6,(IY-$40),H    
+;	bit 6,(IY-$41),L    
+;	bit 6,(IY-$42),A    
+
+	bit 7,(IX+$01)  
+;	bit 7,(IX+$01),B   
+;	bit 7,(IX+$02),C    
+;	bit 7,(IX+$03),D    
+;	bit 7,(IX+$04),E    
+;	bit 7,(IX-$40),H    
+;	bit 7,(IX-$41),L    
+;	bit 7,(IX-$42),A    
+	bit 7,(IY+$01)   
+;	bit 7,(IY+$01),B   
+;	bit 7,(IY+$02),C    
+;	bit 7,(IY+$03),D    
+;	bit 7,(IY+$04),E    
+;	bit 7,(IY-$40),H    
+;	bit 7,(IY-$41),L    
+;	bit 7,(IY-$42),A    
+
+; RR = ix iy,  R = b c d e h l a
 ;	res N,(RR+dis),R	
+	res 0,(IX+$01),B   
+	res 0,(IX+$02),C    
+	res 0,(IX+$03),D    
+	res 0,(IX+$04),E    
+	res 0,(IX-$40),H    
+	res 0,(IX-$41),L    
+	res 0,(IX-$42),A    
+	res 0,(IY+$01),B   
+	res 0,(IY+$02),C    
+	res 0,(IY+$03),D    
+	res 0,(IY+$04),E    
+	res 0,(IY-$40),H    
+	res 0,(IY-$41),L    
+	res 0,(IY-$42),A    
+ 
+	res 1,(IX+$01),B   
+	res 1,(IX+$02),C    
+	res 1,(IX+$03),D    
+	res 1,(IX+$04),E    
+	res 1,(IX-$40),H    
+	res 1,(IX-$41),L    
+	res 1,(IX-$42),A    
+	res 1,(IY+$01),B   
+	res 1,(IY+$02),C    
+	res 1,(IY+$03),D    
+	res 1,(IY+$04),E    
+	res 1,(IY-$40),H    
+	res 1,(IY-$41),L    
+	res 1,(IY-$42),A    
+
+	res 2,(IX+$01),B   
+	res 2,(IX+$02),C    
+	res 2,(IX+$03),D    
+	res 2,(IX+$04),E    
+	res 2,(IX-$40),H    
+	res 2,(IX-$41),L    
+	res 2,(IX-$42),A    
+	res 2,(IY+$01),B   
+	res 2,(IY+$02),C    
+	res 2,(IY+$03),D    
+	res 2,(IY+$04),E    
+	res 2,(IY-$40),H    
+	res 2,(IY-$41),L    
+	res 2,(IY-$42),A    
+
+	res 3,(IX+$01),B   
+	res 3,(IX+$02),C    
+	res 3,(IX+$03),D    
+	res 3,(IX+$04),E    
+	res 3,(IX-$40),H    
+	res 3,(IX-$41),L    
+	res 3,(IX-$42),A    
+	res 3,(IY+$01),B   
+	res 3,(IY+$02),C    
+	res 3,(IY+$03),D    
+	res 3,(IY+$04),E    
+	res 3,(IY-$40),H    
+	res 3,(IY-$41),L    
+	res 3,(IY-$42),A    
+
+	res 4,(IX+$01),B   
+	res 4,(IX+$02),C    
+	res 4,(IX+$03),D    
+	res 4,(IX+$04),E    
+	res 4,(IX-$40),H    
+	res 4,(IX-$41),L    
+	res 4,(IX-$42),A    
+	res 4,(IY+$01),B   
+	res 4,(IY+$02),C    
+	res 4,(IY+$03),D    
+	res 4,(IY+$04),E    
+	res 4,(IY-$40),H    
+	res 4,(IY-$41),L    
+	res 4,(IY-$42),A    
+
+	res 5,(IX+$01),B   
+	res 5,(IX+$02),C    
+	res 5,(IX+$03),D    
+	res 5,(IX+$04),E    
+	res 5,(IX-$40),H    
+	res 5,(IX-$41),L    
+	res 5,(IX-$42),A    
+	res 5,(IY+$01),B   
+	res 5,(IY+$02),C    
+	res 5,(IY+$03),D    
+	res 5,(IY+$04),E    
+	res 5,(IY-$40),H    
+	res 5,(IY-$41),L    
+	res 5,(IY-$42),A    
+
+	res 6,(IX+$01),B   
+	res 6,(IX+$02),C    
+	res 6,(IX+$03),D    
+	res 6,(IX+$04),E    
+	res 6,(IX-$40),H    
+	res 6,(IX-$41),L    
+	res 6,(IX-$42),A    
+	res 6,(IY+$01),B   
+	res 6,(IY+$02),C    
+	res 6,(IY+$03),D    
+	res 6,(IY+$04),E    
+	res 6,(IY-$40),H    
+	res 6,(IY-$41),L    
+	res 6,(IY-$42),A    
+
+	res 7,(IX+$01),B   
+	res 7,(IX+$02),C    
+	res 7,(IX+$03),D    
+	res 7,(IX+$04),E    
+	res 7,(IX-$40),H    
+	res 7,(IX-$41),L    
+	res 7,(IX-$42),A    
+	res 7,(IY+$01),B   
+	res 7,(IY+$02),C    
+	res 7,(IY+$03),D    
+	res 7,(IY+$04),E    
+	res 7,(IY-$40),H    
+	res 7,(IY-$41),L    
+	res 7,(IY-$42),A    
+
+
+; RR = ix iy,  R = b c d e h l a
 ;	set N,(RR+dis),R
+	set 0,(IX+$01),B   
+	set 0,(IX+$02),C    
+	set 0,(IX+$03),D    
+	set 0,(IX+$04),E    
+	set 0,(IX-$40),H    
+	set 0,(IX-$41),L    
+	set 0,(IX-$42),A    
+	set 0,(IY+$01),B   
+	set 0,(IY+$02),C    
+	set 0,(IY+$03),D    
+	set 0,(IY+$04),E    
+	set 0,(IY-$40),H    
+	set 0,(IY-$41),L    
+	set 0,(IY-$42),A    
+ 
+	set 1,(IX+$01),B   
+	set 1,(IX+$02),C    
+	set 1,(IX+$03),D    
+	set 1,(IX+$04),E    
+	set 1,(IX-$40),H    
+	set 1,(IX-$41),L    
+	set 1,(IX-$42),A    
+	set 1,(IY+$01),B   
+	set 1,(IY+$02),C    
+	set 1,(IY+$03),D    
+	set 1,(IY+$04),E    
+	set 1,(IY-$40),H    
+	set 1,(IY-$41),L    
+	set 1,(IY-$42),A    
+
+	set 2,(IX+$01),B   
+	set 2,(IX+$02),C    
+	set 2,(IX+$03),D    
+	set 2,(IX+$04),E    
+	set 2,(IX-$40),H    
+	set 2,(IX-$41),L    
+	set 2,(IX-$42),A    
+	set 2,(IY+$01),B   
+	set 2,(IY+$02),C    
+	set 2,(IY+$03),D    
+	set 2,(IY+$04),E    
+	set 2,(IY-$40),H    
+	set 2,(IY-$41),L    
+	set 2,(IY-$42),A    
+
+	set 3,(IX+$01),B   
+	set 3,(IX+$02),C    
+	set 3,(IX+$03),D    
+	set 3,(IX+$04),E    
+	set 3,(IX-$40),H    
+	set 3,(IX-$41),L    
+	set 3,(IX-$42),A    
+	set 3,(IY+$01),B   
+	set 3,(IY+$02),C    
+	set 3,(IY+$03),D    
+	set 3,(IY+$04),E    
+	set 3,(IY-$40),H    
+	set 3,(IY-$41),L    
+	set 3,(IY-$42),A    
+
+	set 4,(IX+$01),B   
+	set 4,(IX+$02),C    
+	set 4,(IX+$03),D    
+	set 4,(IX+$04),E    
+	set 4,(IX-$40),H    
+	set 4,(IX-$41),L    
+	set 4,(IX-$42),A    
+	set 4,(IY+$01),B   
+	set 4,(IY+$02),C    
+	set 4,(IY+$03),D    
+	set 4,(IY+$04),E    
+	set 4,(IY-$40),H    
+	set 4,(IY-$41),L    
+	set 4,(IY-$42),A    
+
+	set 5,(IX+$01),B   
+	set 5,(IX+$02),C    
+	set 5,(IX+$03),D    
+	set 5,(IX+$04),E    
+	set 5,(IX-$40),H    
+	set 5,(IX-$41),L    
+	set 5,(IX-$42),A    
+	set 5,(IY+$01),B   
+	set 5,(IY+$02),C    
+	set 5,(IY+$03),D    
+	set 5,(IY+$04),E    
+	set 5,(IY-$40),H    
+	set 5,(IY-$41),L    
+	set 5,(IY-$42),A    
+
+	set 6,(IX+$01),B   
+	set 6,(IX+$02),C    
+	set 6,(IX+$03),D    
+	set 6,(IX+$04),E    
+	set 6,(IX-$40),H    
+	set 6,(IX-$41),L    
+	set 6,(IX-$42),A    
+	set 6,(IY+$01),B   
+	set 6,(IY+$02),C    
+	set 6,(IY+$03),D    
+	set 6,(IY+$04),E    
+	set 6,(IY-$40),H    
+	set 6,(IY-$41),L    
+	set 6,(IY-$42),A    
+
+	set 7,(IX+$01),B   
+	set 7,(IX+$02),C    
+	set 7,(IX+$03),D    
+	set 7,(IX+$04),E    
+	set 7,(IX-$40),H    
+	set 7,(IX-$41),L    
+	set 7,(IX-$42),A    
+	set 7,(IY+$01),B   
+	set 7,(IY+$02),C    
+	set 7,(IY+$03),D    
+	set 7,(IY+$04),E    
+	set 7,(IY-$40),H    
+	set 7,(IY-$41),L    
+	set 7,(IY-$42),A    

@@ -154,7 +154,17 @@ zasm --ixcbr2 filename.asm
 
 ## Automated Test
 
-There is a workflow action defined in `TestDisassembler.yml` which tests the disassembly functionality of the emulator. It takes the file `test_disassembler_1.asm`, assembles it with `zasm`, runs the assembled code through the emulator (disassembly mode), re-assembles the output from the emulator, and then compares the assembled code from the emulator against the assembled code from the original test file.
+Various workflow actions will be defined to test the emulator:
+
+| Workflow Action      | Input File              | Test Type  | Notes |
+| -------------------- | ----------------------- | ---------- | ----- |
+| TestDisassembler.yml | test_disassembler_1.asm | Round Trip |       |
+
+### Test Types
+
+#### Round Trip
+
+- Tests the disassembler functionality of the emulator. The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassembly mode. The disassembled output is then recompiled with `zasm`, and the resultant `.rom` file is compared against the `.rom` file created with the input file.
 
 ## References
 
