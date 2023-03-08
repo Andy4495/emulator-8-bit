@@ -156,9 +156,10 @@ zasm --ixcbr2 filename.asm
 
 Various workflow actions will be defined to test the emulator:
 
-| Workflow Action      | Input File              | Test Type  | Notes |
-| -------------------- | ----------------------- | ---------- | ----- |
-| TestDisassembler.yml | test_disassembler_1.asm | Round Trip |       |
+| Workflow Action      | Input File              | Test Type  | Notes                                        |
+| -------------------- | ----------------------- | ---------- | -------------------------------------------- |
+| TestDisassembler.yml | test_disassembler_1.asm | Round Trip | Opcode list taken from `zasm` documentation. |
+| TestDisassembler.yml | test_disassembler_2.asm | Round Trip | All opcodes in order by opcode value.        |
 
 ### Test Types
 
