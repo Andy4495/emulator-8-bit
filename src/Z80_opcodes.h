@@ -1351,7 +1351,7 @@ const Z80_opcodes opcodes_IX_bit_instructions[] = {
     {4, OOdO, "RL   (IX%c$%02x), E"},
     {4, OOdO, "RL   (IX%c$%02x), H"},
     {4, OOdO, "RL   (IX%c$%02x), L"},
-    {4, OOdO, "RL   (IX%c$%02x), "},
+    {4, OOdO, "RL   (IX%c$%02x)"},
     {4, OOdO, "RL   (IX%c$%02x), A"},
     {4, OOdO, "RR   (IX%c$%02x), B"},   // 0xDDCBdd18
     {4, OOdO, "RR   (IX%c$%02x), C"},
@@ -1611,7 +1611,7 @@ const Z80_opcodes opcodes_IY_bit_instructions[] = {
     {4, OOdO, "RL   (IY%c$%02x), E"},
     {4, OOdO, "RL   (IY%c$%02x), H"},
     {4, OOdO, "RL   (IY%c$%02x), L"},
-    {4, OOdO, "RL   (IY%c$%02x), "},
+    {4, OOdO, "RL   (IY%c$%02x)"},
     {4, OOdO, "RL   (IY%c$%02x), A"},
     {4, OOdO, "RR   (IY%c$%02x), B"},   // 0xFDCBdd18
     {4, OOdO, "RR   (IY%c$%02x), C"},
