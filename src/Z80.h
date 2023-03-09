@@ -19,8 +19,8 @@
 #define MAX_INSTR_SIZE 4
 
 #define MAX_FETCHED_LENGTH 9
-#define MAX_MNEMONIC_LENGTH 24
-#define MAX_TEXT_LENGTH 64
+#define MAX_MNEMONIC_LENGTH 49
+#define MAX_TEXT_LENGTH 72
 
 class Z80 : public abstract_CPU {
  public:

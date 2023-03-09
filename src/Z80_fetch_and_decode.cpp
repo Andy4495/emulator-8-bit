@@ -185,6 +185,9 @@ void Z80::decode_misc_instruction() {
             snprintf(mnemonic, MAX_MNEMONIC_LENGTH,
                      opcodes_misc_instructions[IR[1]].mn, IR[2]);
             break;
+        case II:  // Invalid opcode
+            snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes_misc_instructions[IR[1]].mn, IR[0], IR[1]);
+            break;
 
         default:  // Invalid instruction layout
             strncpy(mnemonic, "Invalid layout", MAX_MNEMONIC_LENGTH);
@@ -270,6 +273,9 @@ void Z80::decode_index_instruction() {
                 }
                 snprintf(mnemonic, MAX_MNEMONIC_LENGTH, index_opcode[IR[1]].mn,
                          sign, IR[2], IR[3]);
+                break;
+            case II:  // Invalid opcode
+                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, index_opcode[IR[1]].mn, IR[0], IR[1]);
                 break;
 
             default:  // Invalid instruction layout
