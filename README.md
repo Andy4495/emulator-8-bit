@@ -4,13 +4,13 @@
 [![Check Markdown Links](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml)
 [![Test Disassembler](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml)
 
-This is a simple Z80 CPU emulator and disassembler.
+This is a simple 8-bit CPU emulator and disassembler. It currently supports the Z80, but is hopefully written in a way that makes it straightforward to support other CPUs.
 
 I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture.
 
-The emulator currently only supports the Z80. The Z80-specific code is encapsulated in a Z80 class. Additional CPUs can be emulated by creating classes specific for those CPUs by inheriting from the `abstract_CPU` class.
+The Z80-specific code is encapsulated in a Z80 class. Additional CPUs can be emulated by creating classes specific for those CPUs by inheriting from the `abstract_CPU` class.
 
-There are many other open source emulators available. This emulator is not meant to replace any of those, and likely does not contain any features not already available. It was solely created as a learning exercise.
+There are many other open source emulators available. This emulator is not meant to replace any of those. Feel free to use it and open an issue if you find anything or would like to request a feature.
 
 ## Work In Progress
 
@@ -18,13 +18,11 @@ All opcodes have decoding and execution code implemented, but are not fully test
 
 The disassembler functionality should be very close to correct (i.e., displaying the correct mnemonic for each opcode).
 
-I expect to find some defects in the opcode execution and in handling of the processor flags.
-
-This is still a "pre-release" (version less than 1.0.0), because the formatting of the program output will be changing while I test.
+This is still a "pre-release". It is not fully tested and I expect to find some defects in the opcode execution and in the handling of the processor flags.
 
 Next steps:
 
-- More thorough testing of all opcode execution and processor flag updates
+- More thorough testing of all opcode disassembly, execution and processor flag updates
 - Visual review of all opcode implementation
 - Clean up compiler warnings (if any)
 - Hooks to allow for automated testing. This may include:
@@ -38,7 +36,7 @@ See also the [Future Functionality](#future-functionality) items below.
 ## Usage
 
 ```shell
-    emulator [input-file]
+emulator [input-file]
 ```
 
 `input-file` is an optional parameter which is the path of a binary file containing the program code and data. The first byte of the file represents location $0000 in memory, and each successive byte represents the next memory location.
@@ -54,22 +52,22 @@ No error checking is performed on the input file, except that a maximum of 65536
 The repository contains a Makefile to automate the build process. To build the `emulator` executable, simply run `make` at the command line:
 
 ```shell
-    make
+  make
 ```
 
 The Makefile also has the following targets defined:
 
-```text
-   make debug    # Adds -g to the compiler options to create debugging information
-   make verbose  # Adds --verbose to the compiler and linker options
-   make clean    # Removes the executable, object, and linker files
+```shell
+make debug    # Adds -g to the compiler options to create debugging information
+make verbose  # Adds --verbose to the compiler and linker options
+make clean    # Removes the executable, object, and linker files
 ```
 
 `make` can be run from either the top-level directory or the `src` folder.
 
 ## Implementation Details
 
-The emulator was developed using WSL 2 installed with Ubuntu 20.04 and g++ compiler version 9.4.0.
+The emulator was developed on Windows 10 using WSL 2 installed with Ubuntu 20.04 and gcc version 9.4.0.
 
 It is also compatible with Apple MacOS clang version 12.0.0.
 
@@ -154,18 +152,24 @@ zasm --ixcbr2 filename.asm
 
 ## Automated Test
 
-Various workflow actions will be defined to test the emulator:
+Various workflow actions are defined to test the emulator:
 
 | Workflow Action      | Input File              | Test Type  | Notes                                        |
 | -------------------- | ----------------------- | ---------- | -------------------------------------------- |
 | TestDisassembler.yml | test_disassembler_1.asm | Round Trip | Opcode list taken from `zasm` documentation. |
 | TestDisassembler.yml | test_disassembler_2.asm | Round Trip | All opcodes in order by opcode value.        |
+| TestDisassembler.yml | test_disassembler_3.asm | Round Trip | All undefined opcodes.                       |
+| TestDisassembler.yml | test_disassembler_4.asm | Known Good | Opcodes that duplicate other mnemonics.      |
 
 ### Test Types
 
 #### Round Trip
 
 - Tests the disassembler functionality of the emulator. The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassembly mode. The disassembled output is then recompiled with `zasm`, and the resultant `.rom` file is compared against the `.rom` file created with the input file.
+
+#### Known Good
+
+- Tests the disassembler functionality of the emulator. The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassembly mode. The disassembled output is then compared against a "known good" disassembly file. This type of test is needed in cases where re-assembling the disassembled code will not produce the same opcode values (e.g., in the case of undocumented opcodes that perform the same function as documented opcodes).
 
 ## References
 

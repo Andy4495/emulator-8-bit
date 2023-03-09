@@ -21,9 +21,9 @@ jobs:
           make
           cd tools
           chmod +x ./zasm
-      - name: Assemble, disassemble, compare
+      - name: Round-trip assemble, disassemble, compare
         env:
-          FILES: test_disassembler_1 test_disassembler_2
+          FILES: test_disassembler_1 test_disassembler_2 test_disassembler_3
         run: |
           cd tools
           for f in $FILES; do
@@ -37,11 +37,31 @@ jobs:
             cat options.txt
             ../emulator ${f}.rom > ${f}_disassembled.asm <options.txt
             # Strip out the non-assembly top lines of the emulator output
-            tail -n +12 ${f}_disassembled.asm >${f}_tail.asm
+            tail -n +11 ${f}_disassembled.asm >${f}_tail.asm
             ./zasm --ixcbr2 ${f}_tail.asm
             echo "Comparing... ${f}.rom ${f}_tail.rom"
             cmp ${f}.rom ${f}_tail.rom
           done
+      - name: Compare other opcodes
+        env:
+          FILES: test_disassembler_4
+        run: |
+          cd tools
+          for f in $FILES; do
+            echo "file basename: ${f}"
+            ./zasm --ixcbr2 ${f}.asm
+            echo "5" > options.txt
+            echo "0" >> options.txt
+            # The following calculates the ROM size by subtracting 1 from the file size
+            wc -c <${f}.rom | awk '{printf "%x\n",  $1 - 1}' >> options.txt
+            echo "options file:"
+            cat options.txt
+            ../emulator ${f}.rom > ${f}_disassembled.asm <options.txt
+            # Strip out the non-assembly top lines of the emulator output
+            tail -n +11 ${f}_disassembled.asm >${f}_tail.asm
+            echo "Comparing... ${f}_tail.asm ${f}_compare_file.txt"
+            diff ${f}_tail.asm ${f}_compare_file.txt
+          done      
       - name: Print the job summary
         if: ${{ inputs.message }}
         run: |
