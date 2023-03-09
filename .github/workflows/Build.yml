@@ -1,4 +1,4 @@
-# Run make action
+# Build the emulator using make and count source lines of code with cloc
 
 name: Build
 
