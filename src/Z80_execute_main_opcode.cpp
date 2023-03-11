@@ -1235,9 +1235,8 @@ void Z80::execute_main_opcode() {
             break;
 
         default:
-            cout << "Execution not defined: 0x" << hex
-                 << setw(2) << (unsigned int) IR[0] << endl;
-            // Condition bits affected: None
+            // Invalid opcodes are disassembled with DEFB directives and
+            // do not need special handling here. 
             break;
     }
 }

@@ -28,6 +28,7 @@ class Z80 : public abstract_CPU {
     Z80(uint16_t ramstart = 0x8000, uint16_t ramend = 0xffff,
         uint16_t romstart = 0x0000, uint16_t romend = 0x7fff);
     void load_memory(const char* fname);
+    void dump_memory_to_file(const char* fname);
     void cold_reset();
     void warm_reset();
     void run_from_address(uint16_t addr);

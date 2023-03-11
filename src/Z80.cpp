@@ -12,6 +12,7 @@
 #include "Z80.h"
 #include "Z80_opcodes.h"
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <cstring>
 #include <cassert>
@@ -20,8 +21,10 @@ using std::cout;
 using std::endl;
 using std::hex;
 using std::ifstream;
+using std::ofstream;
 using std::iostream;
 using std::ios;
+using std::setw;
 
 Z80::Z80(uint16_t ramstart, uint16_t ramend,
          uint16_t romstart, uint16_t romend) {
@@ -46,6 +49,16 @@ void Z80::load_memory(const char* fname) {
             break;    // Make sure we don't try to load beyond memory space
         }
     }
+}
+
+void Z80::dump_memory_to_file(const char* fname) {
+    
+    ofstream memfile(fname, iostream::out|ios::binary);
+    assert(memfile);  // Check if open successful
+    for (uint32_t i = 0; i <= 0xffff; i++) {
+        memfile << memory[i];
+    }
+    memfile.close();
 }
 
 void Z80::cold_reset() {
@@ -121,23 +134,23 @@ void Z80::print_assembly() {
 }
 
 void Z80::print_registers() {
-    cout << hex << "A: " << (uint16_t) A
-    <<  " B: " << (uint16_t) B
-    <<  " C: " << (uint16_t) C
-    <<  " D: " << (uint16_t) D
-    <<  " E: " << (uint16_t) E
-    <<  " H: " << (uint16_t) H
-    <<  " L: " << (uint16_t) L
-    << " IX: " << (uint16_t) getIX()
-    << " IY: " << (uint16_t) getIY()
-    << " SP: " << (uint16_t) SP
-    << "  I: " << (uint16_t) I
-    << "  R: " << (uint16_t) R
+    cout << hex << "A: " << setw(2) << (uint16_t) A
+    <<  " B: " << setw(2) << (uint16_t) B
+    <<  " C: " << setw(2) << (uint16_t) C
+    <<  " D: " << setw(2) << (uint16_t) D
+    <<  " E: " << setw(2) << (uint16_t) E
+    <<  " H: " << setw(2) << (uint16_t) H
+    <<  " L: " << setw(2) << (uint16_t) L
+    << " IX: " << setw(2) << (uint16_t) getIX()
+    << " IY: " << setw(2) << (uint16_t) getIY()
+    << " SP: " << setw(2) << (uint16_t) SP
+    << "  I: " << setw(2) << (uint16_t) I
+    << "  R: " << setw(2) << (uint16_t) R
     << endl;
 }
 
 void Z80::print_flags() {
-    cout << "SZXH XPNC: "
+    cout << "SZ5H 3PNC: "
     << (unsigned int) testFlag(Z80::S_BIT)
     << (unsigned int) testFlag(Z80::Z_BIT)
     << (unsigned int) testFlag(Z80::X1_BIT)
@@ -151,6 +164,16 @@ void Z80::print_flags() {
 }
 
 void Z80::print_memory(uint16_t start, uint16_t end) {
+    cout << endl << "        0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f" << endl;
+    cout         << "       -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" << endl;
+    for (uint16_t i = (start & 0xfff0); i <= end; i += 16) {
+        cout << hex << setw(3) << i/16 << "x" << ":  ";
+        for (int j = 0; j < 16; j ++) {
+            cout << hex << setw(2) << (uint16_t) memory[i + j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
 }
 
 bool Z80::halted() {

@@ -760,8 +760,8 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             break;
 
         default:
-            cout << "Invalid opcode: 0xed" << hex
-                 << setw(2) << (unsigned int) IR[1] << endl;
+            // Invalid opcodes are disassembled with DEFB directives and
+            // do not need special handling here. 
             break;
     }
 }

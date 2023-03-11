@@ -38,10 +38,21 @@ const char* VERSION = "v0.1.1";
 #include <fstream>
 #include <cassert>
 #include <cstdint>
+using std::ifstream;
+using std::iostream;
+using std::ios;
+#include <iomanip>
 using std::cout;
 using std::cin;
 using std::endl;
 using std::hex;
+using std::setw;
+
+int display_start_menu();
+int display_breakpoint_menu();
+
+/// Use default values for rom and ram definitions for now
+Z80 cpu;
 
 // Main() function: where the execution of program begins
 int main(int argc, char** argv) {
@@ -49,17 +60,18 @@ int main(int argc, char** argv) {
     // Anywhere dec is desired, temporarily switch to dec and
     // then swtich back to hex when done writing to cout
 
+    cout.fill('0');
+
     // prints hello world
     cout << "Z80 Emulator Version: " << VERSION << endl;
 
-    /// Use default values for rom and ram definitions for now
-    Z80 cpu;
-
-    int choice = 0;
+    const int MAXWIDTH=128;
+    char fname[MAXWIDTH]; 
     uint16_t start_addr, end_addr;
     uint16_t prevPC;
-    enum DISASM_MODE {OFF, FULL, ASSEMBLY};
-    DISASM_MODE disassemble_mode = OFF;
+    enum DISASM_MODE {OFF, FULL, ASSEMBLY} disassemble_mode = OFF;
+    enum EMU_STATE {START, RUN, DISASSEMBLE, PRINT_STATE, BREAK, EXIT}
+                    state = START;
 
     if (argc == 2) {  // Use pathname passed on command line
         cout << "Loading memory from file: " << argv[1] << " . . . ";
@@ -70,90 +82,158 @@ int main(int argc, char** argv) {
     }
     cout << "DONE." << endl;
 
-    while (choice == 0) {
-        cout << "Select an option:" << endl;
-        cout << "1. Cold reset and run from $0000. "
-             << "Program will continue running until HALT." << endl;
-        cout << "2. Warm reset and run from $0000. "
-             << "Program will continue running until HALT." << endl;
-        cout << "3. Run from specific address. "
-             << "Program will continue running until HALT." << endl;
-        cout << "4. Set breakpoint." << endl;
-        cout << "5. Disassemble (do not run code)." << endl;
-        cout << "6. Disassemble into compilable assembly." << endl;
+    while (state != EXIT) {
+        switch(state) {
+            case START:
+                switch (display_start_menu()) {
+                    case 1:  // Cold restart
+                        cpu.cold_reset();
+                        state = RUN;
+                        break;
 
-        cin >> choice;
+                    case 2:  // Warm restart
+                        cpu.warm_reset();
+                        state = RUN;
+                        break;
 
-        switch (choice) {
-            case 1:  // Cold restart
-                cpu.cold_reset();
+                    case 3:  // Run from address
+                        cout << "Enter starting address in hex: 0x";
+                        cin >> hex >> start_addr;
+                        cpu.run_from_address(start_addr);
+                        state = RUN;
+                        break;
+
+                    case 4:  // Set breakpoint
+                        // Add code to input address
+                        // Add code to set a breakpoint
+                        cout << "Not supported yet." << endl;
+                        break;
+
+                    case 5:  // Disassemble (do not execute)
+                        disassemble_mode = FULL;
+                        cout << "Enter starting address in hex: 0x";
+                        cin >> hex >> start_addr;
+                        cout << "Enter ending address in hex: 0x";
+                        cin >> hex >> end_addr;
+                        cpu.run_from_address(start_addr);
+                        state = DISASSEMBLE;
+                        break;
+
+                    case 6:  // Disassemble into compilable assembly
+                            // (same as above, but don't print address or fetched data)
+                        disassemble_mode = ASSEMBLY;
+                        cout << "Enter starting address in hex: 0x";
+                        cin >> hex >> start_addr;
+                        cout << "Enter ending address in hex: 0x";
+                        cin >> hex >> end_addr;
+                        prevPC = start_addr;
+                        cout << endl << ";----- Program starts here ------" << endl;
+                        cout << "      org    $" << hex << start_addr << endl;
+                        cpu.run_from_address(start_addr);
+                        state = DISASSEMBLE;
+                        break;
+
+                    default:  // Choice outside of range
+                        cout << "Invalid selection. Try again." << endl << endl;
+                        break;
+                }                
                 break;
 
-            case 2:  // Warm restart
-                cpu.warm_reset();
+            case RUN:
+                cpu.fetch_and_decode();
+                cpu.execute();
+                cpu.print_fetched_instruction();
+                if (cpu.halted()) {
+                    cout << "CPU Halted." << endl;
+                    state = PRINT_STATE;
+                }
                 break;
 
-            case 3:  // Run from address
-                cout << "Enter starting address in hex: 0x";
-                cin >> hex >> start_addr;
-                cpu.run_from_address(start_addr);
+            case DISASSEMBLE:
+                cpu.fetch_and_decode();
+                if (disassemble_mode == ASSEMBLY)
+                    cpu.print_assembly();
+                else
+                    cpu.print_fetched_instruction();
+                // Check for some corner cases so that we don't wrap around memory
+                if ((cpu.getPC() > end_addr) || (cpu.getPC() == 0) || (cpu.getPC() < prevPC)) {
+                    state = EXIT;
+                }
+                prevPC = cpu.getPC();
                 break;
 
-            case 4:  // Set breakpoint
-                // Add code to input address
-                // Add code to set a breakpoint
-                cout << "Not supported yet." << endl;
-                choice = 0;
+            case PRINT_STATE:
+                cpu.print_registers();
+                cpu.print_flags();
+                state = BREAK;
                 break;
 
-            case 5:  // Disassemble (do not execute)
-                disassemble_mode = FULL;
-                cout << "Enter starting address in hex: 0x";
-                cin >> hex >> start_addr;
-                cout << "Enter ending address in hex: 0x";
-                cin >> hex >> end_addr;
-                cpu.run_from_address(start_addr);
+            case BREAK:
+                switch (display_breakpoint_menu()) {
+                    case 1:  // Continue
+                        cpu.run_from_address(cpu.getPC());
+                        state = RUN;
+                        break;
+
+                    case 2:  // Print memory
+                        cout << "Enter starting address in hex: 0x";
+                        cin >> hex >> start_addr;
+                        cout << "Enter ending address in hex: 0x";
+                        cin >> hex >> end_addr;                        
+                        cpu.print_memory(start_addr, end_addr);
+                        break;
+
+                    case 3:  // Dump memory to file
+                        cout << "Enter filename: "; 
+                        cin >> setw(MAXWIDTH) >> fname;
+                        cout << endl; 
+                        cpu.dump_memory_to_file(fname);
+                        break;
+
+                    case 4:  // Exit
+                        state = EXIT;
+                        break;
+
+                    default: 
+                        cout << "Invalid program state. Exiting." << endl;
+                        state = EXIT;
+                        break;
+                }
                 break;
 
-            case 6:  // Disassemble into compilable assembly
-                     // (same as above, but don't print address or fetched data)
-                disassemble_mode = ASSEMBLY;
-                cout << "Enter starting address in hex: 0x";
-                cin >> hex >> start_addr;
-                cout << "Enter ending address in hex: 0x";
-                cin >> hex >> end_addr;
-                prevPC = start_addr;
-                cout << endl << ";----- Program starts here ------" << endl;
-                cout << "      org    $" << hex << start_addr << endl;
-                cpu.run_from_address(start_addr);
-                break;
-
-            default:  // Choice outside of range
-                cout << "Invalid selection. Try again." << endl << endl;
-                choice = 0;
-                break;
+            default:
+                cout << "Invalid program state. Exiting." << endl;
+                state = EXIT;
         }
-    }
-
-    while (!cpu.halted()) {
-        cpu.fetch_and_decode();
-        if (disassemble_mode == OFF) cpu.execute();
-        if (disassemble_mode == ASSEMBLY)
-            cpu.print_assembly();
-        else
-            cpu.print_fetched_instruction();
-        // Check for some corner cases so that we don't wrap around memory
-        if ((disassemble_mode != OFF) && ((cpu.getPC() > end_addr) ||
-           (cpu.getPC() == 0) || (cpu.getPC() < prevPC))) break;
-        prevPC = cpu.getPC();
-    }
-
-    if (cpu.halted()) cout << "CPU Halted." << endl;
-
-    if (disassemble_mode == OFF) {
-        cpu.print_registers();
-        cpu.print_flags();
     }
 
     return 0;
 }
+
+int display_start_menu() {
+    int choice;
+    cout << "Select an option:" << endl;
+    cout << "1. Cold reset and run from $0000. "
+            << "Program will continue running until HALT." << endl;
+    cout << "2. Warm reset and run from $0000. "
+            << "Program will continue running until HALT." << endl;
+    cout << "3. Run from specific address. "
+            << "Program will continue running until HALT." << endl;
+    cout << "4. Set breakpoint." << endl;
+    cout << "5. Disassemble (do not run code)." << endl;
+    cout << "6. Disassemble into compilable assembly." << endl;
+    cin >> choice;
+    return choice;
+}
+
+int display_breakpoint_menu() {
+    int choice;
+    cout << "Select an option:" << endl;
+    cout << "1. Continue." << endl;
+    cout << "2. Print memory." << endl;
+    cout << "3. Dump memory to file" << endl; 
+    cout << "4. Exit." << endl; 
+    cin >> choice;
+    return choice;
+}
+

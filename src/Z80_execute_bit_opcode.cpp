@@ -608,8 +608,8 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             break;
 
         default:
-            cout << "Invalid opcode: 0xcb" << hex
-                 << setw(2) << (uint32_t) IR[1] << endl;
+            // Invalid opcodes are disassembled with DEFB directives and
+            // do not need special handling here. 
             break;
     }
 }

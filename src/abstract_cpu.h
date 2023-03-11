@@ -17,6 +17,7 @@
 
 class abstract_CPU {
     virtual void load_memory(const char* fname) = 0;
+    virtual void dump_memory_to_file(const char* fname) = 0;
     virtual void cold_reset() = 0;
     virtual void warm_reset() = 0;
     virtual void run_from_address(uint16_t addr) = 0;

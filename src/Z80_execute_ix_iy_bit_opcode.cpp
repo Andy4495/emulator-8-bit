@@ -588,8 +588,8 @@ void Z80::execute_ix_iy_bit_opcode() {
             break;
 
         default:
-            cout << "Invalid opcode: 0xXDCBdd" << hex
-                 << setw(2) << (unsigned int) IR[3] << endl;
+            // Invalid opcodes are disassembled with DEFB directives and
+            // do not need special handling here. 
             break;
     }
 }

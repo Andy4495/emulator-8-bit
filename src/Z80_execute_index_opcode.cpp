@@ -662,10 +662,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
 
         default:
-            cout << "Invalid opcode: ";
-            if (idx == IX_REGISTER) cout << "0xdd";
-            else                    cout << "oxfd";
-            cout << hex << setw(2) << (unsigned int) IR[1] << endl;
+            // Invalid opcodes are disassembled with DEFB directives and
+            // do not need special handling here. 
             break;
     }
 }
