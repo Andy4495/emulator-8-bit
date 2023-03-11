@@ -2,7 +2,7 @@
 .DS_Store
 a.out
 emulator
-data.bin*
+*.bin*
 *.o
 *.rom
 *.lst
