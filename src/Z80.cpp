@@ -38,6 +38,7 @@ void Z80::load_memory(const char* fname) {
     // Load memory from filename fname
     unsigned int i = 0;
     char data;
+    uint8_t msb, lsb;
 
     ifstream memfile(fname, iostream::in|ios::binary);
     assert(memfile);  // Check if open successful
@@ -45,7 +46,39 @@ void Z80::load_memory(const char* fname) {
     while (memfile.read(&data, 1)) {
         memory[i++] = data;
         if (i > MAX_MEMORY - 1) {
-            cout << "Filled memory before reaching end of file." << endl;
+            cout << "Loading registers . . . ";
+            // Add registers to end of file.
+            memfile >> A;
+            memfile >> F;
+            memfile >> B;
+            memfile >> C;
+            memfile >> D;
+            memfile >> E;
+            memfile >> H;
+            memfile >> L;
+            memfile >> Aprime;
+            memfile >> Fprime;
+            memfile >> Bprime;
+            memfile >> Cprime;
+            memfile >> Dprime;
+            memfile >> Eprime;
+            memfile >> Hprime;
+            memfile >> Lprime;
+            memfile >> I;
+            memfile >> R;
+            memfile >> IXH;
+            memfile >> IXL;
+            memfile >> IYH;
+            memfile >> IYL;
+            memfile >> msb;
+            memfile >> lsb;
+            setSP(msb, lsb);
+            memfile >> msb;
+            memfile >> lsb;
+            setPC(msb, lsb);
+            memfile >> IFF1;
+            memfile >> IFF2;
+            memfile >> INT_MODE;
             break;    // Make sure we don't try to load beyond memory space
         }
     }
@@ -58,6 +91,37 @@ void Z80::dump_memory_to_file(const char* fname) {
     for (uint32_t i = 0; i <= 0xffff; i++) {
         memfile << memory[i];
     }
+    // Add registers to end of file.
+    memfile << A;
+    memfile << F;
+    memfile << B;
+    memfile << C;
+    memfile << D;
+    memfile << E;
+    memfile << H;
+    memfile << L;
+    memfile << Aprime;
+    memfile << Fprime;
+    memfile << Bprime;
+    memfile << Cprime;
+    memfile << Dprime;
+    memfile << Eprime;
+    memfile << Hprime;
+    memfile << Lprime;
+    memfile << I;
+    memfile << R;
+    memfile << IXH;
+    memfile << IXL;
+    memfile << IYH;
+    memfile << IYL;
+    memfile << (uint8_t) ((SP & 0xff00) >> 8);
+    memfile << (uint8_t)  (SP & 0xff);
+    memfile << (uint8_t) ((SP & 0xff00) >> 8); 
+    memfile << (uint8_t)  (SP & 0xff);
+    memfile << IFF1;
+    memfile << IFF2;
+    memfile << INT_MODE;
+
     memfile.close();
 }
 
@@ -71,7 +135,7 @@ void Z80::cold_reset() {
 }
 
 void Z80::warm_reset() {
-    // Keep RAM intact, clear registers, start from $0000
+    // Keep RAM intact, clear registers
     cout << "Warm Reset: clearing registers, PC set to $0000" << endl;
     clear_registers();
     Halt = false;
@@ -134,18 +198,31 @@ void Z80::print_assembly() {
 }
 
 void Z80::print_registers() {
-    cout << hex << "A: " << setw(2) << (uint16_t) A
-    <<  " B: " << setw(2) << (uint16_t) B
-    <<  " C: " << setw(2) << (uint16_t) C
-    <<  " D: " << setw(2) << (uint16_t) D
-    <<  " E: " << setw(2) << (uint16_t) E
-    <<  " H: " << setw(2) << (uint16_t) H
-    <<  " L: " << setw(2) << (uint16_t) L
-    << " IX: " << setw(2) << (uint16_t) getIX()
-    << " IY: " << setw(2) << (uint16_t) getIY()
-    << " SP: " << setw(2) << (uint16_t) SP
-    << "  I: " << setw(2) << (uint16_t) I
-    << "  R: " << setw(2) << (uint16_t) R
+    cout << hex << "A:  " << setw(2) << (uint16_t) A
+    <<  " F:  "  << setw(2) << (uint16_t) F
+    <<  " B:  "  << setw(2) << (uint16_t) B
+    <<  " C:  "  << setw(2) << (uint16_t) C
+    <<  " D:  "  << setw(2) << (uint16_t) D
+    <<  " E:  "  << setw(2) << (uint16_t) E
+    <<  " H:  "  << setw(2) << (uint16_t) H
+    <<  " L:  "  << setw(2) << (uint16_t) L << endl
+    <<  "A': "   << setw(2) << (uint16_t) Aprime
+    <<  " F': "  << setw(2) << (uint16_t) Fprime
+    <<  " B': "  << setw(2) << (uint16_t) Bprime
+    <<  " C': "  << setw(2) << (uint16_t) Cprime
+    <<  " D': "  << setw(2) << (uint16_t) Dprime
+    <<  " E': "  << setw(2) << (uint16_t) Eprime
+    <<  " H': "  << setw(2) << (uint16_t) Hprime
+    <<  " L': "  << setw(2) << (uint16_t) L << endl
+    <<  "I:  "   << setw(2) << (uint16_t) I
+    << " R:  "   << setw(2) << (uint16_t) R
+    << " IX: "   << setw(4) << (uint16_t) getIX()
+    << " IY: "   << setw(4) << (uint16_t) getIY()
+    << " SP: "   << setw(4) << (uint16_t) SP
+    << " PC: "   << setw(4) << (uint16_t) PC
+    << " IFF1: " << setw(2) << (uint16_t) IFF1
+    << " IFF2: " << setw(2) << (uint16_t) IFF2
+    << " INT_MODE: " << setw(2) << (uint16_t) INT_MODE
     << endl;
 }
 

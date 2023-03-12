@@ -8,7 +8,7 @@
    0.2.0 03/09/2023 Andy4495  Tag v0.2.0
 */
 
-const char* VERSION = "v0.1.1";
+const char* VERSION = "v0.2.0";
 
 // 1. Read command line and parse arguments parseCommandLine()
 // 2. Read memory file (hex, s-record) loadProgram()
@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
 
                     case 2:  // Warm restart
                         cpu.warm_reset();
-                        state = RUN;
+                        state = START;
                         break;
 
                     case 3:  // Run from address
@@ -215,8 +215,7 @@ int display_start_menu() {
     cout << "Select an option:" << endl;
     cout << "1. Cold reset and run from $0000. "
             << "Program will continue running until HALT." << endl;
-    cout << "2. Warm reset and run from $0000. "
-            << "Program will continue running until HALT." << endl;
+    cout << "2. Warm reset (clear all registers). " << endl;
     cout << "3. Run from specific address. "
             << "Program will continue running until HALT." << endl;
     cout << "4. Set breakpoint." << endl;

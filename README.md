@@ -14,15 +14,19 @@ There are many other open source emulators available. This emulator is not meant
 
 ## Work In Progress
 
-All opcodes have decoding and execution code implemented, but are not fully tested.
+All opcodes have decoding and execution code implemented.
 
-The disassembler functionality should be very close to correct (i.e., displaying the correct mnemonic for each opcode).
+The disassembler functionality is well tested and should be very close to correct.
 
-This is still a "pre-release". It is not fully tested and I expect to find some defects in the opcode execution and in the handling of the processor flags.
+However, this is still a "pre-release":
+
+- The input and output file formats may change.
+- Menu items may be added, removed, modified, or re-ordered.
+- Opcode execution, particularly the handling of processor flags, is not fully tested and probably contains errors.
 
 Next steps:
 
-- More thorough testing of all opcode disassembly, execution and processor flag updates
+- More thorough testing of opcode execution and processor flag updates
 - Visual review of all opcode implementation
 - Clean up compiler warnings (if any)
 - Hooks to allow for automated testing. This may include:
@@ -43,7 +47,7 @@ emulator [input-file]
 
 If `input-file` is not specified, then the default name `data.bin` is used.
 
-No error checking is performed on the input file, except that a maximum of 65536 bytes are read into memory. Any bytes beyond 65536 are ignored.
+No error checking is performed on the input file, except that a maximum of 65536 bytes are read into memory. If the file is larger than 65536 bytes, then the next 29 bytes are assumed to be the processor registers and interrupt settings. Any data beyond that is ignored.
 
 *Future iterations may support additional file formats such as Intel Hex or Motorola S-Records which would allow specific memory locations to be defined by the file.*
 
@@ -69,9 +73,7 @@ make clean    # Removes the executable, object, and linker files
 
 The emulator was developed on Windows 10 using WSL 2 installed with Ubuntu 20.04 and gcc version 9.4.0.
 
-It is also compatible with Apple MacOS clang version 12.0.0.
-
-The automated build action configured in the `.github/workflows` directory builds the emulator with Ubuntu 22.04 and gcc version 11.3.0.
+It is also compatible with Apple MacOS clang version 12.0.0 and Ubuntu 22.04 with gcc version 11.3.0.
 
 I have not tried it on other platforms, but there is no machine dependent code. It should work as-is (or with minimal changes) on other unix-like platforms and compiler versions.
 
@@ -109,7 +111,7 @@ The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base c
   - Warm restart
     - Internal state information is cleared, but RAM is left as-is
   - Jump to a specific address
-    - RAM is left as-is, all internal state information is left as-is except for the Program Counter
+    - RAM is left as-is and all internal state information is left as-is except for the Program Counter
   - Fetch and decode instruction and data
     - Load byte from memory into Instruction Register and update Program Counter
     - Load additional bytes from memory depending on the fetched opcode

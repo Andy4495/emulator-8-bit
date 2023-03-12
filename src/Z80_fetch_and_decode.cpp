@@ -94,7 +94,7 @@ void Z80::decode_main_instruction() {
             // case where the displacement value is actually signed
             // where we normally treat the data as unsigned
             snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn,
-                     (IR[1] & 0x80) ?  PC - (uint8_t) ~IR[1] - 1 : PC + IR[1]);
+                     (IR[1] & 0x80) ?  ((PC - (uint8_t) ~IR[1] - 1) & 0xffff) :  ((PC + IR[1])) & 0xffff);
             break;
         case OON:
             snprintf(mnemonic, MAX_MNEMONIC_LENGTH, opcodes[IR[0]].mn, IR[2]);
@@ -150,9 +150,6 @@ void Z80::decode_misc_instruction() {
     // displayed as part of the instruction string.
     // - The ".s" field in the opcodes array defines the instruction
     //   layout of opcodes and data
-    // - Relative jumps ("JN") require slightly different handling
-    //   in order to generate the 16-bit address from the 8-bit
-    //   relative jump value
     switch (opcodes_misc_instructions[IR[1]].s) {
         case O:
         case OO:
@@ -173,14 +170,6 @@ void Z80::decode_misc_instruction() {
             snprintf(mnemonic, MAX_MNEMONIC_LENGTH,
                      opcodes_misc_instructions[IR[1]].mn,
                      IR[3], IR[2]);
-            break;
-        case JN:
-            // The following uses a clumsy way to deal with the special
-            // case where the displacement value is actually signed
-            // where we normally treat the data as unsigned
-            snprintf(mnemonic, MAX_MNEMONIC_LENGTH,
-                     opcodes_misc_instructions[IR[1]].mn,
-                     (IR[1] < 0x80) ? IR[1]+PC : PC - (0xff - IR[1] + 1));
             break;
         case OON:
             snprintf(mnemonic, MAX_MNEMONIC_LENGTH,
@@ -222,9 +211,6 @@ void Z80::decode_index_instruction() {
         // displayed as part of the instruction string.
         // - The ".s" field in the opcodes array defines the instruction
         //   layout of opcodes and data
-        // - Relative jumps ("JN") require slightly different handling in
-        //   order to generate the 16-bit address from the 8-bit relative
-        //   jump value
         switch (index_opcode[IR[1]].s) {
             case O:
             case OO:
@@ -242,14 +228,7 @@ void Z80::decode_index_instruction() {
                 snprintf(mnemonic, MAX_MNEMONIC_LENGTH, index_opcode[IR[1]].mn,
                          IR[3], IR[2]);
                 break;
-            case JN:
-                // The following uses a clumsy way to deal with the special
-                // case where the displacement value is actually signed where
-                // we normally treat the data as unsigned
-                snprintf(mnemonic, MAX_MNEMONIC_LENGTH, index_opcode[IR[1]].mn,
-                         (IR[1] < 0x80) ? IR[1]+PC : PC - (0xff - IR[1] + 1));
-                break;
-            case OON:
+           case OON:
                 snprintf(mnemonic, MAX_MNEMONIC_LENGTH, index_opcode[IR[1]].mn,
                          IR[2]);
                 break;
