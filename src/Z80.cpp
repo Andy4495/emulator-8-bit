@@ -213,7 +213,7 @@ void Z80::print_registers() {
     <<  " D': "  << setw(2) << (uint16_t) Dprime
     <<  " E': "  << setw(2) << (uint16_t) Eprime
     <<  " H': "  << setw(2) << (uint16_t) Hprime
-    <<  " L': "  << setw(2) << (uint16_t) L << endl
+    <<  " L': "  << setw(2) << (uint16_t) Lprime << endl
     <<  "I:  "   << setw(2) << (uint16_t) I
     << " R:  "   << setw(2) << (uint16_t) R
     << " IX: "   << setw(4) << (uint16_t) getIX()

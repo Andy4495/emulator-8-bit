@@ -973,7 +973,8 @@ void Z80::execute_main_opcode() {
             break;
 
         // JP cc, nn (0xC2, 0xCA, 0xD2, 0xDA, 0xE2, 0xEA, 0xF2, 0xFA)
-        case 0xc2:
+        case 0xc2: case 0xCA: case 0xD2: case 0xDA:
+        case 0xE2: case 0xEA: case 0xF2: case 0xFA:
             // Determine which flag to check
             // Opcode 1  1  c  c  c  0  1  0
             switch ((IR[0] & 0x38) >> 3) {

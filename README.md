@@ -16,7 +16,9 @@ There are many other open source emulators available. This emulator is not meant
 
 All opcodes have decoding and execution code implemented.
 
-The disassembler functionality is well tested.
+The disassembler functionality is thoroughly tested.
+
+Opcode execution is partially tested, particularly opcodes which do not affect flags.
 
 However, this is still a "pre-release":
 

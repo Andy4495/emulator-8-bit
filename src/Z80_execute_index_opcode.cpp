@@ -119,7 +119,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             break;
 
         // LD IX/Y, (nn)  (0x2A)
-        case 0x3a:
+        case 0x2a:
             *indexH = memory[(IR[2] << 8) + IR[1] + 1];
             *indexL = memory[(IR[2] << 8) + IR[1]];
             // Condition bits affected: None
