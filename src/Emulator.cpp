@@ -97,6 +97,9 @@ int main(int argc, char** argv) {
                     case 2:
                         state = EXECUTE_MENU;
                         break;
+                    case 3: 
+                        state = EXIT;
+                        break;
 
                     default:  // Choice outside of range
                         cout << "Invalid selection. Try again." << endl << endl;

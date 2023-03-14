@@ -1,0 +1,46 @@
+# Test opcode execution
+
+name: Test Opcodes
+
+on: 
+  push:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: Message to display in job summary
+        required: false
+        type: string
+
+jobs:
+  test-opcodes: 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - name: Setup emulator and zasm
+        run: |
+          make
+          cd tools
+          chmod +x ./zasm
+      - name: Test opcodes
+        env:
+          FILES: test_execution_no_flag_updates
+        run: |
+          cd tools
+          for f in $FILES; do
+            echo "file basename: ${f}"
+            ./zasm --ixcbr2 ${f}.asm
+            echo "2" > options.txt
+            echo "1" >> options.txt
+            echo "7" >> options.txt
+            echo ${f}.testout >> options.txt
+            echo "9" >> options.txt
+            echo "options file:"
+            cat options.txt
+            ../emulator ${f}.rom <options.txt
+            echo "Comparing... ${f}.result ${f}.testout"
+            cmp ${f}.result ${f}.testout
+          done
+      - name: Print the job summary
+        if: ${{ inputs.message }}
+        run: |
+          echo ${{ inputs.message }} >$GITHUB_STEP_SUMMARY

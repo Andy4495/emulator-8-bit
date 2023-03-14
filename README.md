@@ -158,12 +158,20 @@ zasm --ixcbr2 filename.asm
 
 Various workflow actions are defined to test the emulator:
 
+### Disassembly Mode
+
 | Workflow Action      | Input File              | Test Type  | Notes                                        |
 | -------------------- | ----------------------- | ---------- | -------------------------------------------- |
 | TestDisassembler.yml | test_disassembler_1.asm | Round Trip | Opcode list taken from `zasm` documentation. |
 | TestDisassembler.yml | test_disassembler_2.asm | Round Trip | All opcodes in order by opcode value.        |
 | TestDisassembler.yml | test_disassembler_3.asm | Round Trip | All undefined opcodes.                       |
 | TestDisassembler.yml | test_disassembler_4.asm | Known Good | Opcodes that duplicate other mnemonics.      |
+
+### Execute Mode
+
+| Workflow Action | Input File                           | Test Type  | Notes                                |
+| --------------- | ------------------------------------ | ---------- | ------------------------------------ |
+| TestOpcodes.yml | test_execution_no_flag_updates.asm   | Known Good | Opcodes that don't update flags      |
 
 ### Test Types
 
@@ -173,7 +181,8 @@ Various workflow actions are defined to test the emulator:
 
 #### Known Good
 
-- Tests the disassembler functionality of the emulator. The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassembly mode. The disassembled output is then compared against a "known good" disassembly file. This type of test is needed in cases where re-assembling the disassembled code will not produce the same opcode values (e.g., in the case of undocumented opcodes that perform the same function as documented opcodes).
+- For disassembler functionality: The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassembly mode. The disassembled output is then compared against a "known good" disassembly file. This type of test is needed in cases where re-assembling the disassembled code will not produce the same opcode values (e.g., in the case of undocumented opcodes that perform the same function as documented opcodes).
+- For opcode execution functionality: The input file is assembled with `zasm`. The assembled output `.rom` file is input to the emulator and executed. The memory and registers are dumped to a file which is then compared to a known good memory/rom file.
 
 ## References
 
