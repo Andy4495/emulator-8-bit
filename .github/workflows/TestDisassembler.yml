@@ -29,7 +29,8 @@ jobs:
           for f in $FILES; do
             echo "file basename: ${f}"
             ./zasm --ixcbr2 ${f}.asm
-            echo "6" > options.txt
+            echo "1" > options.txt
+            echo "3" >> options.txt
             echo "0" >> options.txt
             # The following calculates the ROM size by subtracting 1 from the file size
             wc -c <${f}.rom | awk '{printf "%x\n",  $1 - 1}' >> options.txt
@@ -37,7 +38,7 @@ jobs:
             cat options.txt
             ../emulator ${f}.rom > ${f}_disassembled.asm <options.txt
             # Strip out the non-assembly top lines of the emulator output
-            tail -n +11 ${f}_disassembled.asm >${f}_tail.asm
+            tail -n +13 ${f}_disassembled.asm >${f}_tail.asm
             ./zasm --ixcbr2 ${f}_tail.asm
             echo "Comparing... ${f}.rom ${f}_tail.rom"
             cmp ${f}.rom ${f}_tail.rom
@@ -50,17 +51,19 @@ jobs:
           for f in $FILES; do
             echo "file basename: ${f}"
             ./zasm --ixcbr2 ${f}.asm
-            echo "5" > options.txt
+            echo "1" > options.txt
+            echo "2" >> options.txt
             echo "0" >> options.txt
             # The following calculates the ROM size by subtracting 1 from the file size
             wc -c <${f}.rom | awk '{printf "%x\n",  $1 - 1}' >> options.txt
+            echo "4" >> options.txt
             echo "options file:"
             cat options.txt
             ../emulator ${f}.rom > ${f}_disassembled.asm <options.txt
             # Strip out the non-assembly top lines of the emulator output
-            tail -n +11 ${f}_disassembled.asm >${f}_tail.asm
+            tail -n +13 ${f}_disassembled.asm >${f}_tail.asm
             echo "Comparing... ${f}_tail.asm ${f}_compare_file.txt"
-            diff ${f}_tail.asm ${f}_compare_file.txt
+            diff -w --strip-trailing-cr ${f}_tail.asm ${f}_compare_file.txt
           done      
       - name: Print the job summary
         if: ${{ inputs.message }}

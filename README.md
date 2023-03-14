@@ -16,7 +16,7 @@ There are many other open source emulators available. This emulator is not meant
 
 All opcodes have decoding and execution code implemented.
 
-The disassembler functionality is well tested and should be very close to correct.
+The disassembler functionality is well tested.
 
 However, this is still a "pre-release":
 
@@ -140,7 +140,7 @@ The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base c
   - Corner cases
   - All flag update conditions
 
-## Assembler
+## Z80 Assembler
 
 I have been using the [`zasm`][24] assembler for testing, mainly because it still appears to be in active development and it is fairly well documented. Disassembled code generated from my emulator can be assembled with `zasm`, and used as a "round-trip" test of any changes to verify that the opcodes are decoded into the correct mnemonics.
 
