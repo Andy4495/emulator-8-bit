@@ -404,7 +404,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // LDI (0xEDA0)
         case 0xa0:
-            memory[(D>>8) + E] = memory[(H>>8) + L];
+            memory[getDE()] = memory[getHL()];
             E++;
             if (E == 0) D++;
             L++;
@@ -421,7 +421,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // LDIR (0xEDB0)
         case 0xb0:
-            memory[(D>>8) + E] = memory[(H>>8) + L];
+            memory[getDE()] = memory[getHL()];
             E++;
             if (E == 0) D++;
             L++;
@@ -440,7 +440,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // LDD (0xEDA8)
         case 0xa8:
-            memory[(D>>8) + E] = memory[(H>>8) + L];
+            memory[getDE()] = memory[getHL()];
             E--;
             if (E == 0xff) D--;
             L--;
@@ -457,7 +457,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
 
         // LDDR (0xEDB8)
         case 0xb8:
-            memory[(D>>8) + E] = memory[(H>>8) + L];
+            memory[getDE()] = memory[getHL()];
             E--;
             if (E == 0xff) D--;
             L--;

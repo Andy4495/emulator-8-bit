@@ -82,8 +82,8 @@ int main(int argc, char** argv) {
         cout << "Loading memory from file: " << argv[1] << " . . . ";
         cpu.load_memory(argv[1]);
     } else {  // Use default filename
-        cpu.load_memory("data.bin");
         cout << "Loading memory from file: " << "data.bin" << " . . . ";
+        cpu.load_memory("data.bin");
     }
     cout << "DONE." << endl;
 
