@@ -500,12 +500,15 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             if (C == 0xff) B--;
             if (B | C) {
                 setFlag(PV_BIT);
-                PC -= 2;
             } else {
                 clearFlag(PV_BIT);
             }
             update_H(SUB, A, memory[getHL()]);
             setFlag(N_BIT);
+            // Continue looping until bc == 0 (PV clear) or match found (Z set)
+            if (testFlag(PV_BIT) && !testFlag(Z_BIT)) {
+                PC -= 2;
+            }
             break;
 
         // CPD (0xEDA9)
@@ -534,12 +537,15 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             if (C == 0xff) B--;
             if (B | C) {
                 setFlag(PV_BIT);
-                PC -= 2;
             } else {
                 clearFlag(PV_BIT);
             }
             setFlag(N_BIT);
             update_H(SUB, A, memory[getHL()]);
+            // Continue looping until bc == 0 (PV clear) or match found (Z set)
+            if (testFlag(PV_BIT) && !testFlag(Z_BIT)) {
+                PC -= 2;
+            }
             break;
 
         // NEG (0xED44)
@@ -650,7 +656,6 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         // SBC HL, ss  (0x42, 0x52, 0x62, 0x72)
         case 0x42: case 0x52: case 0x62: case 0x72:
             temp  = testFlag(C_BIT);
-            /// Need to implement 16-bit overflow flag
             // Determine which register we are working on:
             // Opcode 0  1  s  s  0  0  1  0
             switch ((IR[1] & 0x30) >> 4) {
@@ -757,6 +762,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         case 0x45:
             PC = (memory[SP + 1] << 8) + memory[SP];
             IFF1 = IFF2;
+            SP += 2;
             break;
 
         default:
