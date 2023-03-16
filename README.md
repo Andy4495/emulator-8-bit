@@ -137,6 +137,7 @@ The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base c
 - HALT state handler improvements
   - Since interrupts are not implemented, HALT just stops the emulator
   - HALT should act like a breakpoint, in that execution can be continued after performing available debugging operations
+  - HALT does not execute NOPs, so R register is not updated
 - Automated test suite
   - All valid opcodes
   - Corner cases
@@ -169,9 +170,10 @@ Various workflow actions are defined to test the emulator:
 
 ### Execute Mode
 
-| Workflow Action | Input File                           | Test Type  | Notes                                |
-| --------------- | ------------------------------------ | ---------- | ------------------------------------ |
-| TestOpcodes.yml | test_execution_no_flag_updates.asm   | Known Good | Opcodes that don't update flags      |
+| Workflow Action | Input File                               | Test Type  | Notes                                |
+| --------------- | ---------------------------------------- | ---------- | ------------------------------------ |
+| TestOpcodes.yml | test_execution_no_flag_updates.asm       | Known Good | Opcodes that don't update flags      |
+| TestOpcodes.yml | test_execution_call_jump_loop_return.asm | Known Good | Condiitonal call, jump, returns      |
 
 ### Test Types
 

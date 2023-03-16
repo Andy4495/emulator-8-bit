@@ -32,6 +32,9 @@ Z80::Z80(uint16_t ramstart, uint16_t ramend,
     _ramend   = ramend;
     _romstart = romstart;
     _romend   = romend;
+    // Load the input port with some dummy data to make it easier to test
+        in[0x96] = 'i';
+        in[0x97] = 'h';
 }
 
 void Z80::load_memory(const char* fname) {
