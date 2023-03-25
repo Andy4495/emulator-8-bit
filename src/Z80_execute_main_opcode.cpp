@@ -204,8 +204,8 @@ void Z80::execute_main_opcode() {
                 case 0b11: r = &A; r_ = &F; break;
                 default: cout << "Invalid opcode: POP qq" << endl; break;
             }
-            *r  = memory[SP++];
             *r_ = memory[SP++];
+            *r  = memory[SP++];
             // Condition bits affected: None
             break;
 

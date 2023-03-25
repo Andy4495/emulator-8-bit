@@ -325,8 +325,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // POP IX/Y     (0xE1)
         case 0xe1:
-            *indexH  = memory[SP++];
             *indexL = memory[SP++];
+            *indexH = memory[SP++];
             // Condition bits affected: None
             break;
 
