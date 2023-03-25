@@ -23,7 +23,7 @@ jobs:
           chmod +x ./zasm
       - name: Test opcodes
         env:
-          FILES: test_execution_no_flag_updates test_execution_call_jump_loop_return
+          FILES: test_execution_no_flag_updates test_execution_call_jump_loop_return test_execution_with_flag_updates
         run: |
           cd tools
           for f in $FILES; do
