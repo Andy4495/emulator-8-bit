@@ -4,7 +4,7 @@
 [![Check Markdown Links](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml)
 [![Test Disassembler](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml)
 
-This is a simple 8-bit CPU emulator and disassembler. It currently supports the Z80, but is hopefully written in a way that makes it straightforward to support other CPUs.
+This is a simple 8-bit CPU emulator and disassembler. It currently supports the Z80, but adding support for other CPUs should be straightforward.
 
 I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture.
 
@@ -18,13 +18,17 @@ All opcodes have decoding and execution code implemented.
 
 The disassembler functionality is thoroughly tested.
 
-Opcode execution is partially tested, particularly opcodes which do not affect flags.
+Opcode execution testing is in progress, including automated automated tests:
 
-However, this is still a "pre-release":
+- Opcodes that do not affect flags completed
+- Calls, jumps, loops, returns completed
+- Opcodes that affect flags in progress; more tests are still to be created
+
+This is still a "pre-release":
 
 - The input and output file formats may change.
 - Menu items may be added, removed, modified, or re-ordered.
-- Opcode execution, particularly the handling of processor flags, is not fully tested and probably contains errors.
+- Opcode execution, particularly the handling of processor flags, is not fully tested
 
 Next steps:
 
@@ -55,7 +59,7 @@ No error checking is performed on the input file, except that a maximum of 65536
 
 ## Building the Emulator
 
-The repository contains a Makefile to automate the build process. To build the `emulator` executable, simply run `make` at the command line:
+The repository contains a Makefile to automate the build process. To build the `emulator` executable, simply run `make` at the command line from the top-level directory of the repo:
 
 ```shell
   make
@@ -69,13 +73,11 @@ make verbose  # Adds --verbose to the compiler and linker options
 make clean    # Removes the executable, object, and linker files
 ```
 
-`make` can be run from either the top-level directory or the `src` folder.
-
 ## Implementation Details
 
-The emulator was developed on Windows 10 using WSL 2 installed with Ubuntu 20.04 and gcc version 9.4.0.
+The emulator was developed with Ubuntu 20.04 and gcc version 9.4.0 (using [WSL 2][26]) and MacOS Ventura with clang version 12.0.0.
 
-It is also compatible with Apple MacOS clang version 12.0.0 and Ubuntu 22.04 with gcc version 11.3.0.
+It is also known to be compatible with Ubuntu 22.04 and gcc version 11.3.0.
 
 I have not tried it on other platforms, but there is no machine dependent code. It should work as-is (or with minimal changes) on other unix-like platforms and compiler versions.
 
@@ -86,9 +88,12 @@ I have not tried it on other platforms, but there is no machine dependent code. 
 3. Display menu and choose operating mode
 4. Loop:
     - Fetch and decode instruction
-    - Execute instruction
-    - Continue loop until breakpoint or HALT reached
-    - Display machine state (depending on configuration and menu choice)
+    - Execute instruction (execute mode)
+    - Continue loop until 
+      - HALT reached (execute mode) or
+      - Ending address reached (disassemble mode)
+5. Display machine state (execute mode)
+6. Return to step 3
 
 ### Defining the CPU
 
@@ -174,6 +179,7 @@ Various workflow actions are defined to test the emulator:
 | --------------- | ---------------------------------------- | ---------- | ------------------------------------ |
 | TestOpcodes.yml | test_execution_no_flag_updates.asm       | Known Good | Opcodes that don't update flags      |
 | TestOpcodes.yml | test_execution_call_jump_loop_return.asm | Known Good | Condiitonal call, jump, returns      |
+| TestOpcodes.yml | test_execution_with_flag_updates.asm     | Known Good | Opcodes that affect flags            |
 
 ### Test Types
 
@@ -233,6 +239,7 @@ The other software and files in this repository are released under what is commo
 [23]: https://k1.spdns.de/Develop/Projects/zasm/Documentation/z25.htm
 [24]: https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html
 [25]: https://choosealicense.com/licenses/bsd-2-clause/
+[26]: https://learn.microsoft.com/en-us/windows/wsl/about
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)
