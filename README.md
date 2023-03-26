@@ -18,13 +18,13 @@ All opcodes have decoding and execution code implemented.
 
 The disassembler functionality is thoroughly tested.
 
-Opcode execution testing is in progress, including automated automated tests:
+Opcode execution testing is in progress, including automated tests:
 
 - Opcodes that do not affect flags completed
 - Calls, jumps, loops, returns completed
 - Opcodes that affect flags in progress; more tests are still to be created
 
-This is still a "pre-release":
+This is a "pre-release":
 
 - The input and output file formats may change.
 - Menu items may be added, removed, modified, or re-ordered.
@@ -89,7 +89,7 @@ I have not tried it on other platforms, but there is no machine dependent code. 
 4. Loop:
     - Fetch and decode instruction
     - Execute instruction (execute mode)
-    - Continue loop until 
+    - Continue loop until
       - HALT reached (execute mode) or
       - Ending address reached (disassemble mode)
 5. Display machine state (execute mode)
@@ -164,39 +164,39 @@ zasm --ixcbr2 filename.asm
 
 Various workflow actions are defined to test the emulator:
 
-### Disassembly Mode
+### Disassemble Mode - [`TestDisassembler.yml`][27]
 
-| Workflow Action      | Input File              | Test Type  | Notes                                        |
-| -------------------- | ----------------------- | ---------- | -------------------------------------------- |
-| TestDisassembler.yml | test_disassembler_1.asm | Round Trip | Opcode list taken from `zasm` documentation. |
-| TestDisassembler.yml | test_disassembler_2.asm | Round Trip | All opcodes in order by opcode value.        |
-| TestDisassembler.yml | test_disassembler_3.asm | Round Trip | All undefined opcodes.                       |
-| TestDisassembler.yml | test_disassembler_4.asm | Known Good | Opcodes that duplicate other mnemonics.      |
+| Input File              | Test Type  | Notes                                        |
+| ----------------------- | ---------- | -------------------------------------------- |
+| test_disassembler_1.asm | Round Trip | Opcode list taken from `zasm` documentation. |
+| test_disassembler_2.asm | Round Trip | All opcodes in order by opcode value.        |
+| test_disassembler_3.asm | Round Trip | All undefined opcodes.                       |
+| test_disassembler_4.asm | Known Good | Opcodes that duplicate other mnemonics.      |
 
-### Execute Mode
+### Execute Mode - [`TestOpcodes.yml`][28]
 
-| Workflow Action | Input File                               | Test Type  | Notes                                |
-| --------------- | ---------------------------------------- | ---------- | ------------------------------------ |
-| TestOpcodes.yml | test_execution_no_flag_updates.asm       | Known Good | Opcodes that don't update flags      |
-| TestOpcodes.yml | test_execution_call_jump_loop_return.asm | Known Good | Condiitonal call, jump, returns      |
-| TestOpcodes.yml | test_execution_with_flag_updates.asm     | Known Good | Opcodes that affect flags            |
+| Input File                               | Test Type  | Notes                                  |
+| ---------------------------------------- | ---------- | -------------------------------------- |
+| test_execution_no_flag_updates.asm       | Known Good | Opcodes that don't update flags        |
+| test_execution_call_jump_loop_return.asm | Known Good | Condiitonal call, jump, return opcodes |
+| test_execution_with_flag_updates.asm     | Known Good | Opcodes that affect flags              |
 
 ### Test Types
 
 #### Round Trip
 
-- Tests the disassembler functionality of the emulator. The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassembly mode. The disassembled output is then recompiled with `zasm`, and the resultant `.rom` file is compared against the `.rom` file created with the input file.
+- Tests the disassembler functionality of the emulator. The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassemble mode. The disassembled output is then recompiled with `zasm`, and the resultant `.rom` file is compared against the `.rom` file created with the input file.
 
 #### Known Good
 
-- For disassembler functionality: The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassembly mode. The disassembled output is then compared against a "known good" disassembly file. This type of test is needed in cases where re-assembling the disassembled code will not produce the same opcode values (e.g., in the case of undocumented opcodes that perform the same function as documented opcodes).
+- For disassembler functionality: The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassemble mode. The disassembled output is then compared against a "known good" disassemble file. This type of test is needed in cases where re-assembling the disassembled code will not produce the same opcode values (e.g., in the case of undocumented opcodes that perform the same function as documented opcodes).
 - For opcode execution functionality: The input file is assembled with `zasm`. The assembled output `.rom` file is input to the emulator and executed. The memory and registers are dumped to a file which is then compared to a known good memory/rom file.
 
 ## References
 
 - Z80 [User Manual][13]
   - **Note**: The Z80 User Manual has many errors, ambiguities, and inconsistencies. It is sometimes necessary to consult other references (or experiment on an actual chip) to determine the correct behavior for certain opcodes.
-- [Z80 Info][5]: Comprehensive source of Z80 information: hardware, compilers, assemblers, compilers
+- [Z80 Info][5]: Comprehensive source of Z80 information: hardware, compilers, assemblers, documentation
 - Z80 [opcode table][4]
 - Z80 undocumented opcodes [writeup][18]
 - [`zasm`][24] - Z80 assembler: [online version][6] or [download][7]
@@ -240,6 +240,8 @@ The other software and files in this repository are released under what is commo
 [24]: https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html
 [25]: https://choosealicense.com/licenses/bsd-2-clause/
 [26]: https://learn.microsoft.com/en-us/windows/wsl/about
+[27]: ./.github/workflows/TestDisassembler.yml
+[28]: ./.github/workflows/TestOpcodes.yml
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)

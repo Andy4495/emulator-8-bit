@@ -50,7 +50,7 @@ using std::hex;
 using std::setw;
 
 int display_main_menu();
-int display_disassembly_menu();
+int display_disassemble_menu();
 int display_execute_menu();
 
 /// Use default values for rom and ram definitions for now
@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
     uint16_t start_addr, end_addr;
     uint16_t prevPC;
     enum DISASM_MODE {OFF, FULL, ASSEMBLY} disassemble_mode = OFF;
-    enum EMU_STATE {MAIN_MENU, DISASSEMBLY_MENU, EXECUTE_MENU, 
+    enum EMU_STATE {MAIN_MENU, DISASSEMBLE_MENU, EXECUTE_MENU, 
                     DISASSEMBLE, RUN, SINGLE_STEP, EXIT}
                     state = MAIN_MENU;
 
@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
             case MAIN_MENU:
                 switch (display_main_menu()) {
                     case 1:
-                        state = DISASSEMBLY_MENU;
+                        state = DISASSEMBLE_MENU;
                         break;
                     case 2:
                         state = EXECUTE_MENU;
@@ -107,8 +107,8 @@ int main(int argc, char** argv) {
                 }
                 break;
 
-            case DISASSEMBLY_MENU:
-                switch (display_disassembly_menu()) {
+            case DISASSEMBLE_MENU:
+                switch (display_disassemble_menu()) {
                     case 2: 
                         exit_on_disassemble = true;
                         // Intentionally fall through to case 1 without break;
@@ -225,7 +225,7 @@ int main(int argc, char** argv) {
                     if (exit_on_disassemble == true) {
                         state = EXIT;
                     } else {
-                        state = DISASSEMBLY_MENU;
+                        state = DISASSEMBLE_MENU;
                     }
                 }
                 prevPC = cpu.getPC();
@@ -259,14 +259,14 @@ int main(int argc, char** argv) {
 int display_main_menu() {
     int choice;
     cout << "Select an option:" << endl;
-    cout << "1. Disassembly mode." << endl;
+    cout << "1. Disassemble mode." << endl;
     cout << "2. Execute mode." << endl;
     cout << "3. Exit." << endl;
     cin >> choice;
     return choice;
 }
 
-int display_disassembly_menu() {
+int display_disassemble_menu() {
     int choice;
 
     cout << "1. Disassemble (do not run code)." << endl;
