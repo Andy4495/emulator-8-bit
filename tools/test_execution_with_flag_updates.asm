@@ -264,8 +264,7 @@ rla1:
 	ld a,$5a 
 	rla
 	jp c,rlafail 
-	ld b,$b4
-	cp b 
+	cp $b4
 	jp nz,rlafail
 	rla 
 	jp nc,rlafail
@@ -304,7 +303,7 @@ dece:
 	ld e,$b3
 	dec E
 	ld a,$b2 
-	cp a
+	cp e
 	jp z,rra1
 decefail:
 	ld (ix),'F'	
@@ -316,13 +315,11 @@ rra1:
 	rra
 	push af 
 	jp nc,rrafail 
-	ld b,$00
-	cp b 
+	cp $00
 	jp nz,rrafail 
 	pop af
 	rra 
-	ld b,$80 
-	cp b 
+	cp $80
 	jp z,inch
 rrafail:
 	ld (ix),'F'	
@@ -396,8 +393,7 @@ cpl1:
 	or a		; clear Z and C flags, sets PV
 	cpl
 	push af
-	ld c,$a5 
-	cp c
+	cp $a5
 	jp nz,cplfail
 	pop de 
 	ld a,$16	; N and H set, PV set from "or a" above
@@ -409,43 +405,72 @@ cplfail:
 
 ; 0x30
 incmhl:
-	halt ;;; temporary
 	inc ix
 	ld (ix),'P' ; Test 20
+	ld hl,results-9
+	ld (hl),'1'
 	inc (HL)
+	ld a,'2'
+	cp (hl)
+	jp z,decmhl
 incmhlfail:
 	ld (ix),'F'	
-
 decmhl:
 	inc ix
 	ld (ix),'P' ; Test 21
 	dec (HL)
+	ld a,'1'
+	cp (hl)
+	jp z,scf1
 decmhlfail:
 	ld (ix),'F'	
 
 scf1:
 	inc ix
 	ld (ix),'P' ; Test 22
+	or a ; clear carry flag
+	jp c,scffail
 	scf
+	jp c, addhlsp
 scffail:
 	ld (ix),'F'	
-
 addhlsp:
 	inc ix
 	ld (ix),'P' ; Test 23
+	ld hl,$1234
 	add HL,SP
+	ld de,$1233
+	or a 	; clear carry flag
+	sbc hl,de
+	add hl,de
+	jp z,inca1 
+addhlspfail:
+	ld (ix),'F'	
+
 inca1:
 	inc ix
 	ld (ix),'P' ; Test 24
-	inc A          
+	ld a,$ff
+	inc A
+	jp z,deca1
+incafail:     
+	ld (ix),'F'	
 deca1:
 	inc ix
 	ld (ix),'P' ; Test 25
+	ld a,$01
 	dec A
+	jp z,ccf1
+decafail:
+	ld (ix),'F'	
 ccf1:
 	inc ix
 	ld (ix),'P' ; Test 26
+	scf
 	ccf
+	jp nc,addab
+ccffail:
+	ld (ix),'F'	
 	
 
 ; 0x40	
@@ -457,24 +482,230 @@ ccf1:
 ; 0x70	
 
 ; 0x80 -- all affect flags
-	add A,B
+addab:
+	inc ix
+	ld (ix),'P' ; Test 27
+	ld bc,0 
+	push bc
+	pop af	; clear flags
+	ld b,0
+	add A,B ; Set Z flag
+	jp nz,addabfail
+	ld b,$80
+	add a,b ; set S flag
+	jp p,addabfail 
+	ld a,$0f 
+	ld b,$01
+	add a,b ; set H flag
+	push af 
+	pop bc
+	ld a,$10 ; check for H flag set, N flag reset
+	cp c 
+	jp nz,addabfail 
+	ld a,$70 
+	ld b,$31
+	add a,b  ; test overflow, positive operands
+	jp po,addabfail	; odd parity is same as no-overflow
+	ld a,$f1
+	ld b,$62
+	add a,b ; test overflow, mixed operands -> should not overflow
+	jp pe,addabfail ; even parity represents overflow
+	ld a,$81
+	ld b,$82
+	add a,b ; test overflow, negative operands
+	jp po,addabfail; ; odd parity is same as no-overflow
+	ld b,$03	; check if result is correct
+	cp b
+	jp z,addac
+addabfail:
+	ld (ix),'F'	
+
+addac:
+	inc ix
+	ld (ix),'P' ; Test 28
+	or a 	; clears the carry flag
+	ld a,$99
+	ld c,$20
 	add A,C
+	ld b,$b9
+	cp b 
+	jp z,addad
+addacfail:
+	ld (ix),'F'	
+
+addad:
+	inc ix
+	ld (ix),'P' ; Test 29
+	or a 	; clears the carry flag
+	ld a,$40 
+	ld d,$a5 
 	add A,D
+	ld b,$e5
+	cp b 
+	jp z,addae 
+addadfail:
+	ld (ix),'F'	
+
+addae:
+	inc ix
+	ld (ix),'P' ; Test 30
+	or a 	; clears the carry flag
+	ld a,$01 
+	ld e,$10
 	add A,E
+	cp $11
+	jp z,addah 
+addaefail:
+	ld (ix),'F'	
+
+addah:
+	inc ix
+	ld (ix),'P' ; Test 31
+	or a 	; clears the carry flag
+	ld a,$80
+	ld h,$08
 	add A,H
+	cp $88
+	jp z,addal
+addahfail:
+	ld (ix),'F'	
+
+addal:
+	inc ix
+	ld (ix),'P' ; Test 32
+	or a 	; clears the carry flag
+	ld a,$15
+	ld l,$51
 	add A,L
+	cp $66
+	jp z,addamhl
+addalfail:
+	ld (ix),'F'	
+
+addamhl:
+	inc ix
+	ld (ix),'P' ; Test 33
+	or a 	; clears the carry flag
+	ld HL,results-10
+	ld (hl),'a'
+	ld a,1
 	add A,(HL)
+	cp 'b'
+	jp z,addaa
+addamhlfail:
+	ld (ix),'F'	
+
+addaa:
+	inc ix
+	ld (ix),'P' ; Test 34
+	or a 	; clears the carry flag
+	ld a,$22
 	add A,A
+	cp $44 
+	jp z,adcab
+addaafail:
+	ld (ix),'F'	
+
+adcab:
+	inc ix
+	ld (ix),'P' ; Test 35
+	or a 	; clears the carry flag
+	ld a,$12
+	ld b,$23 
+	scf 
 	adc A,B
+	cp $36
+	jp z,adcac
+adcabfail:
+	ld (ix),'F'	
+
+adcac:
+	inc ix
+	ld (ix),'P' ; Test 36
+	or a 	; clears the carry flag
+	ld a,$12
+	ld c,$33
 	adc A,C
+	cp $45
+	jp z,adcad
+adcacfail:
+	ld (ix),'F'	
+
+adcad:
+	inc ix
+	ld (ix),'P' ; Test 37
+	or a 	; clears the carry flag
+	ld a,$80
+	ld d,$21
 	adc A,D
+	cp $a1
+	jp z,adcae
+adcadfail:
+	ld (ix),'F'	
+
+adcae:
+	inc ix
+	ld (ix),'P' ; Test 38
+	or a 	; clears the carry flag
+	ld a,$44
+	ld e,$aa
 	adc A,E
+	cp $ee
+	jp z,adcah
+adcaefail:
+	ld (ix),'F'	
+
+adcah:
+	inc ix
+	ld (ix),'P' ; Test 39
+	or a 	; clears the carry flag
+	ld a,$01 
+	ld h,$11
 	adc A,H
+	cp $12
+	jp z,adcal
+adcahfail:
+	ld (ix),'F'	
+
+adcal:
+	inc ix
+	ld (ix),'P' ; Test 40
+	or a 	; clears the carry flag
+	ld a,$55
+	ld l,$12
 	adc A,L
+	cp $67
+	jp z,adcamhl
+adcafail:
+	ld (ix),'F'	
+
+adcamhl:
+	inc ix
+	ld (ix),'P' ; Test 41
+	or a 	; clears the carry flag
+	ld hl,results-8
+	ld a,1
 	adc A,(HL)
+	cp 'S'
+	jp z,adcaa
+adcamhltest:
+	ld (ix),'F'	
+
+adcaa:
+	inc ix
+	ld (ix),'P' ; Test 42
+	or a 	; clears the carry flag
+	ld a,$35
 	adc A,A
+	cp $6a
+	jp z,subab
+adcaafail:
+	ld (ix),'F'	
+
 
 ; 0x90 -- all affect flags
+subab:
+	halt ;;; temporary
 	sub A,B
 	sub A,C
 	sub A,D
@@ -1122,7 +1353,7 @@ end_program:
 	halt
 	jp	end_program
 
-	org $0800
+	org $1000
 	defm "Results:"
 
 results:
