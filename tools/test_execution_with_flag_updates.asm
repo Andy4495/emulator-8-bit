@@ -705,61 +705,522 @@ adcaafail:
 
 ; 0x90 -- all affect flags
 subab:
-	halt ;;; temporary
+	inc ix
+	ld (ix),'P' ; Test 43
+	ld a,$22
+	ld b,$10
 	sub A,B
+	cp $12
+	jp z,subac
+subabfail:
+	ld (ix),'F'	
+
+subac:
+	inc ix
+	ld (ix),'P' ; Test 44
+	ld a,$23
+	ld c,$09
 	sub A,C
+	cp $1a
+	jp z,subad
+subacfail:
+	ld (ix),'F'	
+
+subad:
+	inc ix
+	ld (ix),'P' ; Test 45
+	ld a,$f0
+	ld d,$08
 	sub A,D
+	cp $e8
+	jp z,subae
+subadfail:
+	ld (ix),'F'	
+
+subae:
+	inc ix
+	ld (ix),'P' ; Test 46
+	ld a,$ff 
+	ld e,$fe 
 	sub A,E
+	cp $01
+	jp z,subah
+subaefail:
+	ld (ix),'F'	
+
+subah:
+	inc ix
+	ld (ix),'P' ; Test 47
+	ld a,$80 
+	ld h,$01
 	sub A,H
+	cp $7f
+	jp z,subal
+subahfail:
+	ld (ix),'F'	
+
+subal:
+	inc ix
+	ld (ix),'P' ; Test 48
+	ld a,$70
+	ld l,$71
 	sub A,L
+	cp $ff 
+	jp z,subamhl
+subalfail:
+	ld (ix),'F'	
+
+subamhl:
+	inc ix
+	ld (ix),'P' ; Test 49
+	ld hl,results-7 ; This is the ascii letter 'e'
+	ld a,'g'
 	sub A,(HL)
-	sub A,A
+	cp $02
+	jp z,subaa
+subamhlfail:
+	ld (ix),'F'	
+
+subaa:
+	inc ix
+	ld (ix),'P' ; Test 50
+	sub A,A ; should be zero regardless of what's in A 
+	jp z,sbcab
+subaafail:
+	ld (ix),'F'	
+
+sbcab:
+	inc ix
+	ld (ix),'P' ; Test 51
+	scf 
+	ld a,$99
+	ld b,$90
 	sbc A,B
+	cp $08
+	jp z,sbcac
+sbcabfail:
+	ld (ix),'F'	
+
+sbcac:
+	inc ix
+	ld (ix),'P' ; Test 52
+	scf
+	ld a,$05
+	ld c,$04
 	sbc A,C
+	jp z,sbcad
+sbcacfail:
+	ld (ix),'F'	
+
+sbcad:
+	inc ix
+	ld (ix),'P' ; Test 53
+	scf
+	ld a,$10
+	ld d,$05
+	scf
 	sbc A,D
+	cp $0a
+	jp z,sbcae
+sbcadfail:
+	ld (ix),'F'	
+
+sbcae:
+	inc ix
+	ld (ix),'P' ; Test 54
+	scf 
+	ld a,$22
+	ld e,$11
 	sbc A,E
+	cp $10
+	jp z,sbcah
+sbcaefail:
+	ld (ix),'F'	
+
+sbcah:
+	inc ix
+	ld (ix),'P' ; Test 55
+	scf
+	ld a,$90
+	ld h,$08
 	sbc A,H
+	cp $87
+	jp z,sbcal
+sbcahfail:
+	ld (ix),'F'	
+
+sbcal:
+	inc ix
+	ld (ix),'P' ; Test 56
+	scf
+	ld a,$a0
+	ld l,$10
 	sbc A,L
+	cp $8f
+	jp z,sbcamhl 
+sbcalfail:
+	ld (ix),'F'	
+
+sbcamhl:
+	inc ix
+	ld (ix),'P' ; Test 57
+	scf
+	ld hl,results-6 ; contains ascii 's'
+	ld a,'w'
 	sbc A,(HL)
+	cp $03
+	jp z,sbcaa
+sbcamhlfail:
+	ld (ix),'F'	
+
+sbcaa:
+	inc ix
+	ld (ix),'P' ; Test 58
+	scf
 	sbc A,A
+	cp $ff 
+	jp z,andab
+sbcaafail:
+	ld (ix),'F'	
 
 ; 0xa0 -- all affect flags
+andab:
+	inc ix
+	ld (ix),'P' ; Test 59
+	ld a,$03
+	ld b,$02
 	and A,B
+	cp $02
+	jp z,andac
+andabfail:
+	ld (ix),'F'	
+
+andac:
+	inc ix
+	ld (ix),'P' ; Test 60
+	ld a,$f3
+	ld c,$84
 	and A,C
+	cp $80
+	jp z,andad
+andacfail:
+	ld (ix),'F'	
+
+andad:
+	inc ix
+	ld (ix),'P' ; Test 61
+	ld a,$f1
+	ld d,$81
 	and A,D
+	cp $81
+	jp z,andae
+andadfail:
+	ld (ix),'F'	
+
+andae:
+	inc ix
+	ld (ix),'P' ; Test 62
+	ld a,$fe
+	ld e,$31
 	and A,E
+	cp $30 
+	jp z,andah
+andaefail:
+	ld (ix),'F'	
+
+andah:
+	inc ix
+	ld (ix),'P' ; Test 63
+	ld a,$33
+	ld h,$12
 	and A,H
+	cp $12
+	jp z,andal
+andahfail:
+	ld (ix),'F'	
+
+andal:
+	inc ix
+	ld (ix),'P' ; Test 64
+	ld a,$55
+	ld l,$aa
 	and A,L
+	jp z,andamhl
+andalfail:
+	ld (ix),'F'	
+
+andamhl:
+	inc ix
+	ld (ix),'P' ; Test 65
+	ld hl,results-1 ; contains ascii ':' (0x3e)
+	ld a,$f1
 	and A,(HL)
+	cp $30
+	jp z,andaa
+andamhlfail:
+	ld (ix),'F'	
+
+andaa:
+	inc ix
+	ld (ix),'P' ; Test 66
+	ld a,$5a
 	and A,A
+	cp $5a 
+	jp z,xorab
+andaafail:
+	ld (ix),'F'	
+
+xorab:
+	inc ix
+	ld (ix),'P' ; Test 67
+	ld a,$ff
+	ld b,$55
 	xor A,B
+	cp $aa
+	jp z,xorac
+xorabfail:
+	ld (ix),'F'	
+
+xorac:
+	inc ix
+	ld (ix),'P' ; Test 68
+	ld a,$55
+	ld c,$fa
 	xor A,C
+	cp $af
+	jp z,xorad
+xoracfail:
+	ld (ix),'F'	
+
+xorad:
+	inc ix
+	ld (ix),'P' ; Test 69
+	ld a,$80
+	ld d,$08
 	xor A,D
+	cp $88
+	jp z,xorae
+xoradfail:
+	ld (ix),'F'	
+
+xorae:
+	inc ix
+	ld (ix),'P' ; Test 70
+	ld a,$11
+	ld e,$22
 	xor A,E
+	cp $33
+	jp z,xorah
+xoraefail:
+	ld (ix),'F'	
+
+xorah:
+	inc ix
+	ld (ix),'P' ; Test 71
+	ld a,$44
+	ld h,$15
 	xor A,H
+	cp $51
+	jp z,xoral
+xorahfail:
+	ld (ix),'F'	
+
+xoral:
+	inc ix
+	ld (ix),'P' ; Test 72
+	ld a,$88
+	ld l,$11
 	xor A,L
+	cp $99
+	jp z,xoramhl
+xoralfail:
+	ld (ix),'F'	
+
+xoramhl:
+	inc ix
+	ld (ix),'P' ; Test 73
+	ld HL,results-2 ; contains ascii 's' (0x73)
+	ld a,0x91
 	xor A,(HL)
-	xor A,A
+	cp $e2
+	jp z,xoraa
+xoramhlfail:
+	ld (ix),'F'	
+
+xoraa:
+	inc ix
+	ld (ix),'P' ; Test 74
+	xor A,A ; xor with itself always results in zero
+	jp z,orab
+xoraafail:
+	ld (ix),'F'	
 
 ; 0xb0 -- all affect flags
+orab:
+	inc ix
+	ld (ix),'P' ; Test 75
+	ld a,$20
+	ld b,$02
 	or  A,B
+	cp $22
+	jp z,orac
+orabfail:
+	ld (ix),'F'	
+
+orac:
+	inc ix
+	ld (ix),'P' ; Test 76
+	ld a,$31
+	ld c,$42
 	or  A,C
+	cp $73
+	jp z,orad
+oracfail:
+	ld (ix),'F'	
+
+orad:
+	inc ix
+	ld (ix),'P' ; Test 77
+	ld a,$11
+	ld d,$33
 	or  A,D
+	cp $33
+	jp z,orae
+oradfail:
+	ld (ix),'F'	
+
+orae:
+	inc ix
+	ld (ix),'P' ; Test 78
+	ld a,$5a 
+	ld e,$a5 
 	or  A,E
+	cp $ff
+	jp z,orah
+oraefail:
+	ld (ix),'F'	
+
+orah:
+	inc ix
+	ld (ix),'P' ; Test 79
+	ld a,$01
+	ld h,$fe
 	or  A,H
+	cp $ff 
+	jp z,oral
+orahfail:
+	ld (ix),'F'	
+
+oral:
+	inc ix
+	ld (ix),'P' ; Test 80
+	ld a,$01
+	ld l,$10
 	or  A,L
+	cp $11
+	jp z,oramhl
+oralfail:
+	ld (ix),'F'	
+
+oramhl:
+	inc ix
+	ld (ix),'P' ; Test 81
+	ld hl,results-8 ; contains ascii 'R' (0x52)
+	ld a,$a1
 	or  A,(HL)
+	cp $f3
+	jp z,oraa
+oramhlfail:
+	ld (ix),'F'	
+
+oraa:
+	inc ix
+	ld (ix),'P' ; Test 82
+	ld a,$5a
 	or  A,A
+	cp $5a 
+	jp z,cpab
+oraafail:
+	ld (ix),'F'	
+
+cpab:
+	inc ix
+	ld (ix),'P' ; Test 83
+	ld a,$05
+	ld b,$06
 	cp  A,B
+	jp nz,cpac
+cpabfail:
+	ld (ix),'F'	
+
+cpac:
+	inc ix
+	ld (ix),'P' ; Test 84
+	ld a,$10
+	ld c,$10
 	cp  A,C
+	jp z,cpad
+cpacfail:
+	ld (ix),'F'	
+
+cpad:
+	inc ix
+	ld (ix),'P' ; Test 85
+	ld d,$10
 	cp  A,D
+	jp z,cpae
+cpadfail:
+	ld (ix),'F'	
+
+cpae:
+	inc ix
+	ld (ix),'P' ; Test 86
+	ld e,$10
 	cp  A,E
+	jp z,cpah
+cpaefail:
+	ld (ix),'F'	
+
+cpah:
+	inc ix
+	ld (ix),'P' ; Test 87
+	ld h,$10
 	cp  A,H
+	jp z,cpal
+cpahfail:
+	ld (ix),'F'	
+
+cpal:
+	inc ix
+	ld (ix),'P' ; Test 88
+	ld l,$10
 	cp  A,L
+	jp z,cpamhl
+cpalfail:
+	ld (ix),'F'	
+
+cpamhl:
+	inc ix
+	ld (ix),'P' ; Test 89
+	ld HL,results-4 ; contains ascii 'l' (0x6c)
+	ld a,$6c
 	cp  A,(HL)
+	jp z,cpaa
+cpamhlfail:
+	ld (ix),'F'	
+
+cpaa:
+	inc ix
+	ld (ix),'P' ; Test 90
 	cp  A,A
+	jp z,addan
+cpaafail:
+	ld (ix),'F'	
+
 
 ; 0xc0
+addan:
+	halt ;;; temporary
 	add A,$12
 	adc a,$23
 	
