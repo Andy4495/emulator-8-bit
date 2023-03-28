@@ -62,13 +62,16 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
-            temp = testFlag(C_BIT);
             if (*r & 0x80)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
             *r = *r << 1;
-            *r = (*r & 0xFE) | temp;
+            // Carry contains previous bit 7, so rotate that over to bit 0
+            if (testFlag(C_BIT))
+                *r |= 0x01;
+            else
+                *r &= 0xfe;
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);
@@ -164,13 +167,16 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
-            temp = testFlag(C_BIT);
             if (*r & 0x01)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
             *r = *r >> 1;
-            *r = (*r & 0x7f) | (temp << 7);
+            // Carry contains previous bit 0, so rotate that over to bit 7
+            if (testFlag(C_BIT))
+                *r |= 0x80;
+            else
+                *r &= 0x7f;
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);
@@ -180,6 +186,10 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
 
         // RR  r    (0xCB18 - 0xCB1F)
         // RR (HL)  (0xCB1E)
+        // NOTE! The Z80 User Manual lists the incorrect bit pattern for RR m opcode
+        //       in the diagram listing the various operand formats.
+        //       The bit pattern for the RR r* case is listed as 00001rrr,
+        //       but it should be listed as 00011rrr
         case 0x18: case 0x19: case 0x1a: case 0x1b:
         case 0x1c: case 0x1d: case 0x1e: case 0x1f:
             // Opcode 0  0  0  1  1  r  r  r
