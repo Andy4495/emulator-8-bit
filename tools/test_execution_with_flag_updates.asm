@@ -2174,116 +2174,704 @@ bit0afail:
 	ld (ix),'F'	
 
 bit1b:
-	halt ;;; temporary
 	inc ix
 	ld (ix),'P' ; Test 171
+	ld b,$02
 	bit 1,B
+	jp z,bit1bfail
+	ld b,$fd 
+	bit 1,b 
+	jp z,bit1c
 bit1bfail:
 	ld (ix),'F'	
 
 bit1c:
 	inc ix
 	ld (ix),'P' ; Test 172
+	ld c,$02
 	bit 1,C
+	jp z,bit1cfail
+	ld c,$fd
+	bit 1,C
+	jp z,bit1d
 bit1cfail:
 	ld (ix),'F'	
 
 bit1d:
 	inc ix
 	ld (ix),'P' ; Test 173
+	ld d,$02
 	bit 1,D
+	jp z,bit1dfail
+	ld d,$fd
+	bit 1,D
+	jp z,bit1e
 bit1dfail:
 	ld (ix),'F'	
 
 bit1e:
 	inc ix
 	ld (ix),'P' ; Test 174
+	ld e,$02
 	bit 1,E
+	jp z,bit1efail
+	ld e,$fd
+	bit 1,E
+	jp z,bit1h
 bit1efail:
 	ld (ix),'F'	
 
 bit1h:
 	inc ix
 	ld (ix),'P' ; Test 175
+	ld h,$02
 	bit 1,H
+	jp z,bit1hfail
+	ld h,$fd
+	bit 1,H
+	jp z,bit1l
 bit1hfail:
 	ld (ix),'F'	
 
 bit1l:
 	inc ix
 	ld (ix),'P' ; Test 176
+	ld l,$02
 	bit 1,L
+	jp z,bit1lfail
+	ld l,$fd
+	bit 1,L
+	jp z,bit1mhl
 bit1lfail:
 	ld (ix),'F'	
 
 bit1mhl:
 	inc ix
 	ld (ix),'P' ; Test 177
+	ld hl,testing_area
+	ld (hl),$02
 	bit 1,(HL)
+	jp z,bit1mhlfail
+	ld (hl),$fd
+	bit 1,(hl)
+	jp z,bit1a
 bit1mhlfail:
 	ld (ix),'F'	
 
 bit1a:
 	inc ix
 	ld (ix),'P' ; Test 178
+	ld a,$02
 	bit 1,A
+	jp z,bit1afail
+	ld a,$fd
+	bit 1,A
+	jp z,bit2b
 bit1afail:
 	ld (ix),'F'	
 
 ; 0xcb50 -- all affect flags
-	halt ;;; temporary
+bit2b:
+	inc ix
+	ld (ix),'P' ; Test 179
+	ld b,$04
 	bit 2,B
+	jp z,bit2bfail
+	ld b,$fb
+	bit 2,B
+	jp nz,bit2bfail
+	ld b,$ff
+	bit 2,b
+	jp z,bit2bfail
+	ld b,$00
+	bit 2,b
+	jp z,bit2c
+bit2bfail:
+	ld (ix),'F'	
+
+bit2c:
+	inc ix
+	ld (ix),'P' ; Test 180
+	ld c,$04
 	bit 2,C
-	bit 2,D
-	bit 2,E
-	bit 2,H
-	bit 2,L
-	bit 2,(HL)
-	bit 2,A
+	jp z,bit2cfail
+	ld c,$fb
+	bit 2,C
+	jp z,bit2d
+bit2cfail:
+	ld (ix),'F'	
+
+bit2d:
+	inc ix
+	ld (ix),'P' ; Test 181
+	ld d,$04
+	bit 2,d
+	jp z,bit2dfail
+	ld d,$fb
+	bit 2,d
+	jp z,bit2e
+bit2dfail:
+	ld (ix),'F'	
+
+bit2e:
+	inc ix
+	ld (ix),'P' ; Test 182
+	ld e,$04
+	bit 2,e
+	jp z,bit2efail
+	ld e,$fb
+	bit 2,e
+	jp z,bit2h
+bit2efail:
+	ld (ix),'F'	
+
+bit2h:
+	inc ix
+	ld (ix),'P' ; Test 183
+	ld h,$04
+	bit 2,h
+	jp z,bit2hfail
+	ld h,$fb
+	bit 2,h
+	jp z,bit2l
+bit2hfail:
+	ld (ix),'F'	
+
+bit2l:
+	inc ix
+	ld (ix),'P' ; Test 184
+	ld l,$04
+	bit 2,l
+	jp z,bit2lfail
+	ld l,$fb
+	bit 2,l
+	jp z,bit2mhl
+bit2lfail:
+	ld (ix),'F'	
+
+bit2mhl:
+	inc ix
+	ld (ix),'P' ; Test 185
+	ld hl,testing_area
+	ld (hl),$04
+	bit 2,(hl)
+	jp z,bit2mhlfail
+	ld (hl),$fb
+	bit 2,(hl)
+	jp z,bit2a
+bit2mhlfail:
+	ld (ix),'F'	
+
+bit2a:
+	inc ix
+	ld (ix),'P' ; Test 186
+	ld a,$04
+	bit 2,a
+	jp z,bit2afail
+	ld a,$fb
+	bit 2,a
+	jp z,bit3b
+bit2afail:
+	ld (ix),'F'	
+
+bit3b:
+	inc ix
+	ld (ix),'P' ; Test 187
+	ld b,$08
 	bit 3,B
+	jp z,bit3bfail
+	ld b,$f7
+	bit 3,b 
+	jp z,bit3c
+bit3bfail:
+	ld (ix),'F'	
+
+bit3c:
+	inc ix
+	ld (ix),'P' ; Test 188
+	ld c,$08
 	bit 3,C
+	jp z,bit3cfail
+	ld c,$f7
+	bit 3,C
+	jp z,bit3d
+bit3cfail:
+	ld (ix),'F'	
+
+bit3d:
+	inc ix
+	ld (ix),'P' ; Test 189
+	ld d,$08
 	bit 3,D
+	jp z,bit3dfail
+	ld d,$f7
+	bit 3,D
+	jp z,bit3e
+bit3dfail:
+	ld (ix),'F'	
+
+bit3e:
+	inc ix
+	ld (ix),'P' ; Test 190
+	ld e,$08
 	bit 3,E
+	jp z,bit3efail
+	ld e,$f7
+	bit 3,E
+	jp z,bit3h
+bit3efail:
+	ld (ix),'F'	
+
+bit3h:
+	inc ix
+	ld (ix),'P' ; Test 191
+	ld h,$08
 	bit 3,H
+	jp z,bit3hfail
+	ld h,$f7
+	bit 3,H
+	jp z,bit3l
+bit3hfail:
+	ld (ix),'F'	
+
+bit3l:
+	inc ix
+	ld (ix),'P' ; Test 192
+	ld l,$08
 	bit 3,L
+	jp z,bit3lfail
+	ld l,$f7
+	bit 3,L
+	jp z,bit3mhl
+bit3lfail:
+	ld (ix),'F'	
+
+bit3mhl:
+	inc ix
+	ld (ix),'P' ; Test 193
+	ld hl,testing_area
+	ld (hl),$08
 	bit 3,(HL)
+	jp z,bit3mhlfail
+	ld (hl),$f7
+	bit 3,(hl)
+	jp z,bit3a
+bit3mhlfail:
+	ld (ix),'F'	
+
+bit3a:
+	inc ix
+	ld (ix),'P' ; Test 194
+	ld a,$08
 	bit 3,A
+	jp z,bit3afail
+	ld a,$f7
+	bit 3,A
+	jp z,bit4b
+bit3afail:
+	ld (ix),'F'	
 
 ; 0xcb60 -- all affect flags
+bit4b:
+	inc ix
+	ld (ix),'P' ; Test 195
+	ld b,$10
 	bit 4,B
+	jp z,bit4bfail
+	ld b,$ef
+	bit 4,B
+	jp nz,bit4bfail
+	ld b,$ff
+	bit 4,b
+	jp z,bit4bfail
+	ld b,$00
+	bit 4,b
+	jp z,bit4c
+bit4bfail:
+	ld (ix),'F'	
+
+bit4c:
+	inc ix
+	ld (ix),'P' ; Test 196
+	ld c,$10
 	bit 4,C
-	bit 4,D
-	bit 4,E
-	bit 4,H
-	bit 4,L
-	bit 4,(HL)
-	bit 4,A
+	jp z,bit4cfail
+	ld c,$ef
+	bit 4,C
+	jp z,bit4d
+bit4cfail:
+	ld (ix),'F'	
+
+bit4d:
+	inc ix
+	ld (ix),'P' ; Test 197
+	ld d,$10
+	bit 4,d
+	jp z,bit4dfail
+	ld d,$ef
+	bit 4,d
+	jp z,bit4e
+bit4dfail:
+	ld (ix),'F'	
+
+bit4e:
+	inc ix
+	ld (ix),'P' ; Test 198
+	ld e,$10
+	bit 4,e
+	jp z,bit4efail
+	ld e,$3f
+	bit 4,e
+	jp z,bit4h
+bit4efail:
+	ld (ix),'F'	
+
+bit4h:
+	inc ix
+	ld (ix),'P' ; Test 199
+	ld h,$10
+	bit 4,h
+	jp z,bit4hfail
+	ld h,$ef
+	bit 4,h
+	jp z,bit4l
+bit4hfail:
+	ld (ix),'F'	
+
+bit4l:
+	inc ix
+	ld (ix),'P' ; Test 200
+	ld l,$10
+	bit 4,l
+	jp z,bit4lfail
+	ld l,$ef
+	bit 4,l
+	jp z,bit4mhl
+bit4lfail:
+	ld (ix),'F'	
+
+bit4mhl:
+	inc ix
+	ld (ix),'P' ; Test 201
+	ld hl,testing_area
+	ld (hl),$10
+	bit 4,(hl)
+	jp z,bit4mhlfail
+	ld (hl),$ef
+	bit 4,(hl)
+	jp z,bit4a
+bit4mhlfail:
+	ld (ix),'F'	
+
+bit4a:
+	inc ix
+	ld (ix),'P' ; Test 202
+	ld a,$10
+	bit 4,a
+	jp z,bit4afail
+	ld a,$ef
+	bit 4,a
+	jp z,bit5b
+bit4afail:
+	ld (ix),'F'	
+
+bit5b:
+	inc ix
+	ld (ix),'P' ; Test 203
+	ld b,$20
 	bit 5,B
+	jp z,bit5bfail
+	ld b,$df
+	bit 5,b 
+	jp z,bit5c
+bit5bfail:
+	ld (ix),'F'	
+
+bit5c:
+	inc ix
+	ld (ix),'P' ; Test 204
+	ld c,$20
 	bit 5,C
+	jp z,bit5cfail
+	ld c,$df
+	bit 5,C
+	jp z,bit5d
+bit5cfail:
+	ld (ix),'F'	
+
+bit5d:
+	inc ix
+	ld (ix),'P' ; Test 205
+	ld d,$20
 	bit 5,D
+	jp z,bit5dfail
+	ld d,$df
+	bit 5,D
+	jp z,bit5e
+bit5dfail:
+	ld (ix),'F'	
+
+bit5e:
+	inc ix
+	ld (ix),'P' ; Test 206
+	ld e,$20
 	bit 5,E
+	jp z,bit1efail
+	ld e,$df
+	bit 5,E
+	jp z,bit5h
+bit5efail:
+	ld (ix),'F'	
+
+bit5h:
+	inc ix
+	ld (ix),'P' ; Test 207
+	ld h,$20
 	bit 5,H
+	jp z,bit5hfail
+	ld h,$df
+	bit 5,H
+	jp z,bit5l
+bit5hfail:
+	ld (ix),'F'	
+
+bit5l:
+	inc ix
+	ld (ix),'P' ; Test 208
+	ld l,$20
 	bit 5,L
+	jp z,bit5lfail
+	ld l,$df
+	bit 5,L
+	jp z,bit5mhl
+bit5lfail:
+	ld (ix),'F'	
+
+bit5mhl:
+	inc ix
+	ld (ix),'P' ; Test 209
+	ld hl,testing_area
+	ld (hl),$20
 	bit 5,(HL)
+	jp z,bit5mhlfail
+	ld (hl),$df
+	bit 5,(hl)
+	jp z,bit5a
+bit5mhlfail:
+	ld (ix),'F'	
+
+bit5a:
+	inc ix
+	ld (ix),'P' ; Test 210
+	ld a,$20
 	bit 5,A
+	jp z,bit5afail
+	ld a,$df
+	bit 5,A
+	jp z,bit6b
+bit5afail:
+	ld (ix),'F'	
 
 ; 0xcb70 -- all affect flags
+bit6b:
+	inc ix
+	ld (ix),'P' ; Test 211
+	ld b,$40
 	bit 6,B
+	jp z,bit6bfail
+	ld b,$bf
+	bit 6,B
+	jp nz,bit6bfail
+	ld b,$ff
+	bit 6,b
+	jp z,bit6bfail
+	ld b,$00
+	bit 6,b
+	jp z,bit6c
+bit6bfail:
+	ld (ix),'F'	
+
+bit6c:
+	inc ix
+	ld (ix),'P' ; Test 212
+	ld c,$40
 	bit 6,C
-	bit 6,D
-	bit 6,E
-	bit 6,H
-	bit 6,L
-	bit 6,(HL)
-	bit 6,A
+	jp z,bit6cfail
+	ld c,$bf
+	bit 6,C
+	jp z,bit6d
+bit6cfail:
+	ld (ix),'F'	
+
+bit6d:
+	inc ix
+	ld (ix),'P' ; Test 213
+	ld d,$40
+	bit 6,d
+	jp z,bit6dfail
+	ld d,$bf
+	bit 6,d
+	jp z,bit6e
+bit6dfail:
+	ld (ix),'F'	
+
+bit6e:
+	inc ix
+	ld (ix),'P' ; Test 214
+	ld e,$40
+	bit 6,e
+	jp z,bit6efail
+	ld e,$bf
+	bit 6,e
+	jp z,bit6h
+bit6efail:
+	ld (ix),'F'	
+
+bit6h:
+	inc ix
+	ld (ix),'P' ; Test 215
+	ld h,$40
+	bit 6,h
+	jp z,bit6hfail
+	ld h,$bf
+	bit 6,h
+	jp z,bit6l
+bit6hfail:
+	ld (ix),'F'	
+
+bit6l:
+	inc ix
+	ld (ix),'P' ; Test 216
+	ld l,$40
+	bit 6,l
+	jp z,bit6lfail
+	ld l,$bf
+	bit 6,l
+	jp z,bit6mhl
+bit6lfail:
+	ld (ix),'F'	
+
+bit6mhl:
+	inc ix
+	ld (ix),'P' ; Test 217
+	ld hl,testing_area
+	ld (hl),$40
+	bit 6,(hl)
+	jp z,bit6mhlfail
+	ld (hl),$bf
+	bit 6,(hl)
+	jp z,bit6a
+bit6mhlfail:
+	ld (ix),'F'	
+
+bit6a:
+	inc ix
+	ld (ix),'P' ; Test 218
+	ld a,$40
+	bit 6,a
+	jp z,bit6afail
+	ld a,$bf
+	bit 6,a
+	jp z,bit7b
+bit6afail:
+	ld (ix),'F'	
+
+bit7b:
+	inc ix
+	ld (ix),'P' ; Test 219
+	ld b,$80
 	bit 7,B
+	jp z,bit7bfail
+	ld b,$7f
+	bit 7,b 
+	jp z,bit7c
+bit7bfail:
+	ld (ix),'F'	
+
+bit7c:
+	inc ix
+	ld (ix),'P' ; Test 220
+	ld c,$80
 	bit 7,C
+	jp z,bit7cfail
+	ld c,$7f
+	bit 7,C
+	jp z,bit7d
+bit7cfail:
+	ld (ix),'F'	
+
+bit7d:
+	inc ix
+	ld (ix),'P' ; Test 221
+	ld d,$80
 	bit 7,D
+	jp z,bit7dfail
+	ld d,$7f
+	bit 7,D
+	jp z,bit7e
+bit7dfail:
+	ld (ix),'F'	
+
+bit7e:
+	inc ix
+	ld (ix),'P' ; Test 222
+	ld e,$80
 	bit 7,E
+	jp z,bit7efail
+	ld e,$7f
+	bit 7,E
+	jp z,bit7h
+bit7efail:
+	ld (ix),'F'	
+
+bit7h:
+	inc ix
+	ld (ix),'P' ; Test 223
+	ld h,$80
 	bit 7,H
+	jp z,bit7hfail
+	ld h,$7f
+	bit 7,H
+	jp z,bit7l
+bit7hfail:
+	ld (ix),'F'	
+
+bit7l:
+	inc ix
+	ld (ix),'P' ; Test 224
+	ld l,$80
 	bit 7,L
+	jp z,bit7lfail
+	ld l,$7f
+	bit 7,L
+	jp z,bit7mhl
+bit7lfail:
+	ld (ix),'F'	
+
+bit7mhl:
+	inc ix
+	ld (ix),'P' ; Test 225
+	ld hl,testing_area
+	ld (hl),$80
 	bit 7,(HL)
+	jp z,bit7mhlfail
+	ld (hl),$7f
+	bit 7,(hl)
+	jp z,bit7a
+bit7mhlfail:
+	ld (ix),'F'	
+
+bit7a:
+	inc ix
+	ld (ix),'P' ; Test 226
+	ld a,$80
 	bit 7,A
+	jp z,bit7afail
+	ld a,$7f
+	bit 7,A
+	jp z,inbmc
+bit7afail:
+	ld (ix),'F'	
 
 ; 0xcb80	
 
@@ -2304,6 +2892,8 @@ bit1afail:
 ; Miscellaneous opcodes - 0xed prefix
 ; 0xed00 - 0xed3f are undefined opcodes (executed as NOPs)
 ; 0xed40
+inbmc:
+	halt ;;; temporary
 	in  B,(C)
 	sbc HL,BC
 	neg
