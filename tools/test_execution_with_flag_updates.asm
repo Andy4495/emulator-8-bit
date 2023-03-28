@@ -1220,117 +1220,1018 @@ cpaafail:
 
 ; 0xc0
 addan:
-	halt ;;; temporary
+	inc ix
+	ld (ix),'P' ; Test 91
+	ld a,$55
 	add A,$12
+	cp $67
+	jp z,adcan
+addanfail:
+	ld (ix),'F'	
+
+adcan:
+	inc ix
+	ld (ix),'P' ; Test 92
+	scf 
+	ld a,$95
 	adc a,$23
-	
+	cp $b9
+	jp z,suban
+adcanfail:
+	ld (ix),'F'	
 
 ; 0xd0
+suban:
+	inc ix
+	ld (ix),'P' ; Test 93
+	scf
+	ld a,$99
 	sub A,$34
+	cp $65
+	jp z,sbcan
+subanfail:
+	ld (ix),'F'	
+
+sbcan:
+	inc ix
+	ld (ix),'P' ; Test 94
+	or a ; clear carry flag
+	ld a,$f9
 	sbc A,$45
-	
+	cp $b4
+	jp z,andan
+sbcanfail:
+	ld (ix),'F'	
 
 ; 0xe0
+andan:
+	inc ix
+	ld (ix),'P' ; Test 95
+	ld a,$f0
 	and A,$56
+	cp $50
+	jp z,xoran
+andanfail:
+	ld (ix),'F'	
+
+xoran:
+	inc ix
+	ld (ix),'P' ; Test 96
+	ld a,$91
 	xor A,$67
+	cp $f6
+	jp z,oran
+xoranfail:
+	ld (ix),'F'	
 
 ; 0xf0
+oran:
+	inc ix
+	ld (ix),'P' ; Test 97
+	ld a,$17
 	or  A,$78
+	cp $7f 
+	jp z,cpan
+oranfail:
+	ld (ix),'F'	
+
+cpan:
+	inc ix
+	ld (ix),'P' ; Test 98
+	ld a,$99
 	cp  A,$89
-	
+	jp z,cpanfail
+	cp a,$99
+	jp z,rlcb
+cpanfail:
+	ld (ix),'F'
 
 ; Bit Instructions - 0xcb prefix
 ; 0xcb00 -- all affect flags
-	rlc B           
-	rlc C        
-	rlc D   
+rlcb:
+	inc ix
+	ld (ix),'P' ; Test 99
+	ld b,$01
+	rlc B   
+	ld a,$02
+	cp b
+	jp z,rlcc
+rlcbfail:
+	ld (ix),'F'	
+
+rlcc:
+	inc ix
+	ld (ix),'P' ; Test 100
+	ld c,$80
+	rlc C
+	ld a,$01
+	cp c
+	jp z,rlcd
+rlccfail:
+	ld (ix),'F'	
+
+rlcd:
+	inc ix
+	ld (ix),'P' ; Test 101
+	scf
+	ld d,$78
+	rlc D
+	ld a,$f0
+	cp d
+	jp z,rlce
+rlcdfail:
+	ld (ix),'F'	
+
+rlce:
+	inc ix
+	ld (ix),'P' ; Test 102
+	ld e,$fe
 	rlc E  
-	rlc H   
-	rlc L          
+	ld a,$fd
+	cp e
+	jp z,rlch
+rlcefail:
+	ld (ix),'F'	
+
+rlch:
+	inc ix
+	ld (ix),'P' ; Test 103
+	ld h,$55
+	rlc H  
+	ld a,$aa
+	cp h
+	jp z,rlcl
+rlchfail:
+	ld (ix),'F'	
+
+rlcl:
+	inc ix
+	ld (ix),'P' ; Test 104
+	ld l,$aa
+	rlc L 
+	ld a,$55
+	cp l
+	jp z,rlcmhl     
+rlclfail:
+	ld (ix),'F'	
+
+rlcmhl:
+	inc ix
+	ld (ix),'P' ; Test 105
+	ld hl,results-1 ; contains $3a
 	rlc (HL)
+	ld a,$74
+	cp (hl)
+	jp nz,rlcmhlfail
+	ld (hl),':'  ; change it back to a colon
+	jr rlcav
+rlcmhlfail:
+	ld (ix),'F'	
+
+rlcav:
+	inc ix
+	ld (ix),'P' ; Test 106
+	ld a,$71
 	rlc A
-	rrc B
+	jr c,rlcavfail
+	cp $e2
+	jp nz,rlcavfail
+	rlc a 
+	jr nc,rlcavfail 
+	jp p,rlcavfail
+	jr z,rlcavfail
+	jp po,rlcavfail
+	cp $c5
+	jr nz,rlcavfail
+	ld a,$00
+	rlc a
+	jr nz,rlcavfail
+	ld a,$88
+	rlc a
+	push af
+	pop de
+	ld a,$05
+	cp e
+	jr z,rrcb
+rlcavfail:
+	ld (ix),'F'	
+
+rrcb:
+	inc ix
+	ld (ix),'P' ; Test 107
+	ld b,$99
+	rrc b
+	jp nc,rrcbfail
+	jp z,rrcbfail
+	jp p,rrcbfail
+	jp po,rrcbfail
+	ld a,$cc
+	cp b
+	jp nz,rrcbfail
+	ld b,$00
+	rrc b 
+	jp c,rrcbfail
+	jp nz,rrcbfail
+	jp m,rrcbfail
+	ld b,$01
+	rrc b 
+	jp po,rrcc
+rrcbfail:
+	ld (ix),'F'	
+
+rrcc:
+	inc ix
+	ld (ix),'P' ; Test 108
+	ld c,$10
 	rrc C
+	ld a,$08
+	cp c 
+	jp z,rrcd
+rrccfail:
+	ld (ix),'F'	
+
+rrcd:
+	inc ix
+	ld (ix),'P' ; Test 109
+	ld d,$f0
 	rrc D
+	ld a,$78
+	cp d 
+	jp z,rrce
+rrcdfail:
+	ld (ix),'F'	
+
+rrce:
+	inc ix
+	ld (ix),'P' ; Test 110
+	ld e,$55
 	rrc E
+	ld a,$aa
+	cp e 
+	jp z,rrch
+rrcefail:
+	ld (ix),'F'	
+
+rrch:
+	inc ix
+	ld (ix),'P' ; Test 111
+	ld h,$aa
 	rrc H
+	ld a,$55
+	cp h 
+	jp z,rrcl
+rrchfail:
+	ld (ix),'F'	
+
+rrcl:
+	inc ix
+	ld (ix),'P' ; Test 112
+	ld l,$12
 	rrc L
+	ld a,$09
+	cp l
+	jp z,rrcmhl
+rrclfail:
+	ld (ix),'F'	
+
+rrcmhl:
+	inc ix
+	ld (ix),'P' ; Test 113
+	ld hl,results-1 ; contains ':' (0x3a)
 	rrc (HL)
+	ld a,$1d
+	cp (hl)
+	jp nz,rrcmhlfail
+	ld (hl),':' ; change it back to ':'
+	jr rrcav
+rrcmhlfail:
+	ld (ix),'F'	
+
+rrcav:
+	inc ix
+	ld (ix),'P' ; Test 114
+	ld a,$7f
 	rrc A
+	cp $bf
+	jp z,rlb1
+rrcavfail:
+	ld (ix),'F'	
 
 ; 0xcb10  -- all affect flags
+rlb1:
+	inc ix
+	ld (ix),'P' ; Test 115
+	ld b,$81
 	rl  B
+	jp nc,rlb1fail
+	ld a,$02
+	cp b
+	jp nz,rlb1fail
+	ld b,$81
+	rl b 
+	rl b
+	jp c,rlb1fail
+	ld a,$05
+	cp b
+	jp z,rlc1
+rlb1fail:
+	ld (ix),'F'	
+
+rlc1:
+	inc ix
+	ld (ix),'P' ; Test 116
+	ld c,$aa
 	rl  C
+	ld a,$54
+	cp c 
+	jp z,rld1
+rlc1fail:
+	ld (ix),'F'	
+
+rld1:
+	inc ix
+	ld (ix),'P' ; Test 117
+	ld d,$ff
 	rl  D
+	ld a,$fe 
+	cp d 
+	jp z,rle1
+rld1fail: 
+	ld (ix),'F'	
+
+rle1:
+	inc ix
+	ld (ix),'P' ; Test 118
+	scf 
+	ld e,$11
 	rl  E
+	ld a,$23
+	cp e 
+	jp z,rlh1 
+rle1fail:
+	ld (ix),'F'	
+
+rlh1:
+	inc ix
+	ld (ix),'P' ; Test 119
+	scf 
+	ld h,$00 
 	rl  H
+	ld a,$01
+	cp h 
+	jp z,rll1
+rlh1fail:
+	ld (ix),'F'	
+
+rll1:
+	inc ix
+	ld (ix),'P' ; Test 120
+	ld l,$00
 	rl  L
+	jp z,rlmhl1
+rll1fail:
+	ld (ix),'F'	
+
+rlmhl1:
+	inc ix
+	ld (ix),'P' ; Test 121
+	ld hl,results-1 ; contains ':' (0x3a)
 	rl  (HL)
+	ld a,$74
+	cp (hl)
+	jp nz,rlmhl1fail
+	ld (hl),':' ; restore value
+	jr rla1v
+rlmhl1fail:
+	ld (ix),'F'	
+
+rla1v:
+	inc ix
+	ld (ix),'P' ; Test 122
+	ld a,$80
 	rl  A
+	jp nc,rla1vfail 
+	jp z,rrb1
+rla1vfail:
+	ld (ix),'F'	
+
+rrb1:
+	inc ix
+	ld (ix),'P' ; Test 123
+	or a  ; clear the carry flag
+	ld b,$01
 	rr  B
+	jp nz,rrb1fail
+	jp nc,rrb1fail
+	jp rrc1
+rrb1fail:
+	ld (ix),'F'	
+
+rrc1:
+	inc ix
+	ld (ix),'P' ; Test 124
+	or a 	; clear the carry flag
+	ld c,$aa
 	rr  C
+	ld a,$55
+	cp c 
+	jp z,rrd1
+rrc1fail:
+	ld (ix),'F'	
+
+rrd1:
+	inc ix
+	ld (ix),'P' ; Test 125
+	scf 
+	ld d,$00
 	rr  D
+	ld a,$80
+	cp d 
+	jp z,rre1 
+rrd1fail:
+	ld (ix),'F'	
+
+rre1:
+	inc ix
+	ld (ix),'P' ; Test 126
+	ld e,$ff 
 	rr  E
+	ld a,$7f 
+	cp e 
+	jp z,rrh1 
+rre1fail:
+	ld (ix),'F'	
+
+rrh1:
+	inc ix
+	ld (ix),'P' ; Test 127
+	ld h,$02
 	rr  H
+	ld a,$01
+	cp h
+	jp z,rrl1
+rrh1fail:
+	ld (ix),'F'	
+
+rrl1:
+	inc ix
+	ld (ix),'P' ; Test 128
+	ld l,$81
 	rr  L
+	jp nc,rrl1fail
+	ld a,$40
+	cp l 
+	jp z,rrmhl1
+rrl1fail:
+	ld (ix),'F'	
+
+rrmhl1:
+	inc ix
+	ld (ix),'P' ; Test 129
+	ld hl,results-1 ; contains ':' (0x3a)
 	rr  (HL)
+	ld a,$1d
+	cp (hl)
+	jp nz,rrmhl1fail
+	ld (hl),':' ; restore previous value
+	jr rra1v
+rrmhl1fail:
+	ld (ix),'F'	
+
+rra1v:
+	inc ix
+	ld (ix),'P' ; Test 130
+	ld a,$42
 	rr  A
+	cp $21
+	jp z,slab
+rra1vfail:
+	ld (ix),'F'	
 
 ; 0xcb20 -- all affect flags
+slab:
+	inc ix
+	ld (ix),'P' ; Test 131
+	ld b,$80
 	sla B
+	jp nz,slabfail
+	jp nc,slabfail
+	ld a,$00
+	cp B
+	jp z,slac
+slabfail:
+	ld (ix),'F'	
+
+slac:
+	inc ix
+	ld (ix),'P' ; Test 132
+	ld c,$ff
 	sla C
+	ld a,$fe
+	cp C
+	jp z,slad
+slacfail:
+	ld (ix),'F'	
+
+slad:
+	inc ix
+	ld (ix),'P' ; Test 133
+	scf
+	ld d,$00
 	sla D
+	jp z,slae
+sladfail:
+	ld (ix),'F'	
+
+slae:
+	inc ix
+	ld (ix),'P' ; Test 134
+	ld e,$55
 	sla E
+	ld a,$aa
+	cp E
+	jp z,slah
+slaefail:
+	ld (ix),'F'	
+
+slah:
+	inc ix
+	ld (ix),'P' ; Test 135
+	ld h,$aa 
 	sla H
+	ld a,$54
+	cp h 
+	jp z,slal
+slahfail:
+	ld (ix),'F'	
+
+slal:
+	inc ix
+	ld (ix),'P' ; Test 136
+	ld l,$02
 	sla L
+	ld a,$04
+	cp l 
+	jp z,slamhl
+slalfail:
+	ld (ix),'F'	
+
+slamhl:
+	inc ix
+	ld (ix),'P' ; Test 137
+	ld hl,results-2 ; contains 's' (0x73)
 	sla (HL)
+	ld a,$e6
+	cp (hl)
+	jp nz,slamhlfail
+	ld (hl),'s' 	; restore previous value 
+	jr slaa 
+slamhlfail:
+	ld (ix),'F'	
+
+slaa:
+	inc ix
+	ld (ix),'P' ; Test 138
+	ld a,$77
 	sla A
+	cp $ee
+	jp z,srab
+slaafail:
+	ld (ix),'F'	
+
+srab:
+	inc ix
+	ld (ix),'P' ; Test 139
+	ld b,$ff
 	sra B
+	jp nc,srabfail
+	jp z,srabfail
+	jp po,srabfail
+	ld a,$ff
+	cp b 
+	jp z,srac
+srabfail:
+	ld (ix),'F'	
+
+srac:
+	inc ix
+	ld (ix),'P' ; Test 140
+	ld c,$7f
 	sra C
+	ld a,$3f
+	cp C
+	jp z,srad
+sracfail:
+	ld (ix),'F'	
+
+srad:
+	inc ix
+	ld (ix),'P' ; Test 141
+	ld d,$40
 	sra D
+	ld a,$20
+	cp d 
+	jp z,srae 
+sradfail:
+	ld (ix),'F'	
+
+srae:
+	inc ix
+	ld (ix),'P' ; Test 142
+	ld e,$20
 	sra E
+	ld a,$10
+	cp E
+	jp z,srah
+sraefail:
+	ld (ix),'F'	
+
+srah:
+	inc ix
+	ld (ix),'P' ; Test 143
+	ld h,$10
 	sra H
+	ld a,$08
+	cp H
+	jp z,sral
+srahfail:
+	ld (ix),'F'	
+
+sral:
+	inc ix
+	ld (ix),'P' ; Test 144
+	ld l,$08
 	sra L
+	ld a,$04
+	cp L
+	jp z,sramhl
+sralfail:
+	ld (ix),'F'	
+
+sramhl:
+	inc ix
+	ld (ix),'P' ; Test 145
+	ld hl,results-3	; contains 't' (0x74)
 	sra (HL)
+	ld a,$3a
+	cp (hl)
+	jp nz,sramhlfail
+	ld (hl),'t'		; restore previous
+	jr sraa
+sramhlfail:
+	ld (ix),'F'	
+
+sraa:
+	inc ix
+	ld (ix),'P' ; Test 146
+	ld a,$04
 	sra A
+	cp $02
+	jp z,sllb
+sraafail:
+	ld (ix),'F'	
 
 ; 0xcb30 -- all affect flags
+sllb:
+	inc ix
+	ld (ix),'P' ; Test 147
+	ld b,$80
 	sll B
+	jp z,sllbfail
+	jp nc,sllbfail
+	jr sllc
+sllbfail:
+	ld (ix),'F'	
+
+sllc:
+	inc ix
+	ld (ix),'P' ; Test 148
+	ld c,$ff
 	sll C
+	ld a,$ff
+	cp C
+	jp z,slld
+sllcfail:
+	ld (ix),'F'	
+
+slld:
+	inc ix
+	ld (ix),'P' ; Test 149
+	ld d,$55
 	sll D
+	ld a,$ab 
+	cp D
+	jp z,slle
+slldfail:
+	ld (ix),'F'	
+
+slle:
+	inc ix
+	ld (ix),'P' ; Test 150
+	ld e,$01
 	sll E
+	ld a,$03
+	cp e 
+	jp z,sllh 
+sllefail:
+	ld (ix),'F'	
+
+sllh:
+	inc ix
+	ld (ix),'P' ; Test 151
+	ld h,$02
 	sll H
+	ld a,$05
+	cp h
+	jp z,slll
+sllhfail:
+	ld (ix),'F'	
+
+slll:
+	inc ix
+	ld (ix),'P' ; Test 152
+	ld l,$07
 	sll L
+	ld a,$0f 
+	cp l 
+	jp sllmhl
+slllfail:
+	ld (ix),'F'	
+
+sllmhl:
+	inc ix
+	ld (ix),'P' ; Test 153
+	ld hl,results-1	; contains ':' (0x3a)
 	sll (HL)
+	ld a,$75
+	cp (hl)
+	jp nz,sllmhlfail
+	ld (hl),':'		; restore previous value
+	jr slla
+sllmhlfail:
+	ld (ix),'F'	
+
+slla:
+	inc ix
+	ld (ix),'P' ; Test 154
+	ld a,$10
 	sll A
+	cp $21
+	jp z,srlb
+sllafail:
+	ld (ix),'F'	
+
+srlb:
+	inc ix
+	ld (ix),'P' ; Test 155
+	ld b,$01
 	srl B
+	jp nz,srlbfail
+	jp nc,srlbfail
+	jr srlc
+srlbfail:
+	ld (ix),'F'	
+
+srlc:
+	inc ix
+	ld (ix),'P' ; Test 156
+	ld c,$ff
 	srl C
+	ld a,$7f
+	cp c 
+	jp z,srld
+srlcfail:
+	ld (ix),'F'	
+
+srld:
+	inc ix
+	ld (ix),'P' ; Test 157
+	ld d,$02
 	srl D
+	jp c,srldfail
+	ld a,$01
+	cp D
+	jp z,srle
+srldfail:
+	ld (ix),'F'	
+
+srle:
+	inc ix
+	ld (ix),'P' ; Test 158
+	ld e,$aa
 	srl E
+	ld a,$55
+	cp E
+	jp z,srlh
+srlefail:
+	ld (ix),'F'	
+
+srlh:
+	inc ix
+	ld (ix),'P' ; Test 159
+	ld h,$10
 	srl H
+	ld a,$08
+	cp H
+	jp z,srll
+srlhfail:
+	ld (ix),'F'	
+
+srll:
+	inc ix
+	ld (ix),'P' ; Test 160
+	ld l,$01
 	srl L
+	jp z,srlmhl
+srllfail:
+	ld (ix),'F'	
+
+srlmhl:
+	inc ix
+	ld (ix),'P' ; Test 161
+	ld hl,results-1	; contains ':' (0x3a)
 	srl (HL)
+	ld a,$1d
+	cp (hl)
+	jp nz,srlmhlfail
+	ld (hl),':' 	; restore previous value
+	jr srla
+srlmhlfail:
+	ld (ix),'F'	
+
+srla:
+	inc ix
+	ld (ix),'P' ; Test 162
+	ld a,$7f
 	srl A
+	cp $3f 
+	jp z,bit0b
+srlafail:
+	ld (ix),'F'	
 
 ; 0xcb40 -- all affect flags
+bit0b:
+	inc ix
+	ld (ix),'P' ; Test 163
+	ld b,$01
 	bit 0,B
+	jp z,bit0bfail
+	ld b,$fe
+	bit 0,B
+	jp nz,bit0bfail
+	ld b,$ff
+	bit 0,b
+	jp z,bit0bfail
+	ld b,$00
+	bit 0,b
+	jp z,bit0c
+bit0bfail:
+	ld (ix),'F'	
+
+bit0c:
+	inc ix
+	ld (ix),'P' ; Test 164
+	ld c,$01
 	bit 0,C
-	bit 0,D
-	bit 0,E
-	bit 0,H
-	bit 0,L
-	bit 0,(HL)
-	bit 0,A
+	jp z,bit0cfail
+	ld c,$fe
+	bit 0,C
+	jp z,bit0d
+bit0cfail:
+	ld (ix),'F'	
+
+bit0d:
+	inc ix
+	ld (ix),'P' ; Test 165
+	ld d,$01
+	bit 0,d
+	jp z,bit0dfail
+	ld d,$fe
+	bit 0,d
+	jp z,bit0e
+bit0dfail:
+	ld (ix),'F'	
+
+bit0e:
+	inc ix
+	ld (ix),'P' ; Test 166
+	ld e,$01
+	bit 0,e
+	jp z,bit0efail
+	ld e,$fe
+	bit 0,e
+	jp z,bit0h
+bit0efail:
+	ld (ix),'F'	
+
+bit0h:
+	inc ix
+	ld (ix),'P' ; Test 167
+	ld h,$01
+	bit 0,h
+	jp z,bit0hfail
+	ld h,$fe
+	bit 0,h
+	jp z,bit0l
+bit0hfail:
+	ld (ix),'F'	
+
+bit0l:
+	inc ix
+	ld (ix),'P' ; Test 168
+	ld l,$01
+	bit 0,l
+	jp z,bit0lfail
+	ld l,$fe
+	bit 0,l
+	jp z,bit0mhl
+bit0lfail:
+	ld (ix),'F'	
+
+bit0mhl:
+	inc ix
+	ld (ix),'P' ; Test 169
+	ld hl,testing_area
+	ld (hl),$01
+	bit 0,(hl)
+	jp z,bit0mhlfail
+	ld (hl),$fe
+	bit 0,(hl)
+	jp z,bit0a
+bit0mhlfail:
+	ld (ix),'F'	
+
+bit0a:
+	inc ix
+	ld (ix),'P' ; Test 170
+	ld a,$01
+	bit 0,a
+	jp z,bit0afail
+	ld a,$fe
+	bit 0,a
+	jp z,bit1b
+bit0afail:
+	ld (ix),'F'	
+
+bit1b:
+	halt ;;; temporary
+	inc ix
+	ld (ix),'P' ; Test 171
 	bit 1,B
+bit1bfail:
+	ld (ix),'F'	
+
+bit1c:
+	inc ix
+	ld (ix),'P' ; Test 172
 	bit 1,C
+bit1cfail:
+	ld (ix),'F'	
+
+bit1d:
+	inc ix
+	ld (ix),'P' ; Test 173
 	bit 1,D
+bit1dfail:
+	ld (ix),'F'	
+
+bit1e:
+	inc ix
+	ld (ix),'P' ; Test 174
 	bit 1,E
+bit1efail:
+	ld (ix),'F'	
+
+bit1h:
+	inc ix
+	ld (ix),'P' ; Test 175
 	bit 1,H
+bit1hfail:
+	ld (ix),'F'	
+
+bit1l:
+	inc ix
+	ld (ix),'P' ; Test 176
 	bit 1,L
+bit1lfail:
+	ld (ix),'F'	
+
+bit1mhl:
+	inc ix
+	ld (ix),'P' ; Test 177
 	bit 1,(HL)
+bit1mhlfail:
+	ld (ix),'F'	
+
+bit1a:
+	inc ix
+	ld (ix),'P' ; Test 178
 	bit 1,A
+bit1afail:
+	ld (ix),'F'	
 
 ; 0xcb50 -- all affect flags
+	halt ;;; temporary
 	bit 2,B
 	bit 2,C
 	bit 2,D
@@ -1814,9 +2715,14 @@ end_program:
 	halt
 	jp	end_program
 
-	org $1000
+	org $2000
 	defm "Results:"
 
 results:
 	defs $ff,'.'		; Results area. 'P' ($50): Pass. 'F' ($46): FAIL. '.' - no result recorded
+	defs $ff,'.'
+
+testing_area:
+	defb $aa
+	defb $55
 
