@@ -473,7 +473,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b011:
                     r = &E;
-                    break;
+                   break;
                 case 0b100:
                     r = &H;
                     break;
@@ -485,7 +485,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
                 case 0b111:
                     r = &A;
-                    break;
+                   break;
                 default:
                     r = nullptr;
                     cout << "Invalid opcode: 0xcb" << hex
@@ -494,7 +494,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
             }
             // Decode the bit position, b
             if (r != nullptr) {
-                if ((*r) >> (IR[1] >> ((IR[1] & 0x38) >> 3)) == 0)
+                if ( (((*r) >> ((IR[1] & 0x38) >> 3)) & 0x01) == 0)
                     setFlag(Z_BIT);
                 else
                     clearFlag(Z_BIT);
