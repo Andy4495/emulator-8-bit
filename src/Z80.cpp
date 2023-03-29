@@ -33,8 +33,10 @@ Z80::Z80(uint16_t ramstart, uint16_t ramend,
     _romstart = romstart;
     _romend   = romend;
     // Load the input port with some dummy data to make it easier to test
-        in[0x96] = 'i';
-        in[0x97] = 'h';
+        in[0x96] = 'i';  // 0x69 - even parity
+        in[0x97] = 'h';  // 0x68 - odd parity
+        in[0x98] = 0x80;
+        in[0x99] = 0x00;
 }
 
 void Z80::load_memory(const char* fname) {
@@ -296,6 +298,17 @@ void Z80::update_C(INST_TYPE t, const uint16_t val1, const uint16_t val2) {
 }
 
 void Z80::update_V(INST_TYPE t, const uint8_t val1, const uint8_t val2) {
+    // Overflow algorithm:
+    // Addition: addend + addend = sum
+    //   - If the addends have different signs, then there is no overflow
+    //   - If the addends have the same signes, then:
+    //     - If sum is different sign than the addends, then overflow
+    //     - If sum is same sign as addends, then no overflow
+    // Subtraction: minuend - subtrahend = difference
+    //   - If the minuend and subtrahend are the same sign, then there is no overlow
+    //   - If the minuend and subtrahend have different signs, then:
+    //     - If difference is the same sign as the subtrahend, then overflow
+    //     - If difference is different sign than subtrahend, then no overflow
     switch (t) {
         case ADD:
             // operands with different signs --> no overflow
@@ -341,10 +354,10 @@ void Z80::update_V(INST_TYPE t, const uint8_t val1, const uint8_t val2) {
             // operands are same signs, no overflow
             if ((val1 & 0x80) == (val2 & 0x80)) {
                 clearFlag(PV_BIT);
-            // with different signs, need to check result
+            // different signs, compare subtrahend and difference signs
+            // same sign -> overflow
             } else {
-                if (((uint32_t) val1 - (uint32_t) val2 > (uint32_t) 127) ||
-                    ((uint32_t) val1 - (uint32_t) val2 < (uint32_t) -128))
+                if ( ((val1 - val2) & 0x80) == (val2 & 0x80) )
                     setFlag(PV_BIT);
                 else
                     clearFlag(PV_BIT);
@@ -354,14 +367,10 @@ void Z80::update_V(INST_TYPE t, const uint8_t val1, const uint8_t val2) {
             // operands are same signs, no overflow
             if ((val1 & 0x80) == (val2 & 0x80)) {
                 clearFlag(PV_BIT);
-            // with different signs, need to check result
+            // different signs, compare subtrahend and difference signs
+            // same sign -> overflow
             } else {
-                if (((uint32_t) val1 - (uint32_t) val2 -
-                     (uint32_t) testFlag(C_BIT) >
-                     (uint32_t) 127)   ||
-                    ((uint32_t) val1 - (uint32_t) val2 -
-                     (uint32_t) testFlag(C_BIT) <
-                     (uint32_t) -128))
+                if ( ((val1 - val2 - testFlag(C_BIT)) & 0x80) == (val2 & 0x80) )
                         setFlag(PV_BIT);
                 else
                         clearFlag(PV_BIT);
@@ -373,8 +382,19 @@ void Z80::update_V(INST_TYPE t, const uint8_t val1, const uint8_t val2) {
 }
 
 void Z80::update_V16(INST_TYPE t, uint16_t val1, uint16_t val2) {
-    switch (t) {
-        case ADD:
+    // Overflow algorithm:
+    // Addition: addend + addend = sum
+    //   - If the addends have different signs, then there is no overflow
+    //   - If the addends have the same signes, then:
+    //     - If sum is different sign than the addends, then overflow
+    //     - If sum is same sign as addends, then no overflow
+    // Subtraction: minuend - subtrahend = difference
+    //   - If the minuend and subtrahend are the same sign, then there is no overlow
+    //   - If the minuend and subtrahend have different signs, then:
+    //     - If difference is the same sign as the subtrahend, then overflow
+    //     - If difference is different sign than subtrahend, then no overflow    switch (t) {
+     switch (t) {
+       case ADD:
             // operands with different signs --> no overflow
             if ((val1 & 0x8000) != (val2 & 0x8000)) {
                 clearFlag(PV_BIT);
@@ -417,9 +437,9 @@ void Z80::update_V16(INST_TYPE t, uint16_t val1, uint16_t val2) {
         case SUB:
             // operands are same signs, no overflow
             if ((val1 & 0x8000) == (val2 & 0x8000)) clearFlag(PV_BIT);
-            // with different signs, need to check result
-            else if (((uint32_t) val1 - (uint32_t) val2 > (uint32_t) 0x7fff) ||
-                     ((uint32_t) val1 - (uint32_t) val2 < (uint32_t) -32768))
+            // different signs, compare subtrahend and difference signs
+            // same sign -> overflow
+            else if ( ((val1 - val2) & 0x8000) == (val2 & 0x8000) )
                 setFlag(PV_BIT);
             else
                 clearFlag(PV_BIT);
@@ -428,12 +448,10 @@ void Z80::update_V16(INST_TYPE t, uint16_t val1, uint16_t val2) {
             // operands are same signs, no overflow
             if ((val1 & 0x8000) == (val2 & 0x8000)) {
                 clearFlag(PV_BIT);
-            // with different signs, need to check result
+            // different signs, compare subtrahend and difference signs
+            // same sign -> overflow
             } else {
-                if (((int32_t) val1 - (int32_t) val2 -
-                     (int32_t) testFlag(C_BIT) > (int32_t) 0x7fff)   ||
-                    ((int32_t) val1 - (int32_t) val2 -
-                     (int32_t) testFlag(C_BIT) < (int32_t) -32768))
+                if ( ((val1 - val2 - testFlag(C_BIT)) & 0x8000) == (val2 & 0x8000) )
                         setFlag(PV_BIT);
                 else
                         clearFlag(PV_BIT);

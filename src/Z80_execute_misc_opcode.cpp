@@ -709,7 +709,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                     break;
                 default: cout << "Invalid opcode: ADD HL, ss" << endl; break;
             }
-            if (getHL() & 0x8000)
+           if (getHL() & 0x8000)
                 setFlag(S_BIT);
             else
                 clearFlag(S_BIT);
@@ -717,6 +717,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                 setFlag(Z_BIT);
             else
                 clearFlag(Z_BIT);
+            setFlag(N_BIT);
             break;
 
         // RLD (0xED6F)
