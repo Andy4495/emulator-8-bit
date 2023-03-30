@@ -2520,7 +2520,7 @@ bit4e:
 	ld e,$10
 	bit 4,e
 	jp z,bit4efail
-	ld e,$3f
+	ld e,$ef
 	bit 4,e
 	jp z,bit4h
 bit4efail:
@@ -2893,24 +2893,294 @@ bit7afail:
 ; 0xed00 - 0xed3f are undefined opcodes (executed as NOPs)
 ; 0xed40
 inbmc:
-	halt ;;; temporary
+	inc ix
+	ld (ix),'P' ; Test 227
+	ld c,$96		; port $96 contains 0x69
 	in  B,(C)
+	jp po,inbmcfail
+	ld a,0x69
+	cp B
+	jp nz,inbmcfail
+	ld c,$97		; port $97 contains 0x68
+	in  B,(C)
+	jp pe,inbmcfail
+	ld a,$68
+	cp b
+	jp nz,inbmcfail
+	ld c,$98		; port $98 contains 0x80
+	in  B,(C)
+	jp p,inbmcfail
+	ld a,$80
+	cp b
+	jp nz,inbmcfail
+	ld c,$99		; port $99 contains 0x00
+	in  B,(C)
+	jp z,sbchlbc
+inbmcfail:
+	ld (ix),'F'	
+
+sbchlbc:
+	inc ix
+	ld (ix),'P' ; Test 228
+	ld hl,$ffff
+	ld bc,$0001
 	sbc HL,BC
+	jp p,sbchlbcfail
+	ld hl,$7fff
+	ld bc,$7ffe
+	sbc hl,bc
+	jp m,sbchlbcfail
+	or a	; clear carry flag
+	ld hl,$8000
+	ld bc,$8000
+	sbc hl,bc
+	jp nz,sbchlbcfail
+	scf
+	ld hl,$8001
+	ld bc,$8000
+	sbc hl,bc
+	jp nz,sbchlbcfail
+	or a	; clear carry flag
+	ld hl,$8000
+	ld bc,$0fff 
+	sbc hl,bc 
+	push af
+	pop de
+	ld a,$16	; check for H, N, P/V flags set
+	cp e
+	jp nz,sbchlbcfail
+	ld hl,$000f
+	ld bc,$0001
+	sbc hl,bc
+	push af
+	pop de
+	ld a,$02	; check for H flag clear and N flag set
+	cp E
+	jp nz,sbchlbcfail
+	ld hl,$7fff
+	ld bc,$8000
+	sbc hl,bc
+	push af
+	pop de
+	ld a,$87	; check for S, PV, N, C flags set
+	cp e
+	jp z,neg1
+sbchlbcfail: 
+	ld (ix),'F'	
+
+neg1:
+	inc ix
+	ld (ix),'P' ; Test 229
+	ld a,$00
 	neg
+	jp nz,neg1fail
+	jp m,neg1fail
+	cp $00
+	jp nz,neg1fail
+	ld a,$22
+	neg
+	jp z,neg1fail
+	jp p,neg1fail
+	jp nc,neg1fail
+	cp $de
+	jp nz,neg1fail
+	ld a,$80
+	neg ; should set the P/V flag
+	jp po,neg1fail ; P/V flag set if 0x80 before neg
+	cp $80
+	jp nz,neg1fail
+	ld a,$08 ; half-carry
+	neg
+	push af
+	pop bc
+	ld a,$93 ; S, H, N, C set
+	cp C
+	jp nz,neg1fail
+	ld a,$f8
+	cp b
+	jp z,incmc
+neg1fail:
+	ld (ix),'F'	
+
+incmc:
+	inc ix
+	ld (ix),'P' ; Test 230
+	ld c,$96	; contains $69
 	in  C,(C)
-	ld  BC,($5678)
-	
+	ld a,$69
+	cp c 
+	jp z,adchlbc
+incmcfail:
+	ld (ix),'F'	
+
+adchlbc:	; flags tested more thoroughly with ADC HL,DE below
+	inc ix
+	ld (ix),'P' ; Test 231
+	scf
+	ld hl,$1234
+	ld bc,$5555
+	adc hl,bc 
+	ld a,$67
+	cp H
+	jp nz,adchlbcfail
+	ld a,$8a
+	jp z,ldbcmn
+adchlbcfail:
+	ld (ix),'F'	
+
+ldbcmn:		; does not update flags
+	inc ix
+	ld (ix),'P' ; Test 232
+	ld  BC,(results-2)	; contains 's'(n), ':'(n+1)
+	ld a,'s'
+	cp C
+	jp nz,ldbcmnfail
+	ld a,':'
+	jp z,indmc
+ldbcmnfail:
+	ld (ix),'F'	
 
 ; 0xed50
+indmc:
+	inc ix
+	ld (ix),'P' ; Test 233
+	ld c,$97	; contains 0x68
 	in  D,(C)
+	ld a,$68
+	cp D
+	jp z,sbchlde
+indmcfail:
+	ld (ix),'F'	
+
+sbchlde:
+	inc ix
+	ld (ix),'P' ; Test 234
+	ld HL,$0100
+	ld de,$00a0
 	sbc HL,DE
+	ld a,$00
+	cp H
+	jp nz,sbchldefail
+	ld a,$60
+	jp z,ldai
+sbchldefail:
+	ld (ix),'F'	
+
+ldai:
+	inc ix
+	ld (ix),'P' ; Test 235
+	ld a,$80
+	ld i,a 
+	ld A,I
+	jp p,ldaifail
+	jp z,ldaifail
+	jp pe,ldaifail	; P/V contains IFF2, which should be zero at this point
+	push af
+	pop bc
+	ld a,$80	; S set, all other flags clear
+	cp C
+	jp nz,ldaifail
+	ld a,$00
+	ld i,a 
+	ld A,I 
+	jp m,ldaifail
+	jp nz,ldaifail
+	jp pe,ldaifail
+	ei 			; sets IFF2
 	ld  A,I
+	push af
+	di			; sets IFF2 to zero
+	pop bc 
+	ld a,$44
+	cp C
+	jp z,inemc
+ldaifail:
+	ld (ix),'F'	
+
+inemc:
+	inc ix
+	ld (ix),'P' ; Test 236
+	ld c,$98	; contains 0x80
 	in  E,(C)
+	ld a,$80
+	cp E
+	jp z,adchlde
+inemcfail:
+	ld (ix),'F'	
+
+adchlde:
+	inc ix
+	ld (ix),'P' ; Test 237
+	ld hl,$4000
+	ld de,$3fff
 	adc HL,DE
+	jp m,adchldefail
+	jp z,adchldefail
+	jp pe,adchldefail
+	jp c,adchldefail
+	push af
+	pop bc
+	ld a,$00
+	cp C
+	jp nz,adchldefail
+	ld hl,$7fff
+	ld de,$0001
+	adc hl,de
+	jp p,adchldefail
+	jp z,adchldefail
+	jp po,adchldefail
+	jp c,adchldefail
+	push af
+	pop bc
+	ld a,$94	; S, H, OV set 
+	cp c 
+	jp nz,adchldefail
+	scf
+	ld hl,$ffff
+	ld de,$0000
+	adc hl,de
+	push af
+	pop bc
+	ld a,$51	; Z, H, C flags
+	cp C
+	jp z,ldar
+adchldefail:
+	ld (ix),'F'	
+
+ldar:
+	inc ix
+	ld (ix),'P' ; Test 238
+	ld a,$80	; R will increment a couple times, but OK since msb of R doesn't update
+	ld r,a 
+	ld a,r
+	jp p,ldarfail
+	jp z,ldarfail
+	jp pe,ldarfail	; P/V contains IFF2, which should be zero at this point
+	push af
+	pop bc
+	ld a,$80	; S set, all other flags clear
+	cp C
+	jp nz,ldarfail
+	ld a,$7e	; R will increment twice between loading R and then back into A
+	ld r,a 
+	ld A,R
+	jp m,ldarfail
+	jp nz,ldarfail
+	jp pe,ldarfail
+	ei 			; sets IFF2
 	ld  A,R
-	
+	push af
+	di			; sets IFF2 to zero
+	pop bc 
+	ld a,$04	; check if P flag set with IFF2
+	cp C
+	jp z,inhmc
+ldarfail:
+	ld (ix),'F'	
 
 ; 0xed60
+inhmc:
+	halt	;;; temporary
 	in  H,(C)
 	sbc HL,HL
 	rrd

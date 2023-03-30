@@ -22,23 +22,43 @@ index_reg ix_or_iy;
 const Z80_opcodes* index_opcode;
 
 void Z80::fetch_and_decode() {
+    // Only increment lower 7 bits of R; upper bit is controlled
+    // with LD R, A instruction
+    R = (R & 0x80) | ((R + 1) & 0x7F);
+
     PC_of_Fetch = PC;  // Save the current PC for printing later
     IR[0] = memory[PC++];
     // Figure out the opcode type (main or extended)
     // and decode from the appropriate opcode array
     switch (IR[0]) {
         case 0xcb:     // Bit Instructions
+            // Extended opcodes update R a second time
+            // Only increment lower 7 bits of R; upper bit is controlled
+            // with LD R, A instruction
+            R = (R & 0x80) | ((R + 1) & 0x7F);
             decode_bit_instruction();
             break;
         case 0xdd:     // IX Register Instructions
+            // Extended opcodes update R a second time
+            // Only increment lower 7 bits of R; upper bit is controlled
+            // with LD R, A instruction
+            R = (R & 0x80) | ((R + 1) & 0x7F);
             ix_or_iy = IX;
             index_opcode = opcodes_IX_instructions;
             decode_index_instruction();
             break;
         case 0xed:     // Miscellaneous Instructions
+            // Extended opcodes update R a second time
+            // Only increment lower 7 bits of R; upper bit is controlled
+            // with LD R, A instruction
+            R = (R & 0x80) | ((R + 1) & 0x7F);
             decode_misc_instruction();
             break;
         case 0xfd:    // IY Register Instructions
+            // Extended opcodes update R a second time
+            // Only increment lower 7 bits of R; upper bit is controlled
+            // with LD R, A instruction
+            R = (R & 0x80) | ((R + 1) & 0x7F);
             ix_or_iy = IY;
             index_opcode = opcodes_IY_instructions;
             decode_index_instruction();

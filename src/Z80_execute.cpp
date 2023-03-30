@@ -18,9 +18,6 @@ using std::cout;
 using std::endl;
 
 void Z80::execute() {
-    // Only increment lower 7 bits of R; upper bit is controlled
-    // with LD R, A instruction
-    R = (R & 0x80) | ((R + 1) & 0x7F);
     switch (IR[0]) {
         case 0xCB:
             execute_bit_opcode();
