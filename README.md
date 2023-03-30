@@ -32,14 +32,14 @@ This is a "pre-release":
 
 Next steps:
 
-- More thorough testing of opcode execution and processor flag updates
-- Visual review of all opcode implementation
-- Clean up compiler warnings (if any)
+- In progress... More thorough testing of opcode execution and processor flag updates
+- In progress... Visual review of all opcode implementation
 - Hooks to allow for automated testing. This may include:
   - Updating command line options
   - Updating output formatting
   - Changing list of options in interactive mode
-  - Moving certain operations currently handled by the main program loop into the Z80 processor class
+- DONE Moving certain operations currently handled by the main program loop into the Z80 processor class
+- DONE. Clean up compiler warnings (if any)
 
 See also the [Future Functionality](#future-functionality) items below.
 
@@ -75,9 +75,9 @@ make clean    # Removes the executable, object, and linker files
 
 ## Implementation Details
 
-The emulator was developed with Ubuntu 20.04 and gcc version 9.4.0 (using [WSL 2][26]) and MacOS Ventura with clang version 12.0.0.
+The emulator was developed using Ubuntu 20.04 with gcc version 9.4.0 (by way of [WSL 2][26]) and MacOS Ventura with clang version 12.0.0.
 
-It is also known to be compatible with Ubuntu 22.04 and gcc version 11.3.0.
+It is also known to be compatible with Ubuntu 22.04 and gcc version 11.3.0 (the environment run with GitHub Actions).
 
 I have not tried it on other platforms, but there is no machine dependent code. It should work as-is (or with minimal changes) on other unix-like platforms and compiler versions.
 
@@ -86,18 +86,23 @@ I have not tried it on other platforms, but there is no machine dependent code. 
 1. Parse the command line.
 2. Read the input file into an array representing the processor's memory
 3. Display menu and choose operating mode
-4. Loop:
-    - Fetch and decode instruction
-    - Execute instruction (execute mode)
-    - Continue loop until
-      - HALT reached (execute mode) or
-      - Ending address reached (disassemble mode)
-5. Display machine state (execute mode)
+4. Execute mode:
+    - Loop:
+      - Fetch and decode instruction
+      - Execute instruction
+      - Print instruction
+      - Continue loop until HALT reached
+    - Display machine state (execute mode)
+5. Disassemble mode:
+    - Loop:
+      - Fetch and decode instruction
+      - Print instruction
+      - Continue loop until ending address reached
 6. Return to step 3
 
 ### Defining the CPU
 
-The CPU opcodes are defined in several tables implemented with arrays of structs for the main and extended opcodes (`Z80_opcodes.h`). Each entry contains the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode value is represented by the array index.
+The CPU opcodes are defined in several tables implemented with arrays of structs for the main and extended opcodes (`Z80_opcodes.h`). Each array entry contains the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode value is represented by the array index.
 
 Zilog-documented and undocumented opcodes are defined and supported by the emulator.
 
@@ -189,8 +194,8 @@ Various workflow actions are defined to test the emulator:
 
 #### Known Good
 
-- For disassembler functionality: The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassemble mode. The disassembled output is then compared against a "known good" disassemble file. This type of test is needed in cases where re-assembling the disassembled code will not produce the same opcode values (e.g., in the case of undocumented opcodes that perform the same function as documented opcodes).
-- For opcode execution functionality: The input file is assembled with `zasm`. The assembled output `.rom` file is input to the emulator and executed. The memory and registers are dumped to a file which is then compared to a known good memory/rom file.
+- For disassemble mode: The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassemble mode. The disassembled output is then compared against a "known good" disassemble file. This type of test is needed in cases where re-assembling the disassembled code will not produce the same opcode values (e.g., in the case of undocumented opcodes that perform the same function as documented opcodes).
+- For execute mode: The input file is assembled with `zasm`. The assembled output `.rom` file is input to the emulator and executed. The memory and registers are dumped to a file which is then compared to a known good memory/register file.
 
 ## References
 
