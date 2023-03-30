@@ -3180,16 +3180,81 @@ ldarfail:
 
 ; 0xed60
 inhmc:
-	halt	;;; temporary
+	inc ix
+	ld (ix),'P' ; Test 239
+	ld c,$96	; contains 'i'
 	in  H,(C)
+	ld a,'i'
+	cp H
+	jp z,sbchlhl
+inhmcfail:
+	ld (ix),'F'	
+
+sbchlhl:
+	inc ix
+	ld (ix),'P' ; Test 240
 	sbc HL,HL
+	jp z,rrd2
+sbchlhlfail:
+	ld (ix),'F'	
+
+rrd2:
+	inc ix
+	ld (ix),'P' ; Test 241
+	ld HL,results-9		; contains '1' (0x31)
+	ld A,$56
 	rrd
+	push af
+	cp $51
+	jp nz,rrd2fail
+	ld a,(hl)
+	cp $63
+	jp nz,rrd2fail
+	pop bc
+	ld a,$00
+	cp C
+	jp nz,rrd2fail
+	ld (hl),0
+	ld a,0
+	rrd
+	push af
+	jp m,rrd2fail
+	jp po,rrd2fail
+	jp nz,rrd2fail
+	ld a,(hl)
+	jp nz,rrd2fail
+	ld (hl),$22
+	ld a,$81
+	rrd
+	jp m,inlmc
+rrd2fail:
+	ld (ix),'F'	
+
+inlmc:
+	halt ;;; temporary
+	inc ix
+	ld (ix),'P' ; Test 242
 	in  L,(C)
+inlmcfail:
+	ld (ix),'F'	
+
+adchlhl:
+	inc ix
+	ld (ix),'P' ; Test 243
 	adc HL,HL
+adchlhlfail:
+	ld (ix),'F'	
+
+rld2:
+	inc ix
+	ld (ix),'P' ; Test 244
 	rld
-	
+rld2fail:
+	ld (ix),'F'	
 
 ; 0xed70
+infmc:
+	halt ;;; temporary
 	in  f,(C)  		; This is also written as "in (c)" -- only affects flags, input data is discarded
 	sbc HL,SP
 	in  A,(C)
