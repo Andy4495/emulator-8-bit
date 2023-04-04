@@ -3231,48 +3231,244 @@ rrd2fail:
 	ld (ix),'F'	
 
 inlmc:
-	halt ;;; temporary
 	inc ix
 	ld (ix),'P' ; Test 242
+	ld c,$96 ; contains 'i' (0x69)
 	in  L,(C)
+	ld a,$69
+	cp l 
+	jp z,adchlhl
 inlmcfail:
 	ld (ix),'F'	
 
 adchlhl:
 	inc ix
 	ld (ix),'P' ; Test 243
+	scf
+	ld hl,$1234
 	adc HL,HL
+	ld bc,$2469
+	sbc hl,bc
+	jp z,rld2
 adchlhlfail:
 	ld (ix),'F'	
 
 rld2:
 	inc ix
 	ld (ix),'P' ; Test 244
+	ld hl,results-11
+	ld (hl),$ab
+	ld a,$cd
 	rld
+	cp $ca 
+	jp nz,rld2fail 
+	ld a,(hl)
+	cp $bd
+	jp z,infmc
 rld2fail:
 	ld (ix),'F'	
 
 ; 0xed70
 infmc:
-	halt ;;; temporary
+	inc ix
+	ld (ix),'P' ; Test 245
+	ld c,$98 	; contains $80
 	in  f,(C)  		; This is also written as "in (c)" -- only affects flags, input data is discarded
-	sbc HL,SP
+	jp p,infmcfail
+	jp z,infmcfail
+	jp pe,infmcfail
+	ld c,$99	; contains $00
+	in f,(c)
+	push af
+	pop bc
+	ld a,$44	; Z and P flags set
+	cp c 
+	jp z,sbchlsp
+infmcfail: 
+	ld (ix),'F'	
+
+sbchlsp:
+	inc ix
+	ld (ix),'P' ; Test 246
+	ld hl,$ffff
+	sbc HL,SP	; SP should be $fffd
+	ld bc,$0002
+	or a 		; clear carry flag
+	sbc hl,bc
+	jp z,inamc
+sbchlspfail:
+	ld (ix),'F'	
+
+inamc:
+	inc ix
+	ld (ix),'P' ; Test 247
+	ld c,$97
 	in  A,(C)
+	cp 'h'
+	jp z,outmca
+inamcfail:
+	ld (ix),'F'	
+
+outmca:
+;  does not impact flags;
+	inc ix
+	ld (ix),'P' ; Test 248
+	or a 	; clear carry flag
 	out (C),A
+	jp nc,adchlsp
+outmcafail:
+	ld (ix),'F'	
+
+adchlsp:
+	inc ix
+	ld (ix),'P' ; Test 249
+	ld hl,$8003
 	adc HL,SP
+	ld bc,$7fff		; Note that Carry was set from adc 
+	sbc hl,bc
+	jp z,ldi1
+adchlspfail:
+	ld (ix),'F'	
 
 ; opcodes 0xed80 - 0xed9f undefined
 ; 0xeda0
+ldi1:
+	inc ix
+	ld (ix),'P' ; Test 250
+	ld bc,$0002
+	ld hl,results-7		; contains 'e'
+	ld de,results-12
 	ldi
+	jp po,ldi1fail
+	ld iy,results-12
+	ld a,(iy)
+	cp 'e'
+	jp nz,ldi1fail
+	ldi
+	jp po,cpi1
+ldi1fail:
+	ld (ix),'F'	
+
+cpi1:
+	inc ix
+	ld (ix),'P' ; Test 251
+	ld hl,results-2
+	ld a,':'
+	ld bc,$0002
 	cpi
+	jp p,cpi1fail
+	jp z,cpi1fail
+	jp po,cpi1fail
+	cpi
+	jp pe,cpi1fail
+	jp z,ini1
+cpi1fail:
+	ld (ix),'F'	
+
+ini1:
+	inc ix
+	ld (ix),'P' ; Test 252
+	ld hl,results-16
+	ld iy,results-16
+	ld b,2
+	ld c,$97
 	ini
+	jp z,ini1fail
+	ld a,'h'
+	cp (iy)
+	jp nz,ini1fail
+	ini
+	jp z,outi1
+ini1fail:
+	ld (ix),'F'	
+
+outi1:
+	inc ix
+	ld (ix),'P' ; Test 253
+	ld hl,results
+	ld b,2
+	ld c,$12
 	outi
+	jp z,outi1fail
+	ld de,results+2
+	outi
+	jp nz,outi1fail
+	or A	; clear carry flag
+	sbc hl,de
+	jp z,ldd1 
+outi1fail:
+	ld (ix),'F'	
+
+ldd1:
+	inc ix
+	ld (ix),'P' ; Test 254
+	ld bc,$0002
+	ld hl,results-2		; contains 'e'
+	ld de,results-13
 	ldd
+	jp po,ldd1fail
+	ld iy,results-13
+	ld a,(iy)
+	cp 's'
+	jp nz,ldd1fail
+	ldd
+	jp po,cpd1
+ldd1fail:
+	ld (ix),'F'	
+
+cpd1:
+	inc ix
+	ld (ix),'P' ; Test 255
+	ld hl,results-2
+	ld a,'t'
+	ld bc,$0002
 	cpd
+	jp m,cpd1fail
+	jp z,cpd1fail
+	jp po,cpd1fail
+	cpd
+	jp pe,cpd1fail
+	jp z,ind1
+cpd1fail:
+	ld (ix),'F'	
+
+ind1:
+	inc ix
+	ld (ix),'P' ; Test 256
+	ld hl,results-17
+	ld iy,results-17
+	ld b,2
+	ld c,$96
 	ind
-	outd	
+	jp z,ind1fail
+	ld a,'i'
+	cp (iy)
+	jp nz,ind1fail
+	ind
+	jp z,outd1
+ind1fail:
+	ld (ix),'F'	
+
+outd1:
+	inc ix
+	ld (ix),'P' ; Test 257
+	ld hl,results
+	ld b,2
+	ld c,$14
+	outd
+	jp z,outd1fail
+	ld de,results-2
+	outd
+	jp nz,outd1fail
+	or A	; clear carry flag
+	sbc hl,de
+	jp z,ldir1
+outd1fail:
+	ld (ix),'F'	
 
 ; 0xedb0
+ldir1:
+	halt ;;; temporary
 	ldir
 	cpir
 	inir
