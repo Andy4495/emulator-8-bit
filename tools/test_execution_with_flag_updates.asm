@@ -3468,20 +3468,113 @@ outd1fail:
 
 ; 0xedb0
 ldir1:
-	halt ;;; temporary
+	inc ix
+	ld (ix),'P' ; Test 258
+	ld bc,$0005
+	ld hl,results-8
+	ld de,results-24
 	ldir
+	jp po,cpir1
+ldir1fail:
+	ld (ix),'F'	
+
+cpir1:
+	inc ix
+	ld (ix),'P' ; Test 259
+	ld bc,$0005
+	ld hl,results-8
+	ld a,'s'
 	cpir
+	jp nz,cpir1fail		; Should have found 's', so Z flag set 
+	jp po,cpir1fail		; Did not count all the way down, so P flag set
+	ld bc,$0005
+	ld hl,results-8
+	ld a,'x'
+	cpir
+	jp z,cpir1fail		; Should not find 'x', so Z should be clear
+	jp po,inir1			; counted all the way down, so P should be clear
+cpir1fail:
+	ld (ix),'F'	
+
+inir1:
+	inc ix
+	ld (ix),'P' ; Test 260
+	ld hl,results-32
+	ld b,6
+	ld c,0x97	; contains 'h'
 	inir
+	jp z,otir1
+irir1fail:
+	ld (ix),'F'	
+
+otir1:
+	inc ix
+	ld (ix),'P' ; Test 261
+	ld hl,results-8
+	ld b,4
+	ld c,$99
 	otir
+	jp z,lddr1
+otir1fail:
+	ld (ix),'F'	
+
+lddr1:
+	inc ix
+	ld (ix),'P' ; Test 262
+	ld hl,results-1
+	ld de,results-33
+	ld bc,$0005
 	lddr
+	jp po,cpdr1
+ldddr1fail:
+	ld (ix),'F'	
+
+cpdr1:
+	inc ix
+	ld (ix),'P' ; Test 263
+	ld bc,$0005
+	ld hl,results-1
+	ld a,'s'
 	cpdr
+	jp nz,cpdr1fail		; Should have found 's', so Z flag set 
+	jp po,cpdr1fail		; Did not count all the way down, so P flag set
+	ld bc,$0005
+	ld hl,results-1
+	ld a,'x'
+	cpdr
+	jp z,cpdr1fail		; Should not find 'x', so Z should be clear
+	jp po,indr1			; counted all the way down, so P should be clear	cpdr
+cpdr1fail:
+	ld (ix),'F'	
+
+indr1:
+	inc ix
+	ld (ix),'P' ; Test 264
+	ld hl,results-41
+	ld b,6
+	ld c,0x96	; contains 'i'
 	indr
+	jp z,otdr1
+indr1fail:
+	ld (ix),'F'	
+
+otdr1:
+	inc ix
+	ld (ix),'P' ; Test 265
+	ld hl,results-8
+	ld b,4
+	ld c,$9a
 	otdr
+	jp z,addixbc
+otdr1fail:
+	ld (ix),'F'	
 	
 ; opcodes 0xedc0 - 0xedff undefined
 
 ; IX instructions - 0xdd prefix
 ; 0xdd00
+addixbc:
+	halt ;;; temporary
 	add IX,BC
 	
 ; 0xdd10
