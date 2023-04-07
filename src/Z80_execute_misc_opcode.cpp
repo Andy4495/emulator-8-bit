@@ -558,10 +558,10 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
+            update_H(SUB, 0, A);
             A = 0 - A;
             update_S(A);
             update_Z(A);
-            update_H(SUB, 0, A);
             setFlag(N_BIT);
             break;
 

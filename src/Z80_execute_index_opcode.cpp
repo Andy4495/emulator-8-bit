@@ -133,11 +133,11 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // INC (IX/Y + d)           (0x34)
         case 0x34:
+            update_H(ADD, memory[getIndexReg(idx) + IR[2]], 1);
             memory[getIndexReg(idx) + IR[2]]
                 = memory[getIndexReg(idx) + IR[2]] + 1;
             update_S(memory[getIndexReg(idx) + IR[2]]);
             update_Z(memory[getIndexReg(idx) + IR[2]]);
-            update_H(ADD, memory[getIndexReg(idx) + IR[2]], 1);
             if (memory[getIndexReg(idx) + IR[2]] == 0x80)
                 setFlag(PV_BIT);
             else
@@ -147,11 +147,11 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // DEC (IX/Y + d)           (0x35)
         case 0x35:
+            update_H(SUB, memory[getIndexReg(idx) + IR[2]], 1);
             memory[getIndexReg(idx) + IR[2]]
                 = memory[getIndexReg(idx) + IR[2]] - 1;
             update_S(memory[getIndexReg(idx) + IR[2]]);
             update_Z(memory[getIndexReg(idx) + IR[2]]);
-            update_H(SUB, memory[getIndexReg(idx) + IR[2]], 1);
             if (memory[getIndexReg(idx) + IR[2]] == 0x7f)
                 setFlag(PV_BIT);
             else
@@ -377,10 +377,10 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: INC r" << endl; break;
             }
+            update_H(ADD, *r, 1);
             (*r)++;
             update_S(*r);
             update_Z(*r);
-            update_H(ADD, *r, 1);
             if (*r == 0x80)
                 setFlag(PV_BIT);
             else
@@ -402,10 +402,10 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: DEC r" << endl; break;
             }
+            update_H(SUB, *r, 1);
             (*r)--;
             update_S(*r);
             update_Z(*r);
-            update_H(SUB, *r, 1);
             if (*r == 0x7f)
                 setFlag(PV_BIT);
             else
