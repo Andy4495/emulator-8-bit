@@ -253,23 +253,27 @@ void Z80::decode_index_instruction() {
                          IR[2]);
                 break;
             case OOd:
-                if (IR[2] > 0x7f) {
+                if (IR[2] & 0x80) {
                     sign = '-';
+                    disp_pos = false;
                     // Convert two's complement to absolute negative amount
                     IR[2] = (IR[2] ^ 0xff) + 1;
                 } else {
                     sign = '+';
+                    disp_pos = true;
                 }
                 snprintf(mnemonic, MAX_MNEMONIC_LENGTH, index_opcode[IR[1]].mn,
                          sign, IR[2]);
                 break;
             case OOdN:
-                if (IR[2] > 0x7f) {
+                if (IR[2] & 0x80) {
                     sign = '-';
+                    disp_pos = false;
                      // Convert two's complement to absolute negative amount
                      IR[2] = (IR[2] ^ 0xff) + 1;
                 } else {
                     sign = '+';
+                    disp_pos = true;
                 }
                 snprintf(mnemonic, MAX_MNEMONIC_LENGTH, index_opcode[IR[1]].mn,
                          sign, IR[2], IR[3]);
@@ -304,12 +308,14 @@ void Z80::decode_index_bit_instruction() {
     // All of these are of the form OONO
     switch (index_opcode[IR[3]].s) {
         case OOdO:
-            if (IR[2] > 0x7f) {
+            if (IR[2] & 0x80) {
                 sign = '-';
+                disp_pos = false;
                 // Convert two's complement to absolute negative amount
                 IR[2] = (IR[2] ^ 0xff) + 1;
             } else {
                 sign = '+';
+                disp_pos = true;
             }
             snprintf(mnemonic, MAX_MNEMONIC_LENGTH, index_opcode[IR[3]].mn,
                      sign, IR[2]);

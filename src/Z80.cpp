@@ -121,8 +121,8 @@ void Z80::dump_memory_to_file(const char* fname) {
     memfile << IYL;
     memfile << (uint8_t) ((SP & 0xff00) >> 8);
     memfile << (uint8_t)  (SP & 0xff);
-    memfile << (uint8_t) ((SP & 0xff00) >> 8); 
-    memfile << (uint8_t)  (SP & 0xff);
+    memfile << (uint8_t) ((PC & 0xff00) >> 8); 
+    memfile << (uint8_t)  (PC & 0xff);
     memfile << IFF1;
     memfile << IFF2;
     memfile << INT_MODE;
@@ -248,7 +248,7 @@ void Z80::print_flags() {
 void Z80::print_memory(uint16_t start, uint16_t end) {
     cout << endl << "        0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f" << endl;
     cout         << "       -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" << endl;
-    for (uint16_t i = (start & 0xfff0); i <= end; i += 16) {
+    for (uint32_t i = (start & 0xfff0); i <= (uint32_t) end; i += 16) {
         cout << hex << setw(3) << i/16 << "x" << ":  ";
         for (int j = 0; j < 16; j ++) {
             cout << hex << setw(2) << (uint16_t) memory[i + j] << " ";

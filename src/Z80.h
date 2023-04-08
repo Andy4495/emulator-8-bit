@@ -107,6 +107,7 @@ class Z80 : public abstract_CPU {
     // Interrupt Mode
     uint8_t INT_MODE;
     char fetched[MAX_FETCHED_LENGTH + 1];
+    bool disp_pos; // Indicates if index displacement is positive or negative
 
     uint8_t  testFlag(FLAG_BITS f);
     uint8_t get_next_byte();

@@ -26,6 +26,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
     uint8_t* indexH;
     uint8_t* indexL;
     INDEX_REG idx;
+    uint16_t disp_index;
 
     if (IR[0] == 0xdd) {
         indexH = &IXH;
@@ -36,6 +37,13 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         indexL = &IYL;
         idx = IY_REGISTER;
     }
+
+    // Calculate the index into memory when there is a displacement
+    // value. Need to handle positive and negative displacements
+    if (disp_pos)
+        disp_index = getIndexReg(idx) + IR[2];
+    else 
+        disp_index = getIndexReg(idx) - IR[2];
 
     switch (IR[1]) {
         // ADD IX/Y, pp  (0x09, 0x19, 0x29, 0x39)
@@ -107,8 +115,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // LD (nn), IX/Y (0x22)
         case 0x22:
-            memory[(IR[2] << 8) + IR[1] + 1] = *indexH;
-            memory[(IR[2] << 8) + IR[1]]     = *indexL;
+            memory[(IR[3] << 8) + IR[2] + 1] = *indexH;
+            memory[(IR[3] << 8) + IR[2]]     = *indexL;
             // Condition bits affected: None
             break;
 
@@ -120,8 +128,8 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // LD IX/Y, (nn)  (0x2A)
         case 0x2a:
-            *indexH = memory[(IR[2] << 8) + IR[1] + 1];
-            *indexL = memory[(IR[2] << 8) + IR[1]];
+            *indexH = memory[(IR[3] << 8) + IR[2] + 1];
+            *indexL = memory[(IR[3] << 8) + IR[2]];
             // Condition bits affected: None
             break;
 
@@ -133,12 +141,12 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // INC (IX/Y + d)           (0x34)
         case 0x34:
-            update_H(ADD, memory[getIndexReg(idx) + IR[2]], 1);
-            memory[getIndexReg(idx) + IR[2]]
-                = memory[getIndexReg(idx) + IR[2]] + 1;
-            update_S(memory[getIndexReg(idx) + IR[2]]);
-            update_Z(memory[getIndexReg(idx) + IR[2]]);
-            if (memory[getIndexReg(idx) + IR[2]] == 0x80)
+            update_H(ADD, memory[disp_index], 1);
+            memory[disp_index]
+                = memory[disp_index] + 1;
+            update_S(memory[disp_index]);
+            update_Z(memory[disp_index]);
+            if (memory[disp_index] == 0x80)
                 setFlag(PV_BIT);
             else
                 clearFlag(PV_BIT);
@@ -147,12 +155,12 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // DEC (IX/Y + d)           (0x35)
         case 0x35:
-            update_H(SUB, memory[getIndexReg(idx) + IR[2]], 1);
-            memory[getIndexReg(idx) + IR[2]]
-                = memory[getIndexReg(idx) + IR[2]] - 1;
-            update_S(memory[getIndexReg(idx) + IR[2]]);
-            update_Z(memory[getIndexReg(idx) + IR[2]]);
-            if (memory[getIndexReg(idx) + IR[2]] == 0x7f)
+            update_H(SUB, memory[disp_index], 1);
+            memory[disp_index]
+                = memory[disp_index] - 1;
+            update_S(memory[disp_index]);
+            update_Z(memory[disp_index]);
+            if (memory[disp_index] == 0x7f)
                 setFlag(PV_BIT);
             else
                 clearFlag(PV_BIT);
@@ -161,85 +169,85 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // LD (IX/Y + d), n         (0x36)
         case 0x36:
-            memory[getIndexReg(idx) + IR[2]] = IR[3];
+            memory[disp_index] = IR[3];
             break;
 
         // LD B, (IX/Y + d)         (0x46)
         case 0x46:
-            B = memory[getIndexReg(idx) + IR[2]];
+            B = memory[disp_index];
             break;
 
         // LD C, (IX/Y + d)         (0x4E)
         case 0x4e:
-            C = memory[getIndexReg(idx) + IR[2]];
+            C = memory[disp_index];
             break;
 
         // LD D, (IX/Y + d)         (0x56)
         case 0x56:
-            D = memory[getIndexReg(idx) + IR[2]];
+            D = memory[disp_index];
             break;
 
         // LD E, (IX/Y + d)         (0x5E)
         case 0x5e:
-            E = memory[getIndexReg(idx) + IR[2]];
+            E = memory[disp_index];
             break;
 
         // LD H, (IX/Y + d)         (0x66)
         case 0x66:
-            H = memory[getIndexReg(idx) + IR[2]];
+            H = memory[disp_index];
             break;
 
         // LD L, (IX/Y + d)         (0x6E)
         case 0x6e:
-            L = memory[getIndexReg(idx) + IR[2]];
+            L = memory[disp_index];
             break;
 
         // LD (IX/Y + d), B         (0x70)
         case 0x70:
-            memory[getIndexReg(idx) + IR[2]] = B;
+            memory[disp_index] = B;
             break;
 
         // LD (IX/Y + d), B         (0x71)
         case 0x71:
-            memory[getIndexReg(idx) + IR[2]] = C;
+            memory[disp_index] = C;
             break;
 
         // LD (IX/Y + d), B         (0x72)
         case 0x72:
-            memory[getIndexReg(idx) + IR[2]] = D;
+            memory[disp_index] = D;
             break;
 
         // LD (IX/Y + d), B         (0x73)
         case 0x73:
-            memory[getIndexReg(idx) + IR[2]] = E;
+            memory[disp_index] = E;
             break;
 
         // LD (IX/Y + d), B         (0x74)
         case 0x74:
-            memory[getIndexReg(idx) + IR[2]] = H;
+            memory[disp_index] = H;
             break;
 
         // LD (IX/Y + d), B         (0x75)
         case 0x75:
-            memory[getIndexReg(idx) + IR[2]] = L;
+            memory[disp_index] = L;
             break;
 
         // LD (IX/Y + d), B         (0x77)
         case 0x77:
-            memory[getIndexReg(idx) + IR[2]] = A;
+            memory[disp_index] = A;
             break;
 
         // LD (IX/Y + d), B         (0x7E)
         case 0x7e:
-            A = memory[getIndexReg(idx) + IR[2]];
+            A = memory[disp_index];
             break;
 
         // ADD A, (IX/Y + d)         (0x86)
         case 0x86:
-            update_V(ADD, A, memory[getIndexReg(idx) + IR[2]]);
-            update_H(ADD, A, memory[getIndexReg(idx) + IR[2]]);
-            update_C(ADD, A, memory[getIndexReg(idx) + IR[2]]);
-            A += memory[getIndexReg(idx) + IR[2]];
+            update_V(ADD, A, memory[disp_index]);
+            update_H(ADD, A, memory[disp_index]);
+            update_C(ADD, A, memory[disp_index]);
+            A += memory[disp_index];
             update_S(A);
             update_Z(A);
             clearFlag(N_BIT);
@@ -248,10 +256,10 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         // ADC A, (IX/Y + d)         (0x8E)
         case 0x8e:
             temp = testFlag(C_BIT);  // Save the carry bit
-            update_V(ADC, A, memory[getIndexReg(idx) + IR[2]]);
-            update_H(ADC, A, memory[getIndexReg(idx) + IR[2]]);
-            update_C(ADC, A, memory[getIndexReg(idx) + IR[2]]);
-            A += memory[getIndexReg(idx) + IR[2]] + temp;
+            update_V(ADC, A, memory[disp_index]);
+            update_H(ADC, A, memory[disp_index]);
+            update_C(ADC, A, memory[disp_index]);
+            A += memory[disp_index] + temp;
             update_S(A);
             update_Z(A);
             clearFlag(N_BIT);
@@ -259,10 +267,10 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // SUB A, (IX/Y + d)         (0x96)
         case 0x96:
-            update_C(SUB, A, memory[getIndexReg(idx) + IR[2]]);
-            update_H(SUB, A, memory[getIndexReg(idx) + IR[2]]);
-            update_V(SUB, A, memory[getIndexReg(idx) + IR[2]]);
-            A += memory[getIndexReg(idx) + IR[2]];
+            update_C(SUB, A, memory[disp_index]);
+            update_H(SUB, A, memory[disp_index]);
+            update_V(SUB, A, memory[disp_index]);
+            A += memory[disp_index];
             update_S(A);
             update_Z(A);
             setFlag(N_BIT);
@@ -271,10 +279,10 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         // SBC A, (IX/Y + d)         (0x9E)
         case 0x9e:
             temp = testFlag(C_BIT);  // Save the carry bit
-            update_V(SBC, A, memory[getIndexReg(idx) + IR[2]]);
-            update_H(SBC, A, memory[getIndexReg(idx) + IR[2]]);
-            update_C(SBC, A, memory[getIndexReg(idx) + IR[2]]);
-            A += memory[getIndexReg(idx) + IR[2]] + temp;
+            update_V(SBC, A, memory[disp_index]);
+            update_H(SBC, A, memory[disp_index]);
+            update_C(SBC, A, memory[disp_index]);
+            A += memory[disp_index] + temp;
             update_S(A);
             update_Z(A);
             setFlag(N_BIT);
@@ -282,7 +290,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // AND A, (IX/Y + d)         (0xA6)
         case 0xa6:
-            A &= memory[getIndexReg(idx) + IR[2]];
+            A &= memory[disp_index];
             update_S(A);
             update_Z(A);
             setFlag(H_BIT);
@@ -293,7 +301,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // XOR A, (IX/Y + d)         (0xAE)
         case 0xae:
-            A ^= memory[getIndexReg(idx) + IR[2]];
+            A ^= memory[disp_index];
             update_S(A);
             update_Z(A);
             clearFlag(H_BIT);
@@ -304,7 +312,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // OR A, (IX/Y + d)         (0xB6)
         case 0xb6:
-            A |= memory[getIndexReg(idx) + IR[2]];
+            A |= memory[disp_index];
             update_S(A);
             update_Z(A);
             clearFlag(H_BIT);
@@ -315,12 +323,12 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
 
         // CP A, (IX/Y + d)         (0xBE)
         case 0xbe:
-            update_S(A - memory[getIndexReg(idx) + IR[2]]);
-            update_Z(A - memory[getIndexReg(idx) + IR[2]]);
-            update_H(SUB, A, memory[getIndexReg(idx) + IR[2]]);
-            update_V(SUB, A, memory[getIndexReg(idx) + IR[2]]);
+            update_S(A - memory[disp_index]);
+            update_Z(A - memory[disp_index]);
+            update_H(SUB, A, memory[disp_index]);
+            update_V(SUB, A, memory[disp_index]);
             setFlag(N_BIT);
-            update_C(SUB, A, memory[getIndexReg(idx) + IR[2]]);
+            update_C(SUB, A, memory[disp_index]);
             break;
 
         // POP IX/Y     (0xE1)

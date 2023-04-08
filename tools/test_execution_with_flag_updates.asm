@@ -3574,23 +3574,150 @@ otdr1fail:
 ; IX instructions - 0xdd prefix
 ; 0xdd00
 addixbc:
-	halt ;;; temporary
-	add IX,BC
-	
+; This group of tests uses IX register, so need to use IY as pointer to results area
+	ld b,ixh
+	ld c,ixl 
+	ld iyh,b 
+	ld iyl,c
+	inc iy
+	ld (iy),'P' ; Test 266
+	ld ix,$1234
+	ld bc,$5432
+	add IX,BC	; only H and C flags affected by this opcode
+	push af
+	pop de
+	ld a,ixh
+	cp $66
+	jp nz,addixbcfail
+	ld a,ixl
+	cp $66
+	jp nz,addixbcfail
+	ld a,$11	; H and C bit positions
+	and e 		; both should be zero
+	jp nz,addixbcfail
+	ld ix,$f300
+	ld bc,$1d11
+	add ix,bc	; should set both H and C bits
+	push af
+	pop de
+	ld a,$10
+	and e 
+	jp z,addixbcfail
+	ld a,$01
+	and e 
+	jp z,addixbcfail
+	jp addixde
+addixbcfail:
+	ld (iy),'F'	
+
 ; 0xdd10
+addixde:
+	inc iy
+	ld (iy),'P' ; Test 267
+	scf
+	ld ix,$ffff
+	ld de,$0001
 	add IX,DE
-	
+	push af
+	pop bc
+	ld a,c 
+	and $11
+	cp $11
+	jp z,incixh
+addixdefail:
+	ld (iy),'F'	
+
 ; 0xdd20
-	inc IXH              
+incixh:
+	inc iy
+	ld (iy),'P' ; Test 268
+	ld ixh,$ff
+	inc IXH
+	push af
+	pop bc
+	ld a,$50
+	cp c 
+	jp nz,incixhfail
+	inc ixh
+	jp z,incixhfail
+	ld ixh,$7F
+	inc ixh
+	jp pe,decixh
+incixhfail:
+	ld (iy),'F'	
+
+decixh:
+	inc iy
+	ld (iy),'P' ; Test 269
+	ld ixh,$00
 	dec IXH
+	ld a,$ff
+	cp ixh
+	jp z,addixix
+decixhfail:
+	ld (iy),'F'	
+
+addixix:
+	inc iy
+	ld (iy),'P' ; Test 270
+	ld ix,$4321
 	add IX,IX
-	inc IXL               
+	ld a,$86
+	cp ixh
+	jp nz,addixixfail
+	ld a,$42
+	jp z,incixl
+addixixfail:
+	ld (iy),'F'	
+
+incixl:
+	inc iy
+	ld (iy),'P' ; Test 271
+	ld ixl,$7f
+	inc IXL   
+	ld a,$80
+	cp ixl
+	jp z,decixl 
+incixlfail:
+	ld (iy),'F'	
+
+decixl:
+	inc iy
+	ld (iy),'P' ; Test 272
+	ld ixl,$43
 	dec IXL
+	ld a,$42
+	cp ixl
+	jp z,incixd
+decixlfail:
+	ld (iy),'F'	
 	
 ; 0xdd30
-	inc (IX - $01)
+incixd:
+	inc iy
+	ld (iy),'P' ; Test 273
+	ld ix,results
+	inc (IX - $11)	; contains 'i'
+	ld a,(results-$11)
+	cp 'j'
+	jp z,decixd
+incixdfail:
+	ld (iy),'F'	
+
+decixd: 
+	halt ;;; temporary
+	inc iy
+	ld (iy),'P' ; Test 274
 	dec (IX - $03)
+decixdfail:
+	ld (iy),'F'	
+
+addixsp:
+	inc iy
+	ld (iy),'P' ; Test 275
 	add IX,SP
+addixspfail:
+	ld (iy),'F'	
 	
 ; 0xdd40
 

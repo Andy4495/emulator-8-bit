@@ -58,7 +58,7 @@ start:
 	
 
 ; 0x10
-;	djnz $		; tested at bottom
+;	djnz $		; tested in separate file
 	ld DE,$0004  
 	ld (DE),A
 	inc DE
@@ -276,7 +276,7 @@ start:
 ;	cp  A,A
 
 ; 0xc0
-;	ret nz		; Tested at bottom
+;	ret nz		; tested in separate file
 	pop  BC         
 	jp  nz,$+4
 	nop
@@ -285,19 +285,19 @@ start:
 	call nz,return_point
 	push BC 
 ;	add A,$12
-;	rst  $00		; Tested at bottom
-;	ret z		; Tested at bottom
-;	ret			; Tested at bottom
+;	rst  $00		; tested in separate file
+;	ret z		; tested in separate file
+;	ret			; tested in separate file
 	jp  z,$+4
     nop                 ; 0xcb - Bit instructions
 	call z,return_point
 	call return_point
 ;	adc a,$23
-;	rst  $08		; Tested at bottom
+;	rst  $08		; tested in separate file
 	
 
 ; 0xd0
-;	ret nc		; Tested at bottom
+;	ret nc		; tested in separate file
 	pop  DE         
 	jp  nc,$+4
 	nop
@@ -305,8 +305,8 @@ start:
 	call nc,return_point
 	push DE 
 ;	sub A,$34
-;	rst  $10		; Tested at bottom
-;	ret c		; Tested at bottom
+;	rst  $10		; tested in separate file
+;	ret c		; tested in separate file
 	exx
 	jp  c,$+4
 	nop
@@ -314,11 +314,11 @@ start:
 	call c,return_point
     nop					; 0xdd IX index instructions
 ;	sbc A,$45
-;	rst  $18		; Tested at bottom
+;	rst  $18		; tested in separate file
 	
 
 ; 0xe0
-;	ret po		; Tested at bottom
+;	ret po		; tested in separate file
 	pop  HL        
 	jp  po,$+4
 	nop
@@ -326,8 +326,8 @@ start:
 	call po,return_point
 	push HL 
 ;	and A,$56
-;	rst  $20		; Tested at bottom
-;	ret pe		; Tested at bottom
+;	rst  $20		; tested in separate file
+;	ret pe		; tested in separate file
 	ld HL,after_HL  ; Set up the jp (HL) instruction
 	jp (HL)  		;This was not included in test_disassembler_1
 	nop
@@ -338,10 +338,10 @@ after_HL:
 	call pe,return_point
 	nop				; 0xed - Miscellaneous instructions
 ;	xor A,$67
-;	rst  $28		; Tested at bottom
+;	rst  $28		; tested in separate file
 
 ; 0xf0
-;	ret p		; Tested at bottom
+;	ret p		; tested in separate file
 	pop  AF    
 	jp  p,$+4
 	nop
@@ -349,8 +349,8 @@ after_HL:
 	call p,return_point
 	push AF 
 ;	or  A,$78
-;	rst  $30		; Tested at bottom
-;	ret m		; Tested at bottom
+;	rst  $30		; tested in separate file
+;	ret m		; tested in separate file
 	ld HL,$fffa	;setup
 	ld SP,HL
 	jp  m,$+4
@@ -359,7 +359,7 @@ after_HL:
 	call m,return_point
 	nop				; 0xfd - IY index instructions
 ;	cp  A,$89
-;	rst  $38		; Tested at bottom
+;	rst  $38		; tested in separate file
 	
 
 ; Bit Instructions - 0xcb prefix
@@ -667,7 +667,7 @@ after_HL:
 ;	sbc HL,BC
 	ld  (results+13),BC
 ;	neg
-;	retn		; Tested at bottom
+;	retn		; tested in separate file
 	im  0
 	ld  I,A
 ;	in  C,(C)
@@ -675,7 +675,7 @@ after_HL:
 ;	adc HL,BC
 ;	ld  BC,($5678)
 	nop			; 0xed4c undefined
-;	reti		; Tested at bottom
+;	reti		; tested in separate file
 	nop			; 0xed4e undefined
 	ld  R,A
 	
@@ -844,7 +844,7 @@ after_HL:
 ;	inc (IX - $01)
 ;	dec (IX - $03)
 	ld	IX,results
-	ld  (IX+27),$ab
+	ld  (IX+$1b),$ab
 	nop				; 0xdd37 undefined
 	nop				; 0xdd38 undefined
 ;	add IX,SP
@@ -915,23 +915,22 @@ after_HL:
 
 ; 0xdd70
 	ld	IX,results	;setup
-	ld  (IX+25),B
-	ld  (IX+27),C
-	ld  (IX+29),D
-	ld  (IX+31),E
-	ld  (IX+33),H
-	ld  (IX+35),L
+	ld  (IX+$19),B
+	ld  (IX+$1b),C
+	ld  (IX+$1d),D
+	ld  (IX+$1f),E
+	ld  (IX+$21),H
+	ld  (IX+$23),L
 	nop				; 0xdd76 undefined
-	ld  (IX+37),A
+	ld  (IX+$25),A
 	nop				; 0xdd78 same as 0x78
 	nop				; 0xdd79 same as 0x79
 	nop				; 0xdd7a same as 0x7a
 	nop				; 0xdd7b same as 0x7b
 	ld  A,IXH 
 	ld  A,IXL 
-	ld  A,(IX+22)
+	ld  A,(IX+$16)
 	nop				; 0xdd7f same as 0x7f
-	
 
 ; 0xdd80
 	nop				; 0xdd80 same as 0x80
@@ -1078,7 +1077,7 @@ after_IX:
 	nop				; 0xddf6 undefined
 	nop				; 0xddf7 undefined
 	nop				; 0xddf8 undefined
-	ld	IX,$fff0	;setup
+	ld	IX,results+$38	;setup 
 	ld  SP,IX
 	nop				; 0xddfa undefined
 	nop				; 0xddfb undefined
@@ -1403,7 +1402,7 @@ after_IX:
 ; 0xfd20
 	nop				; 0xfd20 undefined
 	ld  IY,$1234
-	ld  (results+40),IY
+	ld  (results+80),IY
 	inc IY
 ;	inc IYH              
 ;	dec IYH
@@ -1426,7 +1425,7 @@ after_IX:
 	nop				; 0xfd33 undefined
 ;	inc (IY - $01)
 ;	dec (IY - $03)
-	ld	IY,results		; setup
+	ld	IY,results+$90		; setup
 	ld  (IY+42),$ab
 	nop				; 0xfd37 undefined
 	nop				; 0xfd38 undefined
@@ -1659,7 +1658,7 @@ after_IY:
 	nop				; 0xfdf6 undefined
 	nop				; 0xfdf7 undefined
 	nop				; 0xfdf8 undefined
-	ld IY,$ffe0		;setup
+	ld IY,results+$a0		;setup
 	ld  SP,IY
 	nop				; 0xfdfa undefined
 	nop				; 0xfdfb undefined
@@ -1951,7 +1950,7 @@ return_point:
 	ret
 
 
-; Return opcode testing
+; Return opcodes - tested in separate file
 	ret nz
 	ret z
 	ret
@@ -1964,10 +1963,10 @@ return_point:
 	retn
 	reti
 
-; djnz testing
+; djnz - tested in separate file
 	djnz $
 
-; rst testing
+; rst opcodes - tested in separate file
 	rst  $00
 	rst  $08
 	rst  $10
@@ -1977,5 +1976,8 @@ return_point:
 	rst  $30
 	rst  $38
 
+	org $1000
+	defm "Results:"
+
 results:
-	defs $1000,$ff
+	defs $ff,'.'		; Results area. Fill with dots....

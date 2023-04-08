@@ -25,13 +25,19 @@ void Z80::execute_ix_iy_bit_opcode() {
     uint8_t *r = nullptr;
     uint8_t temp;
     // Index into memory[] array based on IX or IY plus displacement in opcode
-    uint8_t index;
+    uint16_t index;
 
-    if (IR[0] == 0xDD) index = getIX() + IR[2];
-    else               index = getIY() + IR[2];
+    if (IR[0] == 0xDD) 
+    {
+        if (disp_pos) index = getIX() + IR[2];
+        else          index = getIX() - IR[2];
+    } else {
+        if (disp_pos) index = getIY() + IR[2];
+        else          index = getIY() - IR[2];
+    }
 
     switch (IR[3]) {
-        // RLC (IX/IY + d), r     (0xXDCB00dd - 0xXDCB07dd)
+        // RLC (IX/IY + d), r     (0xXDCBdd00 - 0xXDCBdd07)
         case 0x00: case 0x01: case 0x02: case 0x03:
         case 0x04: case 0x05: case 0x06: case 0x07:
             // Opcode 0  0  0  0  0  r  r  r
@@ -532,7 +538,7 @@ void Z80::execute_ix_iy_bit_opcode() {
             if (r != nullptr) *r = memory[index];
             break;
 
-        // RES (IX/IY + d) (0xXDCBdd80 - 0xXDCBddbF)
+        // RES (IX/IY + d) (0xXDCBdd80 - 0xXDCBddBF)
         case 0x80: case 0x81: case 0x82: case 0x83:
         case 0x84: case 0x85: case 0x86: case 0x87:
         case 0x88: case 0x89: case 0x8a: case 0x8b:
