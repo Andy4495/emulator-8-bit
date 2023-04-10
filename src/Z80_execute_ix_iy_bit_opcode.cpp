@@ -82,12 +82,12 @@ void Z80::execute_ix_iy_bit_opcode() {
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_S(*r);
-            update_Z(*r);
+            update_S(memory[index]);
+            update_Z(memory[index]);
             clearFlag(H_BIT);
-            update_P(*r);
+            update_P(memory[index]);
             clearFlag(N_BIT);
-            break;
+           break;
 
         // RL (IX/IY + d), r    (0xXDCBdd10 - 0xXDCBdd17)
         case 0x10: case 0x11: case 0x12: case 0x13:
@@ -135,10 +135,10 @@ void Z80::execute_ix_iy_bit_opcode() {
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_S(*r);
-            update_Z(*r);
+            update_S(memory[index]);
+            update_Z(memory[index]);
             clearFlag(H_BIT);
-            update_P(*r);
+            update_P(memory[index]);
             clearFlag(N_BIT);
             break;
 
@@ -187,10 +187,10 @@ void Z80::execute_ix_iy_bit_opcode() {
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_S(*r);
-            update_Z(*r);
+            update_S(memory[index]);
+            update_Z(memory[index]);
             clearFlag(H_BIT);
-            update_P(*r);
+            update_P(memory[index]);
             clearFlag(N_BIT);
             break;
 
@@ -239,10 +239,10 @@ void Z80::execute_ix_iy_bit_opcode() {
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_S(*r);
-            update_Z(*r);
+            update_S(memory[index]);
+            update_Z(memory[index]);
             clearFlag(H_BIT);
-            update_P(*r);
+            update_P(memory[index]);
             clearFlag(N_BIT);
             break;
 
@@ -290,10 +290,10 @@ void Z80::execute_ix_iy_bit_opcode() {
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_S(*r);
-            update_Z(*r);
+            update_S(memory[index]);
+            update_Z(memory[index]);
             clearFlag(H_BIT);
-            update_P(*r);
+            update_P(memory[index]);
             clearFlag(N_BIT);
             break;
 
@@ -342,10 +342,10 @@ void Z80::execute_ix_iy_bit_opcode() {
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_S(*r);
-            update_Z(*r);
+            update_S(memory[index]);
+            update_Z(memory[index]);
             clearFlag(H_BIT);
-            update_P(*r);
+            update_P(memory[index]);
             clearFlag(N_BIT);
             break;
 
@@ -395,10 +395,10 @@ void Z80::execute_ix_iy_bit_opcode() {
             if (r != nullptr) {
                 *r = memory[index];
             }
-            update_S(*r);
-            update_Z(*r);
+            update_S(memory[index]);
+            update_Z(memory[index]);
             clearFlag(N_BIT);
-            update_P(*r);
+            update_P(memory[index]);
             clearFlag(H_BIT);
             break;
 
@@ -447,9 +447,9 @@ void Z80::execute_ix_iy_bit_opcode() {
                 *r = memory[index];
             }
             clearFlag(S_BIT);
-            update_Z(*r);
+            update_Z(memory[index]);
             clearFlag(H_BIT);
-            update_P(*r);
+            update_P(memory[index]);
             clearFlag(N_BIT);
             break;
 
