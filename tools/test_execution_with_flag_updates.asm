@@ -3705,17 +3705,25 @@ incixdfail:
 	ld (iy),'F'	
 
 decixd: 
-	halt ;;; temporary
 	inc iy
 	ld (iy),'P' ; Test 274
-	dec (IX - $03)
+	dec (IX - $0f) ; contains 'h'
+	ld a,(results-$0f)
+	cp 'g'
+	jp z,addixsp
 decixdfail:
 	ld (iy),'F'	
 
 addixsp:
 	inc iy
 	ld (iy),'P' ; Test 275
+	ld ix,$3456	; SP contains $fffd at this point
 	add IX,SP
+	ld a,$34
+	cp ixh
+	jp nz,addixspfail
+	ld a,$53
+	jp z,addaixh
 addixspfail:
 	ld (iy),'F'	
 	
@@ -3728,36 +3736,358 @@ addixspfail:
 ; 0xdd70
 
 ; 0xdd80
+addaixh:
+	inc iy
+	ld (iy),'P' ; Test 276
+	ld a,$5a 
+	ld ixh,$a5
 	add  A,IXH
+	cp $ff
+	jp z,addaixl
+addaixhfail:
+	ld (iy),'F'	
+
+addaixl:
+	inc iy
+	ld (iy),'P' ; Test 277
+	ld a,$11
+	ld ixl,$44
 	add  A,IXL
-	add  A,(IX-$07)
+	cp $55
+	jp z,addaixd
+addaixlfail:
+	ld (iy),'F'	
+
+addaixd:
+	inc iy
+	ld (iy),'P' ; Test 278
+	ld ix,results
+	ld a,$65
+	add  A,(IX-$01) ; contains $3a
+	cp $9f
+	jp z,adcixh
+addaixdfail:
+	ld (iy),'F'	
+
+adcixh:
+	inc iy
+	ld (iy),'P' ; Test 279
+	scf
+	ld a,$12
+	ld ixh,$34
 	adc  A,IXH 
+	cp $47
+	jp z,adcixl
+adcixhfail:
+	ld (iy),'F'	
+
+adcixl:
+	inc iy
+	ld (iy),'P' ; Test 280
+	or A	; clear carry flag
+	ld a,$ff
+	ld ixl,$19
 	adc  A,IXL 
-	adc  A,(IX+$02)	
+	cp $18
+	jp z,adcixd
+adcixlfail:
+	ld (iy),'F'	
+
+adcixd:
+	inc iy
+	ld (iy),'P' ; Test 281
+	ld ix,results-8
+	ld a,$03
+	adc  A,(IX+$04)		; contains 'l'
+	cp 'o'
+	jp z,subaixh
+adcixdfail:
+	ld (iy),'F'	
 
 ; 0xdd90
+subaixh:
+	inc iy
+	ld (iy),'P' ; Test 282
+	ld a,$7F
+	ld ixh,$44
 	sub  A,IXH
+	push af
+	cp $3b
+	jp nz,subaixhfail
+	pop de
+	ld a,$02
+	jp nz,subaixhfail
+	ld a,$01
+	ld ixh,$01
+	sub a,ixh
+	jp nz,subaixhfail
+	jp c,subaixhfail
+	ld a,$02
+	ld ixh,$03
+	sub a,ixh
+	push af
+	jp z,subaixhfail
+	jp p,subaixhfail
+	jp nc,subaixhfail
+	pop de
+	ld a,$93
+	cp e
+	jp z,subaixl
+subaixhfail:
+	ld (iy),'F'	
+
+subaixl:
+	inc iy
+	ld (iy),'P' ; Test 283
+	scf
+	ld a,$44
+	ld ixl,$43
 	sub  A,IXL
-	sub  A,(IX-$07)
+	cp $01
+	jp z,subaixd
+subaixlfail:
+	ld (iy),'F'	
+
+subaixd:
+	inc iy
+	ld (iy),'P' ; Test 284
+	ld ix,results
+	ld a,'h'
+	sub  A,(IX-$07)	; contains 'e'
+	cp $03
+	jp z,sbcixh
+subaixdfail:
+	ld (iy),'F'	
+
+sbcixh:
+	inc iy
+	ld (iy),'P' ; Test 285
+	or A	; clear carry flag
+	ld a,$99
+	ld ixh,$55
 	sbc  A,IXH 
+	cp $44
+	jp z,sbcixl
+sbcaixhfail:
+	ld (iy),'F'	
+
+sbcixl:
+	inc iy
+	ld (iy),'P' ; Test 286
+	scf 
+	ld a,$f3
+	ld ixl,$f2
 	sbc  A,IXL 
-	sbc  A,(IX+$02)	
+	jp z,sbcixd
+sbcaixlfail:
+	ld (iy),'F'	
+
+sbcixd:
+	inc iy
+	ld (iy),'P' ; Test 287
+	ld ix,results-8
+	or A		; clear carry flag
+	ld a,'S'	; capital 'S'
+	sbc  A,(IX+$02)	; contains 's' (lower case)
+	cp $e0	; capital letter is $20 less than lower case ($E0 -> -$20)
+	jp nz,sbcaixdfail
+	scf
+	ld a,'z'
+	sbc A,(IX+$03) ; contains 'u'
+	cp $04	; 'z' - 'u' = 5, but also subtract the carry
+	jp z,andaixh
+sbcaixdfail:
+	ld (iy),'F'	
 
 ; 0xdda0
-	and  A,IXH
+andaixh:
+	inc iy
+	ld (iy),'P' ; Test 288
+	ld a,$ff
+	ld ixh,$00
+	and a,ixh 
+	jp nz,andaixhfail
+	jp po,andaixhfail
+	jp m,andaixhfail
+	ld a,$ff
+	ld ixh,$88
+	and a,ixh
+	jp po,andaixhfail
+	jp p,andaixhfail
+	jp z,andaixhfail
+	ld a,$0f 
+	and a,ixh 
+	cp $08
+	jp z,andaixl
+andaixhfail:
+	ld (iy),'F'	
+
+andaixl:
+	inc iy
+	ld (iy),'P' ; Test 289
+	ld a,$55
+	ld ixl,$f2
 	and  A,IXL
-	and  A,(IX-$07)
+	cp $50
+	jp z,andaixd
+andaixlfail:
+	ld (iy),'F'	
+
+andaixd:
+	inc iy
+	ld (iy),'P' ; Test 290
+	ld ix,results
+	ld a,$13
+	and  A,(IX-$01)	; contains $3a
+	cp $12
+	jp z,xoraixh
+andaixdfail:
+	ld (iy),'F'	
+
+xoraixh:
+	inc iy
+	ld (iy),'P' ; Test 291
+	ld a,$ff
+	ld ixh,$12
 	xor  A,IXH 
+	jp z,xoraixhfail
+	jp p,xoraixhfail
+	jp po,xoraixhfail
+	cp $ed
+	jp z,xoraixl
+xoraixhfail:
+	ld (iy),'F'	
+
+xoraixl:
+	inc iy
+	ld (iy),'P' ; Test 292
+	ld a,$55
+	ld ixl,$aa
 	xor  A,IXL 
-	xor  A,(IX+$02)	
+	jp z,xoraixlfail
+	cp $ff
+	jp z,xoraixd
+xoraixlfail:
+	ld (iy),'F'	
+
+xoraixd:
+	inc iy
+	ld (iy),'P' ; Test 293
+	ld ix,results-8
+	ld a,$34
+	xor  A,(IX+$02)	; contains $73
+	cp $47
+	jp z,oraixh
+xoraixdfail:
+	ld (iy),'F'	
 
 ; 0xddb0
+oraixh:
+	inc iy
+	ld (iy),'P' ; Test 294
+	ld a,$4f
+	ld ixh,$12
 	or  A,IXH
+	push af
+	cp $5f
+	jp nz,oraixhfail
+	pop bc
+	ld a,$04
+	cp c
+	jp nz,oraixhfail
+	ld ixh,$81
+	or a,ixh 
+	push af
+	cp $85
+	jp nz,oraixhfail
+	pop bc 
+	ld a,$80
+	cp c
+	jp nz, oraixhfail
+	ld a,$00
+	ld ixh,$00
+	or a,ixh
+	jp z,oraixl
+oraixhfail:
+	ld (iy),'F'	
+
+oraixl:
+	inc iy
+	ld (iy),'P' ; Test 295
+	ld a,$01
+	ld ixl,$10
 	or  A,IXL
-	or  A,(IX-$07)
-	cp  A,IXH 
+	cp $11
+	jp z,oraixd
+oraixlfail:
+	ld (iy),'F'	
+
+oraixd:
+	inc iy
+	ld (iy),'P' ; Test 296
+	ld ix,results-8
+	ld a,$01
+	or  A,(IX+$07)	; contains $3a
+	cp $3b
+	jp z,cpaixh
+oraixdfail:
+	ld (iy),'F'	
+
+cpaixh:
+	inc iy
+	ld (iy),'P' ; Test 297
+	ld a,$34
+	ld ixh,$80
+	cp  A,IXH
+	push af
+	cp $34
+	jp nz,cpaixhfail
+	pop bc
+	ld a,$87
+	cp c
+	jp nz,cpaixhfail
+	ld a,$80
+	ld ixh,$81
+	cp a,ixh
+	push af
+	pop bc
+	ld a,$93
+	cp c
+	jp nz,cpaixhfail
+	ld a,$05
+	ld ixh,$05
+	cp a,ixh 
+	push af
+	pop bc
+	ld a,$42
+	cp c
+	jp z,cpaixl
+cpaixhfail:
+	ld (iy),'F'	
+
+cpaixl:
+	inc iy
+	ld (iy),'P' ; Test 298
+	ld a,$55
+	ld ixl,$54
 	cp  A,IXL 
-	cp  A,(IX+$02)	
+	push af
+	pop bc
+	ld a,$02
+	cp c
+	jp z,cpaixd
+cpaixlfail:
+	ld (iy),'F'	
+
+cpaixd:
+	inc iy
+	ld (iy),'P' ; Test 299
+	ld a,'t'
+	ld ix,results-8
+	cp  A,(IX+$05)	
+	jp z,rlcixdb
+cpaixdfail:
+	ld (iy),'F'	
 
 ; 0xddc0	
 
@@ -3769,6 +4099,8 @@ addixspfail:
 
 ; 0xddcb - IX bit instructions
 ; 0xddcbss00 -- all affect flags
+rlcixdb:
+	halt ;;; temporary
 	rlc (IX+$7D),B
 	rlc (IX+$7E),C
 	rlc (IX+$7F),D
@@ -3855,6 +4187,9 @@ addixspfail:
 ; 0xddcbssc0 - 0xddcbssff
 
 ; IY instructions - 0xfd prefix
+; These run the same code as the IX instructions,
+; so only minimal testing needed to make sure correct
+; index register is selected when executing.
 ; 0xfd00
 	add IY,BC
 
@@ -4056,7 +4391,7 @@ end_program:
 	halt
 	jp	end_program
 
-	org $2000
+	org $3000
 	defm "Results:"
 
 results:
