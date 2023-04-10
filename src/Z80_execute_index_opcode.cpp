@@ -270,7 +270,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             update_C(SUB, A, memory[disp_index]);
             update_H(SUB, A, memory[disp_index]);
             update_V(SUB, A, memory[disp_index]);
-            A += memory[disp_index];
+            A -= memory[disp_index];
             update_S(A);
             update_Z(A);
             setFlag(N_BIT);
@@ -282,7 +282,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
             update_V(SBC, A, memory[disp_index]);
             update_H(SBC, A, memory[disp_index]);
             update_C(SBC, A, memory[disp_index]);
-            A += memory[disp_index] + temp;
+            A = A - memory[disp_index] - temp;
             update_S(A);
             update_Z(A);
             setFlag(N_BIT);
