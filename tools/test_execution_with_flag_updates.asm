@@ -4911,7 +4911,7 @@ bit7ixd:
 	inc iy
 	ld (iy),'P' ; Test 371
 	bit 7,(IX-$31)	; contains 0x00 before BIT
-	jp z,addiybc
+	jp z,testiyopcodes
 bit7ixdfail:
 	ld (iy),'F'	
 
@@ -4921,14 +4921,38 @@ bit7ixdfail:
 
 ; IY instructions - 0xfd prefix
 ; These run the same code as the IX instructions,
-; so only minimal testing needed to make sure correct
-; index register is selected when executing.
+; except that a different register is used for the index.
+;
+; All opcodes will be executed, but just a couple tests
+; will be run to confirm that the correct index register (IY)
+; is selected for the main index and bit index instructions 
+;
+
+testiyopcodes:
+; switch back to using IX for the test results pointer
+	ld a,iyh
+	ld ixh,a 
+	ld a,iyl
+	ld ixl,a
+
 ; 0xfd00
 addiybc:
-	halt	;;; temporary
+	inc ix
+	ld (ix),'P' ; Test 372
+	ld iy,$1357
+	ld bc,$2468
 	add IY,BC
+	ld a,$bf
+	cp iyl
+	jp nz,addiybcfail
+	ld a,$37
+	cp iyh
+	jp z,addiyde
+addiybcfail:
+	ld (ix),'F'	
 
 ; 0xfd10
+addiyde:
 	add IY,DE
 
 ; 0xfd20
@@ -5037,7 +5061,22 @@ addiybc:
 
 ; 0xfdcb - IY bit instructions
 ; 0xfdcbss00 -- all affect flags
-	rlc (IY+$7D),B
+; Test to make sure bit instructions select correct index register (IY)
+rlciydb:
+	inc ix
+	ld (ix),'P' ; Test 372
+	ld IY,results-$20
+	rlc (IY+$02),B	; contains 'h' ($68)
+	jp c,rlciydbfail
+	ld a,$D0
+	cp B
+	jp nz,rlciydbfail
+	cp (IY+$02)
+	jp z,rlciydc
+rlciydbfail:
+	ld (ix),'F'	
+
+rlciydc:
 	rlc (IY+$7E),C
 	rlc (IY+$7F),D
 	rlc (IY-$70),E
