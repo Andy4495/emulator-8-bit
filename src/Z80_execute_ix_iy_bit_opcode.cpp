@@ -474,8 +474,7 @@ void Z80::execute_ix_iy_bit_opcode() {
         // The IX/IY bit instructions do not act on registers, so
         // don't need to decode register field (r) in opcode
         // Decode the bit position, b
-            if (((memory[index]) >> (IR[3] >> ((IR[3] & 0x38) >> 3))
-               & 0x01) == 0)
+            if ( (((memory[index]) >> ((IR[3] & 0x38) >> 3)) & 0x01) == 0 )
                 setFlag(Z_BIT);
             else
                 clearFlag(Z_BIT);
