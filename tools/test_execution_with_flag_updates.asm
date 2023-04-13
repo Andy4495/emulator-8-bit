@@ -4085,7 +4085,7 @@ cpaixd:
 	ld a,'t'
 	ld ix,results-8
 	cp  A,(IX+$05)	
-	jp z,rlcixdb
+	jp z,ixbitsetup
 cpaixdfail:
 	ld (iy),'F'	
 
@@ -4099,88 +4099,821 @@ cpaixdfail:
 
 ; 0xddcb - IX bit instructions
 ; 0xddcbss00 -- all affect flags
+; First, set up some test data (tested OK)
+ixbitsetup:
+	ld ix,results-$38
+	ld b,$08
+	ld a,$01
+ixbitsetuploop:
+	ld (ix),A
+	sla a
+	inc ix
+	djnz ixbitsetuploop
+
 rlcixdb:
-	halt ;;; temporary
-	rlc (IX+$7D),B
-	rlc (IX+$7E),C
-	rlc (IX+$7F),D
-	rlc (IX-$70),E
-	rlc (IX-$72),H
-	rlc (IX-$73),L
-	rlc (IX+$22)
-	rlc (IX-$74),A
-	rrc (IX+$7D),B
-	rrc (IX+$7E),C
-	rrc (IX+$7F),D
-	rrc (IX-$70),E
-	rrc (IX-$72),H
-	rrc (IX-$73),L
-	rrc (IX+$22)
-	rrc (IX-$74),A
+	inc iy
+	ld (iy),'P' ; Test 300
+	ld ix,results
+	rlc (IX-$38),B
+	ld a,$02
+	cp b 
+	jp z,rlcixdc
+rlcixdbfail:
+	ld (iy),'F'	
+
+rlcixdc:
+	inc iy
+	ld (iy),'P' ; Test 301
+	rlc (IX-$37),C
+	ld a,$04
+	cp c 
+	jp z,rlcixdd
+rlcixdcfail:
+	ld (iy),'F'	
+
+rlcixdd:
+	inc iy
+	ld (iy),'P' ; Test 302
+	rlc (IX-$36),D
+	ld a,$08
+	cp d 
+	jp z,rlcixde
+rlcixddfail:
+	ld (iy),'F'	
+
+rlcixde:
+	inc iy
+	ld (iy),'P' ; Test 303
+	rlc (IX-$35),E
+	ld a,$10
+	cp e 
+	jp z,rlcixdh
+rlcixdefail:
+	ld (iy),'F'	
+
+rlcixdh:
+	inc iy
+	ld (iy),'P' ; Test 304
+	rlc (IX-$34),H
+	ld a,$20
+	cp h
+	jp z,rlcixdl
+rlcixdhfail:
+	ld (iy),'F'	
+
+rlcixdl:
+	inc iy
+	ld (iy),'P' ; Test 305
+	rlc (IX-$33),L
+	ld a,$40
+	cp l
+	jp z,rlcixd
+rlcixdlfail:
+	ld (iy),'F'	
+
+rlcixd:
+	inc iy
+	ld (iy),'P' ; Test 306
+	rlc (IX-$32)	; contains $40
+	push af
+	ld a,(ix-$32)
+	cp $80
+	jp nz,rlcixdfail
+	pop bc
+	ld a,$80
+	cp C
+	jp nz,rlcixdfail
+	ld a,$80
+	ld (ix-$28),A
+	rlc (IX-$28)
+	jp m,rlcixdfail
+	jp z,rlcixdfail
+	jp pe,rlcixdfail
+	jp nc,rlcixdfail
+	ld a,$00
+	ld (IX-$28),A
+	rlc (IX-$28)	
+	jp z,rlcixda
+rlcixdfail:
+	ld (iy),'F'	
+
+rlcixda:
+	inc iy
+	ld (iy),'P' ; Test 307
+	rlc (IX-$31),A
+	cp $01
+	jp z,rrcixdb
+rlcixdafail:
+	ld (iy),'F'	
+
+rrcixdb:
+	inc iy
+	ld (iy),'P' ; Test 308
+	rrc (IX-$38),B		; contains $02 before RRC
+	jp c,rrcixdbfail
+	ld a,$01
+	cp b
+	jp nz,rrcixdc
+	rrc (IX-$38),b
+	jp nc,rrcixdbfail
+	jp z,rrcixdbfail
+	ld (ix-$38),$01
+	jp rrcixdc
+rrcixdbfail:
+	ld (iy),'F'	
+
+rrcixdc:
+	inc iy
+	ld (iy),'P' ; Test 309
+	rrc (IX-$37),C
+	jp c,rrcixdcfail
+	ld a,$02
+	cp C
+	jp z,rrcixdd
+rrcixdcfail:
+	ld (iy),'F'	
+
+rrcixdd:
+	inc iy
+	ld (iy),'P' ; Test 310
+	rrc (IX-$36),D
+	ld a,$04
+	cp d
+	jp z,rrcixde
+rrcixddfail:
+	ld (iy),'F'	
+
+rrcixde:
+	inc iy
+	ld (iy),'P' ; Test 311
+	rrc (IX-$35),E
+	ld a,$08
+	cp e
+	jp z,rrcixdh
+rrcixdefail:
+	ld (iy),'F'	
+
+rrcixdh:
+	inc iy
+	ld (iy),'P' ; Test 312
+	rrc (IX-$34),H
+	ld a,$10
+	cp h
+	jp z,rrcixdl
+rrcixdhfail:
+	ld (iy),'F'	
+
+rrcixdl:
+	inc iy
+	ld (iy),'P' ; Test 313
+	rrc (IX-$33),L
+	ld a,$20
+	cp l
+	jp z,rrcixd
+rrcixdlfail:
+	ld (iy),'F'	
+
+rrcixd:
+	inc iy
+	ld (iy),'P' ; Test 314
+	rrc (IX-$32)
+	ld a,(ix-$32)
+	cp $40
+	jp z,rrcixda
+rrcixdfail:
+	ld (iy),'F'	
+
+rrcixda:
+	inc iy
+	ld (iy),'P' ; Test 315
+	rrc (IX-$31),A
+	cp $80
+	jp z,rlixdb
+rrcixdafail:
+	ld (iy),'F'	
 
 ; 0xddcbss10 -- all affect flags
-	rl (IX+$7D),B
-	rl (IX+$7E),C
-	rl (IX+$7F),D
-	rl (IX-$70),E
-	rl (IX-$72),H
-	rl (IX-$73),L
-	rl (IX+$22)
-	rl (IX-$74),A
-	rr (IX+$7D),B
-	rr (IX+$7E),C
-	rr (IX+$7F),D
-	rr (IX-$70),E
-	rr (IX-$72),H
-	rr (IX-$73),L
-	rr (IX+$22)
-	rr (IX-$74),A
+rlixdb:
+	inc iy
+	ld (iy),'P' ; Test 316
+	rl (IX-$38),B	; contains $01 before RL
+	ld a,$02
+	cp b
+	jp z,rlixdc
+rlixdbfail:
+	ld (iy),'F'	
+
+rlixdc:
+	inc iy
+	ld (iy),'P' ; Test 317
+	rl (IX-$37),C
+	ld a,$04
+	cp c 
+	jp z,rlixdd
+rlixdcfail:
+	ld (iy),'F'	
+
+rlixdd:
+	inc iy
+	ld (iy),'P' ; Test 318
+	rl (IX-$36),D
+	ld a,$08
+	cp d 
+	jp z,rlixde
+rlixddfail:
+	ld (iy),'F'	
+
+rlixde:
+	inc iy
+	ld (iy),'P' ; Test 319
+	rl (IX-$35),E
+	ld a,$10
+	cp e 
+	jp z,rlixdh
+rlixdefail:
+	ld (iy),'F'	
+
+rlixdh:
+	inc iy
+	ld (iy),'P' ; Test 320
+	rl (IX-$34),H
+	ld a,$20
+	cp H
+	jp z,rlixdl
+rlixdhfail:
+	ld (iy),'F'	
+
+rlixdl:
+	inc iy
+	ld (iy),'P' ; Test 321
+	rl (IX-$33),L
+	ld a,$40 
+	cp L
+	jp z,rlixd
+rlixdlfail:
+	ld (iy),'F'	
+
+rlixd:
+	inc iy
+	ld (iy),'P' ; Test 322
+	rl (IX-$32)	; contains $40 before RL
+	push af
+	ld a,(IX-$32)
+	cp $80
+	jp nz,rlixdfail
+	pop bc
+	ld a,$80
+	cp C
+	jp nz,rlixdfail
+	rl (IX-$32)
+	push af
+	pop bc
+	ld a,$45
+	cp C
+	jp nz,rlixdfail
+	ld (IX-$32),$80
+	jp rlixda
+rlixdfail:
+	ld (iy),'F'	
+
+rlixda:
+	inc iy
+	ld (iy),'P'		; Test 323
+	rl (IX-$31),A	; Contains $80 before RL
+	jp z,rrixdb
+rlixdafail:
+	ld (iy),'F'	
+
+rrixdb:
+	inc iy
+	ld (iy),'P' ; Test 324
+	scf	
+	rr (IX-$38),B	; Contains $02 before RR
+	ld a,$81
+	cp b 
+	jp z,rrixdc
+rrixdbfail:
+	ld (iy),'F'	
+
+rrixdc:
+	inc iy
+	ld (iy),'P' ; Test 325
+	or A	; clear C flag
+	rr (IX-$37),C
+	ld a,$02
+	cp c 
+	jp z,rrixdd
+rrixdcfail:
+	ld (iy),'F'	
+
+rrixdd:
+	inc iy
+	ld (iy),'P' ; Test 326
+	rr (IX-$36),D
+	ld a,$04
+	cp d 
+	jp z,rrixde
+rrixddfail:
+	ld (iy),'F'	
+
+rrixde:
+	inc iy
+	ld (iy),'P' ; Test 327
+	rr (IX-$35),E
+	ld a,$08
+	cp e 
+	jp z,rrixdh
+rrixdefail:
+	ld (iy),'F'	
+
+rrixdh:
+	inc iy
+	ld (iy),'P' ; Test 328
+	rr (IX-$34),H
+	ld a,$10
+	cp h 
+	jp z,rrixdl
+rrixdhfail:
+	ld (iy),'F'	
+
+rrixdl:
+	inc iy
+	ld (iy),'P' ; Test 329
+	rr (IX-$33),L
+	ld a,$20
+	cp l 
+	jp z,rrixd
+rrixdlfail:
+	ld (iy),'F'	
+
+rrixd:
+	inc iy
+	ld (iy),'P' ; Test 330
+	rr (IX-$32)
+	ld a,(IX-$32)
+	cp $40
+	jp z,rrixda
+rrixdfail:
+	ld (iy),'F'	
+
+rrixda:
+	inc iy
+	ld (iy),'P' ; Test 331
+	scf
+	rr (IX-$31),A
+	cp $80
+	jp z,slaixdb
+rrixdafail:
+	ld (iy),'F'	
 
 ; 0xddcbss20 -- all affect flags
-	sla (IX+$7D),B
-	sla (IX+$7E),C
-	sla (IX+$7F),D
-	sla (IX-$70),E
-	sla (IX-$72),H
-	sla (IX-$73),L
-	sla (IX+$22)
-	sla (IX-$74),A
-	sra (IX+$7D),B
-	sra (IX+$7E),C
-	sra (IX+$7F),D
-	sra (IX-$70),E
-	sra (IX-$72),H
-	sra (IX-$73),L
-	sra (IX+$22)
-	sra (IX-$74),A
+slaixdb:
+	inc iy
+	ld (iy),'P' ; Test 332
+	sla (IX-$38),B		; contains $81 before SLA
+	jp nc,slaixdbfail
+	ld a,$02
+	cp b
+	jp z,slaixdc
+slaixdbfail:
+	ld (iy),'F'	
+
+slaixdc:
+	inc iy
+	ld (iy),'P' ; Test 333
+	sla (IX-$37),C 		; Contains $02 before SLA
+	jp c,slaixdcfail
+	ld a,$04
+	cp c
+	jp z,slaixdd
+slaixdcfail:
+	ld (iy),'F'	
+
+slaixdd:
+	inc iy
+	ld (iy),'P' ; Test 334
+	sla (IX-$36),D 		; Contains $04 before SLA
+	ld a,$08
+	cp D
+	jp z,slaixde
+slaixddfail:
+	ld (iy),'F'	
+
+slaixde:
+	inc iy
+	ld (iy),'P' ; Test 335
+	sla (IX-$35),E
+	ld a,$10
+	cp e 
+	jp z,slaixdh
+slaixdefail:
+	ld (iy),'F'	
+
+slaixdh:
+	inc iy
+	ld (iy),'P' ; Test 336
+	sla (IX-$34),H
+	ld a,$20
+	cp H
+	jp z,slaixdl
+slaixdhfail:
+	ld (iy),'F'	
+
+slaixdl:
+	inc iy
+	ld (iy),'P' ; Test 337
+	sla (IX-$33),L
+	ld a,$40
+	cp L
+	jp z,slaixd
+slaixdlfail:
+	ld (iy),'F'	
+
+slaixd:
+	inc iy
+	ld (iy),'P' ; Test 338
+	scf
+	sla (IX-$32) 	; Contains $40 before SLA
+	push af
+	jp z,slaixdfail
+	jp c,slaixdfail
+	jp p,slaixdfail
+	jp pe,slaixdfail
+	ld a,(IX-$32)
+	cp $80
+	jp nz,slaixdfail
+	pop bc
+	ld a,$80	; S flag set
+	cp C
+	jp nz,slaixdfail
+	ld (IX-$32),$80
+	sla (IX-$32)
+	jp nz,slaixdfail
+	jp nc,slaixdfail
+	ld (IX-$32),$21
+	sla (IX-$32)
+	push af
+	ld a,(IX-$32)
+	cp $42
+	jp nz,slaixdfail
+	pop bc
+	ld a,$04
+	jp nz,slaixdfail
+	ld (IX-$32),$80
+	jp slaixda	
+slaixdfail:
+	ld (iy),'F'	
+
+slaixda:
+	inc iy
+	ld (iy),'P' ; Test 339
+	sla (IX-$31),A
+	jp nc,slaixdafail
+	cp $00
+	jp nz,slaixdafail
+	ld (IX-$31),$01
+	jp sraixdb
+slaixdafail:
+	ld (iy),'F'	
+
+sraixdb:
+	inc iy
+	ld (iy),'P' ; Test 340
+	sra (IX-$38),B		; contains $02 before SRA
+	jp z,sraixdbfail
+	jp c,sraixdbfail
+	jp m,sraixdbfail
+	jp pe,sraixdbfail
+	ld a,$01
+	cp b
+	jp z,sraixdc
+sraixdbfail:
+	ld (iy),'F'	
+
+sraixdc:
+	inc iy
+	ld (iy),'P' ; Test 341
+	sra (IX-$37),C		; contains $04 before SRA 
+	ld a,$02
+	cp c
+	jp z,sraixdd
+sraixdcfail:
+	ld (iy),'F'	
+
+sraixdd:
+	inc iy
+	ld (iy),'P' ; Test 342
+	sra (IX-$36),D 
+	ld a,$04
+	cp D
+	jp z,sraixde
+sraixddfail:
+	ld (iy),'F'	
+
+sraixde:
+	inc iy
+	ld (iy),'P' ; Test 343
+	sra (IX-$35),E
+	ld a,$08
+	cp e 
+	jp z,sraixdh
+sraixdefail:
+	ld (iy),'F'	
+
+sraixdh:
+	inc iy
+	ld (iy),'P' ; Test 344
+	sra (IX-$34),H
+	ld a,$10
+	cp h 
+	jp z,sraixdl
+sraixdhfail:
+	ld (iy),'F'	
+
+sraixdl:
+	inc iy
+	ld (iy),'P' ; Test 345
+	sra (IX-$33),L 
+	ld a,$20
+	cp l 
+	jp z,sraixd
+sraixdlfail:
+	ld (iy),'F'	
+
+sraixd:
+	inc iy
+	ld (iy),'P' ; Test 346
+	sra (IX-$32)	; contains $80 before SRA
+	jp p,sraixdfail
+	jp po,sraixdfail
+	ld a,(IX-$32)
+	cp $c0
+	jp z,sraixda
+sraixdfail:
+	ld (iy),'F'	
+
+sraixda:
+	inc iy
+	ld (iy),'P' ; Test 347
+	sra (IX-$31),A	; contains $01 before SRA
+	jp nc,sraixdafail
+	jp nz,sraixdafail
+	ld (IX-$31),$80
+	jp sllixdb
+sraixdafail:
+	ld (iy),'F'	
 
 ; 0xddcbss30 -- all affect flags
-	sll (IX+$7D),B
-	sll (IX+$7E),C
-	sll (IX+$7F),D
-	sll (IX-$70),E
-	sll (IX-$72),H
-	sll (IX-$73),L
-	sll (IX+$22)
-	sll (IX-$74),A
-	srl (IX+$7D),B
-	srl (IX+$7E),C
-	srl (IX+$7F),D
-	srl (IX-$70),E
-	srl (IX-$72),H
-	srl (IX-$73),L
-	srl (IX+$22)
-	srl (IX-$74),A
+sllixdb:
+	inc iy
+	ld (iy),'P' ; Test 348
+	sll (IX-$38),B	; Contains $01 before SLL
+	push af
+	pop de
+	ld a,$03
+	cp b
+	jp nz,sllixdbfail
+	ld a,$04
+	cp E
+	jp nz,sllixdbfail
+	sll (ix-$38),b 
+	jp po,sllixdc
+sllixdbfail:
+	ld (iy),'F'	
+
+sllixdc:
+	inc iy
+	ld (iy),'P' ; Test 349
+	sll (IX-$37),C	; Contains $02 before SLL
+	ld a,$05
+	cp c 
+	jp z,sllixdd
+sllixdcfail:
+	ld (iy),'F'	
+
+sllixdd:
+	inc iy
+	ld (iy),'P' ; Test 350
+	sll (IX-$36),D	; Contains $04 before SLL
+	ld a,$09
+	cp D
+	jp z,sllixde
+sllixddfail:
+	ld (iy),'F'	
+
+sllixde:
+	inc iy
+	ld (iy),'P' ; Test 351
+	sll (IX-$35),E	; Contains $08 before SLL
+	ld a,$11
+	cp e 
+	jp z,sllixdh
+sllixdefail:
+	ld (iy),'F'	
+
+sllixdh:
+	inc iy
+	ld (iy),'P' ; Test 352
+	sll (IX-$34),H	; Contains $10 before SLL
+	ld a,$21
+	cp H
+	jp z,sllixdl
+sllixdhfail:
+	ld (iy),'F'	
+
+sllixdl:
+	inc iy
+	ld (iy),'P' ; Test 353
+	sll (IX-$33),L	; Contains $20 before SLL
+	ld a,$41
+	cp L
+	jp z,sllixd
+sllixdlfail:
+	ld (iy),'F'	
+
+sllixd:
+	inc iy
+	ld (iy),'P' ; Test 354
+	sll (IX-$32)	; Contains $c0 before SLL
+	jp nc,sllixdfail
+	jp p,sllixdfail
+	ld a,$81
+	cp (ix-$32)
+	jp z,sllixda
+sllixdfail:
+	ld (iy),'F'	
+
+sllixda:
+	inc iy
+	ld (iy),'P' ; Test 355
+	sll (IX-$31),A	; Contains $80 before SLL
+	jp nc,sllixdafail
+	jp z,sllixdafail
+	cp $01
+	jp z,srlixdb
+sllixdafail:
+	ld (iy),'F'	
+
+srlixdb:
+	inc iy
+	ld (iy),'P' ; Test 356
+	srl (IX-$38),B	; Contains $07 before SLL
+	push af
+	jp z,srlixdbfail
+	jp po,srlixdbfail
+	jp m,srlixdbfail
+	jp nc,srlixdbfail
+	ld a,$03
+	cp b
+	jp nz,srlixdbfail
+	pop bc
+	ld a,$05
+	jp z,srlixdc
+srlixdbfail:
+	ld (iy),'F'	
+
+srlixdc:
+	inc iy
+	ld (iy),'P' ; Test 357
+	srl (IX-$37),C	; Contains $05 before SLL
+	ld a,$02
+	cp c
+	jp z,srlixdd
+srlixdcfail:
+	ld (iy),'F'	
+
+srlixdd:
+	inc iy
+	ld (iy),'P' ; Test 358
+	srl (IX-$36),D	; Contains $09 before SLL
+	ld a,$04
+	cp D
+	jp z,srlixde
+srlixddfail:
+	ld (iy),'F'	
+
+srlixde:
+	inc iy
+	ld (iy),'P' ; Test 359
+	srl (IX-$35),E 	; Contains $11 before SLL
+	ld a,$08
+	cp E
+	jp z,srlixdh
+srlixdefail:
+	ld (iy),'F'	
+
+srlixdh:
+	inc iy
+	ld (iy),'P' ; Test 360
+	srl (IX-$34),H	; Contains $21 before SLL
+	ld a,$10
+	cp h 
+	jp z,srlixdl
+srlixdhfail:
+	ld (iy),'F'	
+
+srlixdl:
+	inc iy
+	ld (iy),'P' ; Test 361
+	srl (IX-$33),L	; Contains $41 before SLL
+	ld a,$20
+	cp l 
+	jp z,srlixd
+srlixdlfail:
+	ld (iy),'F'	
+
+srlixd:
+	inc iy
+	ld (iy),'P' ; Test 362
+	srl (IX-$32)	; Contains $81 before SLL
+	jp pe,srlixdfail
+	ld a,$40
+	cp (IX-$32)
+	jp z,srlixda 
+srlixdfail:
+	ld (iy),'F'	
+
+srlixda:
+	inc iy
+	ld (iy),'P' ; Test 363
+	srl (IX-$31),A	; Contains $01 before SLL
+	jp nz,srlixdafail
+	jp po,srlixdafail
+	jp nc,srlixdafail
+	jp p,bit0ixd
+srlixdafail:
+	ld (iy),'F'	
 
 ; 0xddcbss40 - 0xddcbss7f
-	bit 0,(IX+$01)  
-	bit 1,(IX+$02)
-	bit 2,(IX+$03)
-	bit 3,(IX+$04)
-	bit 4,(IX+$05)
-	bit 5,(IX+$06)
-	bit 6,(IX+$07)
-	bit 7,(IX+$08)	
+bit0ixd:
+	inc iy
+	ld (iy),'P' ; Test 364
+	bit 0,(IX-$38)  ; contains 0x03 before BIT
+	push af
+	pop bc
+	jp z,bit0ixdfail
+	ld a,C
+	and $52		; only check Z, H, N bits
+	cp $10		; H flag should be set
+	jp z,bit1ixd
+bit0ixdfail:
+	ld (iy),'F'	
+
+bit1ixd:
+	inc iy
+	ld (iy),'P' ; Test 365
+	bit 1,(IX-$37)  ; contains 0x02 before BIT
+	jp nz,bit2ixd
+bit1ixdfail:
+	ld (iy),'F'	
+
+bit2ixd:
+	inc iy
+	ld (iy),'P' ; Test 366
+	bit 2,(IX-$36)  ; contains 0x04 before BIT
+	jp nz, bit3ixd
+bit2ixdfail:
+	ld (iy),'F'	
+
+bit3ixd:
+	inc iy
+	ld (iy),'P' ; Test 367
+	bit 3,(IX-$35)  ; contains 0x08 before BIT
+	jp nz,bit4ixd
+bit3ixdfail:
+	ld (iy),'F'	
+
+bit4ixd:
+	inc iy
+	ld (iy),'P' ; Test 368
+	bit 4,(IX-$34)  ; contains 0x10 before BIT
+	jp nz,bit5ixd
+bit4ixdfail:
+	ld (iy),'F'	
+
+bit5ixd:
+	inc iy
+	ld (iy),'P' ; Test 369
+	bit 5,(IX-$33)  ; contains 0x20 before BIT
+	jp nz,bit6ixd
+bit5ixdfail:
+	ld (iy),'F'	
+
+bit6ixd:
+	inc iy
+	ld (iy),'P' ; Test 370
+	bit 6,(IX-$33)  ; contains 0x20 before BIT
+	jp z,bit7ixd
+bit6ixdfail:
+	ld (iy),'F'	
+
+bit7ixd:
+	inc iy
+	ld (iy),'P' ; Test 371
+	bit 7,(IX-$31)	; contains 0x00 before BIT
+	jp z,addiybc
+bit7ixdfail:
+	ld (iy),'F'	
 
 ; 0xddcbss80 - 0xddcbssbf
 
@@ -4191,6 +4924,8 @@ rlcixdb:
 ; so only minimal testing needed to make sure correct
 ; index register is selected when executing.
 ; 0xfd00
+addiybc:
+	halt	;;; temporary
 	add IY,BC
 
 ; 0xfd10
