@@ -235,7 +235,7 @@ void Z80::execute_ix_iy_bit_opcode() {
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            memory[index] = ((memory[index] << 1) & 0x7f) | (temp << 7);
+            memory[index] = ((memory[index] >> 1) & 0x7f) | (temp << 7);
             if (r != nullptr) {
                 *r = memory[index];
             }
