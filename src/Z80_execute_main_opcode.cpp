@@ -718,27 +718,21 @@ void Z80::execute_main_opcode() {
                     setFlag(C_BIT);
             } else
             // Case V
-            if (((testFlag(N_BIT) == 1) && (testFlag(C_BIT) == 0)
-                && (testFlag(H_BIT) == 1)
-                && (upperN >= 0x0) && (upperN <= 0x8)
-                && (lowerN >= 0x6) && (lowerN <= 0xf))) {
+            if ( (testFlag(N_BIT) == 1) && (testFlag(C_BIT) == 0) && (testFlag(H_BIT) == 1) )
+            {
                     adjustment = 0xFA;
                     clearFlag(C_BIT);
             } else
             // Case VI
-            if (((testFlag(N_BIT) == 1) && (testFlag(C_BIT) == 1)
-                && (testFlag(H_BIT) == 0)
-                && (upperN >= 0x7) && (upperN <= 0xf)
-                && (lowerN >= 0x0) && (lowerN <= 0x9))) {
+            if ( (testFlag(N_BIT) == 1) && (testFlag(C_BIT) == 1) && (testFlag(H_BIT) == 0) )
+            {
                     adjustment = 0xA0;
                     setFlag(C_BIT);
             } else
             // Case VII
-            if (((testFlag(N_BIT) == 1) && (testFlag(C_BIT) == 1)
-                && (testFlag(H_BIT) == 1)
-                && (upperN >= 0x6) && (upperN <= 0x7)
-                && (lowerN >= 0x6) && (lowerN <= 0xf))) {
-                    adjustment = 0xA0;
+            if ( (testFlag(N_BIT) == 1) && (testFlag(C_BIT) == 1) && (testFlag(H_BIT) == 1) )
+            {
+                    adjustment = 0x9A;
                     setFlag(C_BIT);
             } else {
                 // Any combination beyond the above cases are not covered
@@ -748,6 +742,18 @@ void Z80::execute_main_opcode() {
                      << (uint16_t) testFlag(C_BIT) << " H: "
                      << (uint16_t) testFlag(H_BIT) << " A: 0x"
                      << (uint16_t) A << endl;
+            }
+            // H Flag update depends on N, current H value, and low-order nibble 
+            if (testFlag(N_BIT) == 0) {
+                if ((A & 0x0f) <= 9) clearFlag(H_BIT);
+                else setFlag(H_BIT);
+            } else { // N Flag is set
+                if (testFlag(H_BIT) == 0) {
+                    clearFlag(H_BIT);
+                } else {
+                    if ((A & 0x0f) <= 5) setFlag(H_BIT);
+                    else clearFlag(H_BIT);
+                }
             }
             A += adjustment;
             update_S(A);
