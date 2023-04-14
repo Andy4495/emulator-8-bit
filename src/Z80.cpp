@@ -132,31 +132,35 @@ void Z80::dump_memory_to_file(const char* fname) {
 
 void Z80::cold_reset() {
     // Clear RAM and registers, start from $0000
-    cout << "Cold Reset: clearing RAM, clearing registers, PC set to $0000"
+    // CPU is initialized as follows:
+    // PC, IFF1, IFF2 set to 0
+    // Other registers set to $FF/$FFFF
+    // Interrupt Mode set to 0
+    // RAM is left as-is
+    cout << "Cold Reset: PC, I, R, IFF1/2 set to zero, other registers set to $FF, Interrupt Mode 0. "
          << endl;
-    for (uint32_t i = _ramstart; i <= _ramend; i++) memory[i] = 0;
-    clear_registers();
+    init_registers();
     Halt = false;
 }
 
 void Z80::warm_reset() {
     // Keep RAM intact, clear registers
-    cout << "Warm Reset: clearing registers, PC set to $0000" << endl;
-    clear_registers();
+    cout << "Warm Reset (aka Special Reset): PC set to $0000, other registers unchanged." << endl;
+    PC = 0x0000;
     Halt = false;
 }
 
-void Z80::clear_registers() {
-    A    = 0;
-    F    = 0;
-    B    = 0; C = 0; D = 0; E = 0; H = 0; L = 0;
-    Aprime  = 0;
-    Fprime  = 0;
-    Bprime  = 0; Cprime = 0; Dprime = 0; Eprime = 0; Hprime = 0; Lprime = 0;
+void Z80::init_registers() {
+    A    = 0xFF;
+    F    = 0xD7;    // Leave bits 5 and 3 clear (XF and YF)
+    B    = 0xFF; C = 0xFF; D = 0xFF; E = 0xFF; H = 0xFF; L = 0xFF;
+    Aprime  = 0xFF;
+    Fprime  = 0xD7;    // Leave bits 5 and 3 clear (XF and YF)
+    Bprime  = 0xFF; Cprime = 0xFF; Dprime = 0xFF; Eprime = 0xFF; Hprime = 0xFF; Lprime = 0xFF;
     I = 0;
     R = 0;
-    IXH = 0; IXL = 0; IYH = 0; IYL = 0;
-    SP = 0;
+    IXH = 0xFF; IXL = 0xFF; IYH = 0xFF; IYL = 0xFF;
+    SP = 0xFF;
     PC = 0;
     for (int i = 0; i < MAX_INSTR_SIZE; i++) IR[i] = 0;
     IFF1 = 0;

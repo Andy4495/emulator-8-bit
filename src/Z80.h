@@ -130,7 +130,7 @@ class Z80 : public abstract_CPU {
     void setHL(uint16_t v);
     void setSP(uint8_t msb, uint8_t lsb);
     void setPC(uint8_t msb, uint8_t lsb);
-    void clear_registers();
+    void init_registers();
     void setFlag(FLAG_BITS f);
     void clearFlag(FLAG_BITS f);
     uint16_t getIndexReg(INDEX_REG r);

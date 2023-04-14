@@ -46,7 +46,7 @@ incb:
 	inc B        
 	push af 
 	pop de
-	ld a,$00	; no flags
+	ld a,$01	; C flag set from cold reset
 	cp e 
 	jp z,ldb1
 	ld (ix),'F'
