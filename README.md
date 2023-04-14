@@ -11,6 +11,13 @@ I created it as a learning exercise to refresh my C++ programming skills and to 
 
 The Z80-specific code is encapsulated in a Z80 class. Additional CPUs can be emulated by creating classes specific for those CPUs by inheriting from the `abstract_CPU` class.
 
+The emulator:
+
+- Does not emulate external hardware (e.g., there is no method to see what bits are currently on the address lines).
+- Does not emulate exact clock cycles (i.e., it is not "clock accurate"). It emulates down to the instruction-level only.
+- Does not update the undocumented flag bits 5 and 3 (sometimes referred to as XF and YF).
+- Does not emulate the undocumented internal MEMPTR and Q registers.
+
 There are many other open source emulators available. This emulator is not meant to replace any of those. Feel free to use it and open an issue if you find anything or would like to request a feature.
 
 ## Work In Progress
@@ -24,9 +31,7 @@ This is a "pre-release":
 
 Next steps:
 
-- Arithmetic operations need more combinations of operands in the test cases:
-  - DAA opcode (possibly testing all combinations)
-  - Verifying the setting of the H and C flags
+- Update behavior per the [*The Undocumented Z80 Documented*][18] white paper.
 
 See also the [Future Functionality](#future-functionality) items below.
 
@@ -138,7 +143,7 @@ The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base c
 
 ## Z80 Assembler
 
-I have been using the [`zasm`][24] assembler for testing, mainly because it still appears to be in active development and it is fairly well documented. Disassembled code generated from my emulator can be assembled with `zasm`, and used as a "round-trip" test of any changes to verify that the opcodes are decoded into the correct mnemonics.
+I have been using the [`zasm`][24] assembler for testing. Disassembled code generated from my emulator can be assembled with `zasm`, and used as a "round-trip" test of any changes to verify that the opcodes are decoded into the correct mnemonics.
 
 I have included the `zasm` linux executable in this repo as a convenience in automated testing. See the file [zasm_LICENSE.txt][22] for licensing details specifically for `zasm`.
 
@@ -166,8 +171,9 @@ Various workflow actions are defined to test the emulator:
 | Input File                               | Test Type  | Notes                                  |
 | ---------------------------------------- | ---------- | -------------------------------------- |
 | test_execution_no_flag_updates.asm       | Known Good | Opcodes that don't update flags        |
-| test_execution_call_jump_loop_return.asm | Known Good | Condiitonal call, jump, return opcodes |
+| test_execution_call_jump_loop_return.asm | Known Good | Call, jump, return, rst opcodes        |
 | test_execution_with_flag_updates.asm     | Known Good | Opcodes that affect flags              |
+| test_execution_daa.asm                   | Known Good | DAA opcode and flags                   |
 
 ### Test Types
 
