@@ -3,6 +3,7 @@
 [![Build](https://github.com/Andy4495/emulator-8-bit/actions/workflows/Build.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/Build.yml)
 [![Check Markdown Links](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml)
 [![Test Disassembler](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml)
+[![Test Opcodes](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestOpcodes.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestOpcodes.yml)
 
 This is a simple 8-bit CPU emulator and disassembler. It currently supports the Z80, but adding support for other CPUs should be straightforward.
 
@@ -14,32 +15,18 @@ There are many other open source emulators available. This emulator is not meant
 
 ## Work In Progress
 
-All opcodes have decoding and execution code implemented.
-
-The disassembler functionality is thoroughly tested.
-
-Opcode execution testing is in progress, including automated tests:
-
-- Opcodes that do not affect flags completed
-- Calls, jumps, loops, returns completed
-- Opcodes that affect flags in progress; more tests are still to be created
+All opcodes have been implemented and tested, including flag updates.
 
 This is a "pre-release":
 
 - The input and output file formats may change.
 - Menu items may be added, removed, modified, or re-ordered.
-- Opcode execution, particularly the handling of processor flags, is not fully tested
 
 Next steps:
 
-- In progress... More thorough testing of opcode execution and processor flag updates
-- In progress... Visual review of all opcode implementation
-- Hooks to allow for automated testing. This may include:
-  - Updating command line options
-  - Updating output formatting
-  - Changing list of options in interactive mode
-- DONE Moving certain operations currently handled by the main program loop into the Z80 processor class
-- DONE. Clean up compiler warnings (if any)
+- Arithmetic operations need more combinations of operands in the test cases:
+  - DAA opcode (possibly testing all combinations)
+  - Verifying the setting of the H and C flags
 
 See also the [Future Functionality](#future-functionality) items below.
 
@@ -148,10 +135,6 @@ The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base c
   - Since interrupts are not implemented, HALT just stops the emulator
   - HALT should act like a breakpoint, in that execution can be continued after performing available debugging operations
   - HALT does not execute NOPs, so R register is not updated
-- Automated test suite
-  - All valid opcodes
-  - Corner cases
-  - All flag update conditions
 
 ## Z80 Assembler
 
