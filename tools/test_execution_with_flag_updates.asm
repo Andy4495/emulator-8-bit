@@ -9,8 +9,11 @@
 ;   zasm --ixcbr2 filename.asm
 
     org 0
+	ld c,0		; Clear the flags
+	push bc
+	pop af
 	jp	start
-	defs 5,0	; fill between with zeros
+	defs 1,0	; fill between with zeros
 	org 8
 	ret
 	defs 7,0	; fill between with zeros
@@ -46,7 +49,7 @@ incb:
 	inc B        
 	push af 
 	pop de
-	ld a,$01	; C flag set from cold reset
+	ld a,$00
 	cp e 
 	jp z,ldb1
 	ld (ix),'F'

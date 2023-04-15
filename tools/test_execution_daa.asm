@@ -13,6 +13,9 @@
 
 start: 
 	ld sp,$ffff
+	ld c,$00			; Clear out the flags
+	push bc
+	pop af
 	ld ix,tests_1		; Table of test values and results
 	ld iy,results 
 	ld h,0				; Used to track the test number

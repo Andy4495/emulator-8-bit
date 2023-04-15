@@ -152,16 +152,16 @@ void Z80::warm_reset() {
 
 void Z80::init_registers() {
     A    = 0xFF;
-    F    = 0xD7;    // Leave bits 5 and 3 clear (XF and YF)
+    F    = 0xFF;
     B    = 0xFF; C = 0xFF; D = 0xFF; E = 0xFF; H = 0xFF; L = 0xFF;
     Aprime  = 0xFF;
-    Fprime  = 0xD7;    // Leave bits 5 and 3 clear (XF and YF)
+    Fprime  = 0xFF;
     Bprime  = 0xFF; Cprime = 0xFF; Dprime = 0xFF; Eprime = 0xFF; Hprime = 0xFF; Lprime = 0xFF;
     I = 0;
     R = 0;
     IXH = 0xFF; IXL = 0xFF; IYH = 0xFF; IYL = 0xFF;
-    SP = 0xFF;
-    PC = 0;
+    SP = 0xFFFF;
+    PC = 0x0000;
     for (int i = 0; i < MAX_INSTR_SIZE; i++) IR[i] = 0;
     IFF1 = 0;
     IFF2 = 0;

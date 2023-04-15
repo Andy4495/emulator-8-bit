@@ -14,7 +14,7 @@ The Z80-specific code is encapsulated in a Z80 class. Additional CPUs can be emu
 The emulator:
 
 - Does not emulate external hardware (e.g., there is no method to see what bits are currently on the address lines).
-- Does not emulate exact clock cycles (i.e., it is not "clock accurate"). It emulates down to the instruction-level only.
+- Emulates at the instruction level (it is not "clock accurate")
 - Does not update the undocumented flag bits 5 and 3 (sometimes referred to as XF and YF).
 - Does not emulate the undocumented internal MEMPTR and Q registers.
 
@@ -69,7 +69,7 @@ make clean    # Removes the executable, object, and linker files
 
 The emulator was developed using Ubuntu 20.04 with gcc version 9.4.0 (by way of [WSL 2][26]) and MacOS Ventura with clang version 12.0.0.
 
-It is also known to be compatible with Ubuntu 22.04 and gcc version 11.3.0 (the environment run with GitHub Actions).
+It is also known to be compatible with Ubuntu 22.04 and gcc version 11.3.0 (the GitHub Actions environment).
 
 I have not tried it on other platforms, but there is no machine dependent code. It should work as-is (or with minimal changes) on other unix-like platforms and compiler versions.
 
@@ -111,9 +111,10 @@ The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base c
   - Load memory from file
     - Loads ROM and RAM with program and data as defined in the input file
   - Cold restart
-    - Power-on restart where all RAM, registers, and other state information is cleared
+    - Power-on restart where registers and other state information is initialized
   - Warm restart
-    - Internal state information is cleared, but RAM is left as-is
+    - PC is set to zero, other registers and state left as-is
+    - Also referred to as ["Special Reset"][29]
   - Jump to a specific address
     - RAM is left as-is and all internal state information is left as-is except for the Program Counter
   - Fetch and decode instruction and data
@@ -236,6 +237,7 @@ The other software and files in this repository are released under what is commo
 [26]: https://learn.microsoft.com/en-us/windows/wsl/about
 [27]: ./.github/workflows/TestDisassembler.yml
 [28]: ./.github/workflows/TestOpcodes.yml
+[29]: http://www.primrosebank.net/computers/z80/z80_special_reset.htm
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)
