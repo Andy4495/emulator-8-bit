@@ -7,6 +7,7 @@
    0.2  12/22/22  Andy4495  Additional implementation
    v0.1.0    02/11/23  Andy4495 Read for first "release"
    0.2.0 03/09/2023 Andy4495  Tag v0.2.0
+   0.3.0 04/16/2023 Andy4495  Tag v0.3.0
 */
 
 #include "Z80.h"
@@ -278,6 +279,7 @@ void Z80::update_C(INST_TYPE t, const uint16_t val1, const uint16_t val2) {
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
+            break;
         case ADC:
             if ((val1 + val2 + testFlag(C_BIT)) & 0x0100)
                 setFlag(C_BIT);

@@ -6,6 +6,7 @@
    0.1  11/29/22  Andy4495  Initial Creation
    0.2  12/22/22  Andy4495  Additional implementation
    0.2.0 03/09/2023 Andy4495  Tag v0.2.0
+   0.3.0 04/16/2023 Andy4495  Tag v0.3.0
 */
 
 const char* VERSION = "v0.2.0";
@@ -250,6 +251,7 @@ int main(int argc, char** argv) {
             default:
                 cout << "Invalid program state. Exiting." << endl;
                 state = EXIT;
+                break;
         }
     }
 

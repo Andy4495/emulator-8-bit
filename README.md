@@ -5,20 +5,21 @@
 [![Test Disassembler](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml)
 [![Test Opcodes](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestOpcodes.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestOpcodes.yml)
 
-This is a simple 8-bit CPU emulator and disassembler. It currently supports the Z80, but adding support for other CPUs should be straightforward.
+This is a simple 8-bit CPU emulator and disassembler. It currently supports the Z80; other CPUs may be added in the future.
 
 I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture.
 
-The Z80-specific code is encapsulated in a Z80 class. Additional CPUs can be emulated by creating classes specific for those CPUs by inheriting from the `abstract_CPU` class.
+The Z80-specific code is encapsulated in a Z80 class. Additional CPUs can be emulated by creating classes specific to those CPUs by inheriting from the `abstract_CPU` class.
 
 The emulator:
 
-- Does not emulate external hardware (e.g., there is no method to see what bits are currently on the address lines).
+- Supports all official Zilog opcodes and all undocumented opcodes listed in this [table][30] by [deeptoaster][31].
 - Emulates at the instruction level (it is not "clock accurate")
+- Does not emulate external hardware (e.g., there is no method to see what bits are currently on the address lines).
 - Does not update the undocumented flag bits 5 and 3 (sometimes referred to as XF and YF).
 - Does not emulate the undocumented internal MEMPTR and Q registers.
-
-There are many other open source emulators available. This emulator is not meant to replace any of those. Feel free to use it and open an issue if you find anything or would like to request a feature.
+- Supports the HALT statement as if it were a breakpoint. Execution is stopped and the R register is not updated while the processor is halted.
+- May not update the R register correctly in other non-HALT instances.
 
 ## Work In Progress
 
@@ -31,7 +32,7 @@ This is a "pre-release":
 
 Next steps:
 
-- Update behavior per the [*The Undocumented Z80 Documented*][18] white paper.
+- Prepare final updates for release 1.0
 
 See also the [Future Functionality](#future-functionality) items below.
 
@@ -46,8 +47,6 @@ emulator [input-file]
 If `input-file` is not specified, then the default name `data.bin` is used.
 
 No error checking is performed on the input file, except that a maximum of 65536 bytes are read into memory. If the file is larger than 65536 bytes, then the next 29 bytes are assumed to be the processor registers and interrupt settings. Any data beyond that is ignored.
-
-*Future iterations may support additional file formats such as Intel Hex or Motorola S-Records which would allow specific memory locations to be defined by the file.*
 
 ## Building the Emulator
 
@@ -101,9 +100,7 @@ Zilog-documented and undocumented opcodes are defined and supported by the emula
 The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base class (`abstract_CPU`). This class contains:
 
 - An array representing the memory (RAM and ROM) available to the processor
-  - This is currently defined as a single structure of 65536 bytes (16-bit address space)
-  - Future iterations may allow the configuration of segments of read-only ROM, read/write RAM, overlay areas, and undefined areas
-  - Future iterations may also support RAM and/or ROM banking
+  - This is currently defined as a single structure of 65536 bytes of RAM (16-bit address space)
 - Arrays representing the input and output address space (256 bytes each)
 - All programmer-accessible processor registers
 - Other internal registers and flip-flops that aren't directly avaiable to the programmer, but represent the internal state of the processor.
@@ -114,33 +111,14 @@ The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base c
     - Power-on restart where registers and other state information is initialized
   - Warm restart
     - PC is set to zero, other registers and state left as-is
-    - Also referred to as ["Special Reset"][29]
+    - For the Z80, this is also referred to as ["Special Reset"][29]
   - Jump to a specific address
-    - RAM is left as-is and all internal state information is left as-is except for the Program Counter
+    - All internal state information is left as-is except for the Program Counter
   - Fetch and decode instruction and data
     - Load byte from memory into Instruction Register and update Program Counter
     - Load additional bytes from memory depending on the fetched opcode
     - Generate a string containing the disassembled instruction and data
   - Execute the actual instruction (load, store, jump, etc.)
-
-### Future Functionality
-
-- Breakpoints
-  - Break at a memory location
-  - Break when a register contains a certain value
-  - Break when a memory location contains a certain value
-  - Break when a certain location/loop is accessed N times
-  - Multiple breakpoints defined
-- Support additional configuration options, possibly with a configuration file and/or command line arguments
-- Allow the configuration of segments of read-only ROM, read/write RAM, overlay areas, and undefined areas
-- Support RAM and/or ROM banking
-- Support additional file formats such as S-Records which would allow specific memory locations to be defined by the file.
-- Interrupts (maskable and non-maskable)
-- Support additonal processor types
-- HALT state handler improvements
-  - Since interrupts are not implemented, HALT just stops the emulator
-  - HALT should act like a breakpoint, in that execution can be continued after performing available debugging operations
-  - HALT does not execute NOPs, so R register is not updated
 
 ## Z80 Assembler
 
@@ -184,8 +162,27 @@ Various workflow actions are defined to test the emulator:
 
 #### Known Good
 
-- For disassemble mode: The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassemble mode. The disassembled output is then compared against a "known good" disassemble file. This type of test is needed in cases where re-assembling the disassembled code will not produce the same opcode values (e.g., in the case of undocumented opcodes that perform the same function as documented opcodes).
+- For disassemble mode: The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassemble mode. The disassembled output is then compared against a "known good" disassemble file. This type of test is needed in cases where re-assembling the disassembled mnemonic will not produce the same opcode values (e.g., in the case of undocumented opcodes that perform the same function as documented opcodes).
 - For execute mode: The input file is assembled with `zasm`. The assembled output `.rom` file is input to the emulator and executed. The memory and registers are dumped to a file which is then compared to a known good memory/register file.
+
+## Future Functionality
+
+- Breakpoints
+  - Break at a memory location
+  - Break when a register contains a certain value
+  - Break when a memory location contains a certain value
+  - Break when a certain location/loop is accessed N times
+  - Multiple breakpoints defined
+- Support additional configuration options, possibly with a configuration file and/or command line arguments
+- Allow the configuration of segments of read-only ROM, read/write RAM, overlay areas, and undefined areas
+- Support RAM and/or ROM banking
+- Support additional file formats such as Intel Hex or Motorola S-Records which would allow specific memory locations to be defined by the file.
+- Interrupts (maskable and non-maskable)
+- Support additonal processor types
+- HALT state handler improvements
+  - Since interrupts are not implemented, HALT just stops the emulator
+  - HALT should act like a breakpoint, in that execution can be continued after performing available debugging operations
+  - HALT does not execute NOPs, so R register is not updated
 
 ## References
 
@@ -193,7 +190,7 @@ Various workflow actions are defined to test the emulator:
   - **Note**: The Z80 User Manual has many errors, ambiguities, and inconsistencies. It is sometimes necessary to consult other references (or experiment on an actual chip) to determine the correct behavior for certain opcodes.
 - [Z80 Info][5]: Comprehensive source of Z80 information: hardware, compilers, assemblers, documentation
 - Z80 [opcode table][4]
-- Z80 undocumented opcodes [writeup][18]
+- [*The Undocumented Z80 Documented*][18] white paper
 - [`zasm`][24] - Z80 assembler: [online version][6] or [download][7]
   - GitHub [repo][20]
 - [Z80 emulator project][19] which includes test cases and a substantial reference list
@@ -238,6 +235,8 @@ The other software and files in this repository are released under what is commo
 [27]: ./.github/workflows/TestDisassembler.yml
 [28]: ./.github/workflows/TestOpcodes.yml
 [29]: http://www.primrosebank.net/computers/z80/z80_special_reset.htm
+[30]: https://clrhome.org/table/
+[31]: https://github.com/deeptoaster/opcode-table
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)
