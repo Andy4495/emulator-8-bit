@@ -19,8 +19,10 @@
 #include <cassert>
 #include <cstdint>
 using std::cout;
+using std::cin;
 using std::endl;
 using std::hex;
+using std::dec;
 using std::ifstream;
 using std::ofstream;
 using std::iostream;
@@ -261,6 +263,128 @@ void Z80::print_memory(uint16_t start, uint16_t end) {
         cout << endl;
     }
     cout << endl;
+}
+
+uint8_t Z80::get_memory(uint16_t loc) {
+    return(memory[loc]);
+}
+
+void Z80::set_memory(uint16_t loc, uint8_t val) {
+    memory[loc] = val;
+}
+
+uint8_t Z80::get_input_port(uint8_t loc) {
+    return(in[loc]);
+}
+
+void Z80::set_input_port(uint8_t loc, uint8_t val) {
+    in[loc] =  val;
+}
+
+uint8_t Z80::get_output_port(uint8_t loc) {
+    return(out[loc]);
+}
+
+void Z80::set_register(){
+    uint16_t regno, val;
+
+    cout << "Current register values:" << endl;
+    print_registers();
+    cout << endl;
+
+    cout << "Enter the register number to update: " << endl;
+    cout << " 1: A      2: F      3: B      4: C      5: D      6: E      7: H      8: L"  << endl;
+    cout << "11: A'    12: F'    13: B'    14: C'    15: D'    16: E'    17: H'    18: L'" << endl;
+    cout << "21: I     22: R     23: IX    24: IY    25: SP    26: PC"                      << endl;
+    cout << "31: IFF1  32: IFF2  33: INT_MODE" << endl;
+    cin >> regno; 
+    cout << "Enter new value in hex: 0x";
+    cin >> hex >> val;
+    cout << endl;
+    switch(regno) {
+        case 1:
+            A = val;
+            break;
+        case 2:
+            F = val;
+            break;
+        case 3:
+            B = val;
+            break;
+        case 4:
+            C = val;
+            break;
+        case 5:
+            D = val;
+            break;
+        case 6:
+            E = val;
+            break;
+        case 7:
+            H = val;
+            break;
+        case 8:
+            L = val;
+            break;
+        case 11:
+            Aprime = val;
+            break;
+        case 12:
+            Fprime = val;
+            break;
+        case 13:
+            Bprime = val;
+            break;
+        case 14:
+            Cprime = val;
+            break;
+        case 15:
+            Dprime = val;
+            break;
+        case 16:
+            Eprime = val;
+            break;
+        case 17:
+            Hprime = val;
+            break;
+        case 18:
+            Lprime = val;
+            break;
+        case 21:
+            I = val;
+            break;
+        case 22:
+            R = val;
+            break;
+        case 23:
+            setIX(val);
+            break;
+        case 24:
+            setIY(val);
+            break;
+        case 25:
+            SP = val;
+            break;
+        case 26:
+            PC = val;
+            break;
+        case 31:
+            IFF1 = val;
+            break;
+        case 32:
+            IFF2 = val;
+            break;
+        case 33:
+            INT_MODE = val;
+            break;
+        default:
+            cout << "Invalid register number: " << regno << endl;
+            break;
+    }
+}
+
+uint8_t Z80::halt_opcode() {
+    return 0x76;
 }
 
 bool Z80::halted() {

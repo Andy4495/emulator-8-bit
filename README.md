@@ -9,17 +9,16 @@ This is a simple 8-bit CPU emulator and disassembler. It currently supports the 
 
 I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture.
 
-The Z80-specific code is encapsulated in a Z80 class. Additional CPUs can be emulated by creating classes specific to those CPUs by inheriting from the `abstract_CPU` class.
-
 The emulator:
 
-- Supports all official Zilog opcodes and all undocumented opcodes listed in this [table][30] by [deeptoaster][31].
+- Is text-based
+- Supports all official Zilog opcodes and all undocumented opcodes listed in this [table][4].
 - Emulates at the instruction level (it is not "clock accurate")
-- Does not emulate external hardware (e.g., there is no method to see what bits are currently on the address lines).
+- Does not emulate external hardware
 - Does not update the undocumented flag bits 5 and 3 (sometimes referred to as XF and YF).
 - Does not emulate the undocumented internal MEMPTR and Q registers.
 - Supports the HALT statement as if it were a breakpoint. Execution is stopped and the R register is not updated while the processor is halted.
-- May not update the R register correctly in other non-HALT instances.
+- May not update the R register correctly in cases where there are strings of $FD/$DD opcode prefixes that do not represent a valid opcode.
 
 ## Work In Progress
 
@@ -93,11 +92,13 @@ I have not tried it on other platforms, but there is no machine dependent code. 
 
 ### Defining the CPU
 
+The Z80-specific code is encapsulated in a class named `Z80` which inherits from an abstract base class `abstract_CPU`. Additional CPUs can be emulated by creating classes specific to those CPUs.
+
 The CPU opcodes are defined in several tables implemented with arrays of structs for the main and extended opcodes (`Z80_opcodes.h`). Each array entry contains the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode value is represented by the array index.
 
 Zilog-documented and undocumented opcodes are defined and supported by the emulator.
 
-The Z80 CPU is defined by a class (`Z80`) which inherits from an abstract base class (`abstract_CPU`). This class contains:
+The `Z80` class contains:
 
 - An array representing the memory (RAM and ROM) available to the processor
   - This is currently defined as a single structure of 65536 bytes of RAM (16-bit address space)
@@ -168,7 +169,7 @@ Various workflow actions are defined to test the emulator:
 ## Future Functionality
 
 - Breakpoints
-  - Break at a memory location
+  - DONE Break at a specified memory location
   - Break when a register contains a certain value
   - Break when a memory location contains a certain value
   - Break when a certain location/loop is accessed N times
@@ -189,14 +190,13 @@ Various workflow actions are defined to test the emulator:
 - Z80 [User Manual][13]
   - **Note**: The Z80 User Manual has many errors, ambiguities, and inconsistencies. It is sometimes necessary to consult other references (or experiment on an actual chip) to determine the correct behavior for certain opcodes.
 - [Z80 Info][5]: Comprehensive source of Z80 information: hardware, compilers, assemblers, documentation
-- Z80 [opcode table][4]
+- Z80 [opcode table][4] ([GitHub repo][31])
 - [*The Undocumented Z80 Documented*][18] white paper
 - [`zasm`][24] - Z80 assembler: [online version][6] or [download][7]
   - GitHub [repo][20]
 - [Z80 emulator project][19] which includes test cases and a substantial reference list
 - [SDCC][8] - Small Device C Compiler and [manual][9]
 - [hex2bin][10] - Tool for converting [Intex Hex][11] or [Motorola S-Record][12] files to binary
-- [C++ reference][1]
 - [Make reference][2]
 - Online Makefile [generator][3]
 - Installing WSL 2 [reference][14] and [devblog post][15]
@@ -207,7 +207,6 @@ The `zasm` assembler is released under the [BSD 2-Clause license][25]. See [zasm
 
 The other software and files in this repository are released under what is commonly called the [MIT License][100]. See the file [`LICENSE.txt`][101] in this repository.
 
-[1]: https://en.cppreference.com/
 [2]: https://www.gnu.org/software/make/manual/make.html
 <!-- markdown-link-check-disable-next-line -->
 [3]: https://nicomedes.assistedcoding.eu/#/app/makefilegen
@@ -235,7 +234,6 @@ The other software and files in this repository are released under what is commo
 [27]: ./.github/workflows/TestDisassembler.yml
 [28]: ./.github/workflows/TestOpcodes.yml
 [29]: http://www.primrosebank.net/computers/z80/z80_special_reset.htm
-[30]: https://clrhome.org/table/
 [31]: https://github.com/deeptoaster/opcode-table
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt

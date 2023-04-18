@@ -28,6 +28,13 @@ class abstract_CPU {
     virtual void print_registers() = 0;
     virtual void print_flags() = 0;
     virtual void print_memory(uint16_t start, uint16_t end) = 0;
+    virtual uint8_t get_memory(uint16_t loc) = 0;
+    virtual void set_memory(uint16_t loc, uint8_t val) = 0;
+    virtual uint8_t get_input_port(uint8_t loc) = 0;
+    virtual void set_input_port(uint8_t loc, uint8_t val) = 0;
+    virtual uint8_t get_output_port(uint8_t loc) = 0;
+    virtual void set_register() = 0;
+    virtual uint8_t halt_opcode() = 0; // HALT or equivalent opcode for this processor
     virtual bool halted() = 0;  // If true, the CPU is halted
     // Wrapper program may need to know the current program counter value
     virtual uint16_t getPC() = 0;
