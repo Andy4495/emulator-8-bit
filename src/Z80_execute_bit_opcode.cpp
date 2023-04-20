@@ -23,7 +23,7 @@ using std::hex;
 void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
     // Temporary storage when decoding register field in opcode
     uint8_t *r = nullptr;
-    uint8_t temp;
+    uint8_t tempc, temps;
 
     switch (IR[1]) {
         // RLC r     (0xCB00 - 0xCB07)
@@ -117,13 +117,12 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
-            temp = testFlag(C_BIT);
+            tempc = testFlag(C_BIT);
             if (*r & 0x80)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            *r = *r << 1;
-            *r = (*r & 0xFE) | temp;
+            *r = ((*r << 1) & 0xfe) | tempc;
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);
@@ -226,13 +225,12 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
-            temp = testFlag(C_BIT);
+            tempc = testFlag(C_BIT);
             if (*r & 0x01)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            *r = *r >> 1;
-            *r = (*r & 0x7F) | (temp << 7);
+            *r = ((*r >> 1) & 0x7f) | (tempc << 7);
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);
@@ -326,13 +324,12 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
-            temp = *r & 0x80;    // Save the sign bit
+            temps = *r & 0x80;    // Save the sign bit
             if (*r & 0x01)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            *r = *r >> 1;
-            *r = (*r & 0x7F) | temp;
+            *r = ((*r >> 1) & 0x7f) | temps;
             update_S(*r);
             update_Z(*r);
             clearFlag(H_BIT);
@@ -383,8 +380,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            *r = *r << 1;
-            *r |= 0x01;
+            *r = (*r << 1) | 0x01;
             update_S(*r);
             update_Z(*r);
             clearFlag(N_BIT);
@@ -433,8 +429,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            *r = *r >> 1;
-            *r = (*r & 0x7F);
+            *r = (*r >> 1) & 0x7F;
             clearFlag(S_BIT);
             update_Z(*r);
             clearFlag(H_BIT);

@@ -24,7 +24,7 @@ using std::hex;
 void Z80::execute_ix_iy_bit_opcode() {
     // Temporary storage when decoding register field in opcode
     uint8_t *r = nullptr;
-    uint8_t temp;
+    uint8_t tempc, temps, temp1;
     // Index into memory[] array based on IX or IY plus displacement in opcode
     uint16_t index;
 
@@ -74,20 +74,26 @@ void Z80::execute_ix_iy_bit_opcode() {
                          << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            if (memory[index] & 0x80)
+            temp1 = memory[index];
+            if (temp1 & 0x80)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
             // Carry flag contains previous bit 7, so rotate into bit 0
-            memory[index] = ((memory[index] << 1) & 0xfe) | testFlag(C_BIT);
+            temp1 = temp1 << 1;
+            if (testFlag(C_BIT))
+                temp1 |= 0x01;
+            else
+                temp1 &= 0xfe;
             if (r != nullptr) {
-                *r = memory[index];
+                *r = temp1;
             }
-            update_S(memory[index]);
-            update_Z(memory[index]);
+            update_S(temp1);
+            update_Z(temp1);
             clearFlag(H_BIT);
-            update_P(memory[index]);
+            update_P(temp1);
             clearFlag(N_BIT);
+            memory[index] = temp1;
            break;
 
         // RL (IX/IY + d), r    (0xXDCBdd10 - 0xXDCBdd17)
@@ -126,21 +132,23 @@ void Z80::execute_ix_iy_bit_opcode() {
                          << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            temp = testFlag(C_BIT);
+            tempc = testFlag(C_BIT);
+            temp1 = memory[index];
 
-            if (memory[index] & 0x80)
+            if (temp1 & 0x80)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            memory[index] = ((memory[index] << 1) & 0xfe) | temp;
+            temp1 = ((temp1 << 1) & 0xfe) | tempc;
             if (r != nullptr) {
-                *r = memory[index];
+                *r = temp1;
             }
-            update_S(memory[index]);
-            update_Z(memory[index]);
+            update_S(temp1);
+            update_Z(temp1);
             clearFlag(H_BIT);
-            update_P(memory[index]);
+            update_P(temp1);
             clearFlag(N_BIT);
+            memory[index] = temp1;
             break;
 
         // RRC (IX/IY + d), r     (0xXDCBdd08 - 0xXDCBdd0f)
@@ -179,20 +187,26 @@ void Z80::execute_ix_iy_bit_opcode() {
                          << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            if (memory[index] & 0x01)
+            temp1 = memory[index];
+            if (temp1 & 0x01)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            memory[index] = ((memory[index] >> 1) & 0x7f)
-                            | (testFlag(C_BIT) << 7);
+            temp1 = temp1 >> 1;
+            // Carry contains previous bit 0, so rotate that over to bit 7
+            if (testFlag(C_BIT))
+                temp1 |= 0x80;
+            else
+                temp1 &= 0x7f;
             if (r != nullptr) {
-                *r = memory[index];
+                *r = temp1;
             }
-            update_S(memory[index]);
-            update_Z(memory[index]);
+            update_S(temp1);
+            update_Z(temp1);
             clearFlag(H_BIT);
-            update_P(memory[index]);
+            update_P(temp1);
             clearFlag(N_BIT);
+            memory[index] = temp1;
             break;
 
         // RR  (IX/IY + d), r    (0xXDCBdd18 - 0xXDCBdd1F)
@@ -231,20 +245,22 @@ void Z80::execute_ix_iy_bit_opcode() {
                          << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            temp = testFlag(C_BIT);
-            if (memory[index] & 0x01)
+            tempc = testFlag(C_BIT);
+            temp1 = memory[index];
+            if (temp1 & 0x01)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            memory[index] = ((memory[index] >> 1) & 0x7f) | (temp << 7);
+            temp1 = ((temp1 >> 1) & 0x7f) | (tempc << 7);
             if (r != nullptr) {
-                *r = memory[index];
+                *r = temp1;
             }
-            update_S(memory[index]);
-            update_Z(memory[index]);
+            update_S(temp1);
+            update_Z(temp1);
             clearFlag(H_BIT);
-            update_P(memory[index]);
+            update_P(temp1);
             clearFlag(N_BIT);
+            memory[index] = temp1;
             break;
 
         // SLA (IX/IY + d), r     (0xXDCBdd20 - 0xXDCBdd27)
@@ -283,19 +299,21 @@ void Z80::execute_ix_iy_bit_opcode() {
                          << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            if (memory[index] & 0x80)
+            temp1 = memory[index];
+            if (temp1 & 0x80)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            memory[index] = memory[index] << 1;
+            temp1 = temp1 << 1;
             if (r != nullptr) {
-                *r = memory[index];
+                *r = temp1;
             }
-            update_S(memory[index]);
-            update_Z(memory[index]);
+            update_S(temp1);
+            update_Z(temp1);
             clearFlag(H_BIT);
-            update_P(memory[index]);
+            update_P(temp1);
             clearFlag(N_BIT);
+            memory[index] = temp1;
             break;
 
         // SRA  (IX/IY + d), r    (0xXDCBdd28 - 0xXDCBdd2F)
@@ -334,20 +352,22 @@ void Z80::execute_ix_iy_bit_opcode() {
                          << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            temp = memory[index] & 0x80;    // Save the sign bit
-            if (memory[index] & 0x01)
+            temp1 = memory[index];
+            temps = temp1 & 0x80;    // Save the sign bit
+            if (temp1 & 0x01)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            memory[index] = ((memory[index] >> 1) & 0x7f) | temp;
+            temp1 = ((temp1 >> 1) & 0x7f) | temps;
             if (r != nullptr) {
-                *r = memory[index];
+                *r = temp1;
             }
-            update_S(memory[index]);
-            update_Z(memory[index]);
+            update_S(temp1);
+            update_Z(temp1);
             clearFlag(H_BIT);
-            update_P(memory[index]);
+            update_P(temp1);
             clearFlag(N_BIT);
+            memory[index] = temp1;
             break;
 
         // Undocumented "Shift Left Set", aka SLL "Shift Left Logical"
@@ -388,20 +408,22 @@ void Z80::execute_ix_iy_bit_opcode() {
                          << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            if (memory[index] & 0x80)
+            temp1 = memory[index];
+            if (temp1 & 0x80)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            memory[index] = (memory[index] << 1) | 0x01;
+            temp1 = (temp1 << 1) | 0x01;
             if (r != nullptr) {
-                *r = memory[index];
+                *r = temp1;
             }
-            update_S(memory[index]);
-            update_Z(memory[index]);
+            update_S(temp1);
+            update_Z(temp1);
             clearFlag(N_BIT);
-            update_P(memory[index]);
+            update_P(temp1);
             clearFlag(H_BIT);
-            break;
+            memory[index] = temp1;
+           break;
 
         // SRL  (IX/IY + d), r    (0xXDCBdd38 - 0xXDCBdd3F)
         case 0x38: case 0x39: case 0x3a: case 0x3b:
@@ -439,19 +461,21 @@ void Z80::execute_ix_iy_bit_opcode() {
                          << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
-            if (memory[index] & 0x01)
+            temp1 = memory[index];
+            if (temp1 & 0x01)
                 setFlag(C_BIT);
             else
                 clearFlag(C_BIT);
-            memory[index] = (memory[index] >> 1) & 0x7f;
+            temp1 = (temp1 >> 1) & 0x7f;
             if (r != nullptr) {
-                *r = memory[index];
+                *r = temp1;
             }
             clearFlag(S_BIT);
-            update_Z(memory[index]);
+            update_Z(temp1);
             clearFlag(H_BIT);
-            update_P(memory[index]);
+            update_P(temp1);
             clearFlag(N_BIT);
+            memory[index] = temp1;
             break;
 
         // BIT (IX/IY + d) (0xXDCBdd40 - 0xXDCBdd7F)
@@ -533,9 +557,11 @@ void Z80::execute_ix_iy_bit_opcode() {
                          << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
+            temp1 = memory[index];
             // Decode the bit position, b
-            memory[index] |= (1 << ((IR[3] & 0x38) >> 3));
-            if (r != nullptr) *r = memory[index];
+            temp1 |= (1 << ((IR[3] & 0x38) >> 3));
+            if (r != nullptr) *r = temp1;
+            memory[index] = temp1;
             break;
 
         // RES (IX/IY + d) (0xXDCBdd80 - 0xXDCBddBF)
@@ -588,9 +614,11 @@ void Z80::execute_ix_iy_bit_opcode() {
                          << setw(2) << (unsigned int) IR[3] << endl;
                     break;
             }
+            temp1 = memory[index];
             // Decode the bit position, b
-            memory[index] &= ~(1 << ((IR[3] & 0x38) >> 3));
-            if (r != nullptr) *r = memory[index];
+            temp1 &= ~(1 << ((IR[3] & 0x38) >> 3));
+            if (r != nullptr) *r = temp1;
+            memory[index] = temp1;
             break;
 
         default:

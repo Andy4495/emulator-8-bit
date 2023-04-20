@@ -294,10 +294,6 @@ void Z80::execute_main_opcode() {
             update_V(ADD, A, *r);
             update_H(ADD, A, *r);
             update_C(ADD, A, *r);
-            if ((A & 0xf) + (*r & 0xf) > 0xf)
-                setFlag(H_BIT);
-            else
-                clearFlag(H_BIT);
             A += *r;
             update_S(A);
             update_Z(A);
@@ -309,10 +305,6 @@ void Z80::execute_main_opcode() {
             update_V(ADD, A, IR[1]);
             update_H(ADD, A, IR[1]);
             update_C(ADD, A, IR[1]);
-            if ((A & 0xf) + (IR[1] & 0xf) > 0xf)
-                setFlag(H_BIT);
-            else
-                clearFlag(H_BIT);
             A += IR[1];
             update_S(A);
             update_Z(A);
@@ -342,10 +334,6 @@ void Z80::execute_main_opcode() {
             update_V(ADC, A, *r);
             update_H(ADC, A, *r);
             update_C(ADC, A, *r);
-            if ((A & 0xf) + (*r & 0xf) + temp > 0xf)
-                setFlag(H_BIT);
-            else
-                clearFlag(H_BIT);
             A = A + *r + temp;
             update_S(A);
             update_Z(A);
@@ -358,10 +346,6 @@ void Z80::execute_main_opcode() {
             update_V(ADC, A, IR[1]);
             update_H(ADC, A, IR[1]);
             update_C(ADC, A, IR[1]);
-            if ((A & 0xf) + (IR[1] & 0xf) + temp > 0xf)
-                setFlag(H_BIT);
-            else
-                clearFlag(H_BIT);
             A = A + IR[1] + temp;
             update_S(A);
             update_Z(A);
