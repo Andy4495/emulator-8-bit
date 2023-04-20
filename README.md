@@ -148,12 +148,13 @@ Various workflow actions are defined to test the emulator:
 
 ### Execute Mode - [`TestOpcodes.yml`][28]
 
-| Input File                               | Test Type  | Notes                                  |
-| ---------------------------------------- | ---------- | -------------------------------------- |
-| test_execution_no_flag_updates.asm       | Known Good | Opcodes that don't update flags        |
-| test_execution_call_jump_loop_return.asm | Known Good | Call, jump, return, rst opcodes        |
-| test_execution_with_flag_updates.asm     | Known Good | Opcodes that affect flags              |
-| test_execution_daa.asm                   | Known Good | DAA opcode and flags                   |
+| Input File                               | Test Type  | Notes                                             |
+| ---------------------------------------- | ---------- | ------------------------------------------------- |
+| test_execution_no_flag_updates.asm       | Known Good | Opcodes that don't update flags                   |
+| test_execution_call_jump_loop_return.asm | Known Good | Call, jump, return, rst opcodes                   |
+| test_execution_with_flag_updates.asm     | Known Good | Opcodes that affect flags                         |
+| test_execution_daa.asm                   | Known Good | DAA opcode and flags                              |
+| test_execution_duplicate_mnemonics.asm   | Known Good | Opcodes where mnemonics are same as other opcodes |
 
 ### Test Types
 
