@@ -386,15 +386,16 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: INC r" << endl; break;
             }
+            if (*r == 0x7f)
+                setFlag(PV_BIT);
+            else
+                clearFlag(PV_BIT);
             update_H(ADD, *r, 1);
             (*r)++;
             update_S(*r);
             update_Z(*r);
-            if (*r == 0x80)
-                setFlag(PV_BIT);
-            else
-                clearFlag(PV_BIT);
             clearFlag(N_BIT);
+
             break;
 
         // DEC r instructions (0x05, 0x0D, 0x15, 0x1D, 0x25, 0x2D, 0x3D)
@@ -411,15 +412,16 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: DEC r" << endl; break;
             }
+            if (*r == 0x80)
+                setFlag(PV_BIT);
+            else
+                clearFlag(PV_BIT);
             update_H(SUB, *r, 1);
             (*r)--;
             update_S(*r);
             update_Z(*r);
-            if (*r == 0x7f)
-                setFlag(PV_BIT);
-            else
-                clearFlag(PV_BIT);
-            clearFlag(N_BIT);
+            setFlag(N_BIT);
+
             break;
 
         // LD r, n instructions (0x06/0x0e - 0x26/0x3e)
