@@ -5,6 +5,7 @@
 # 0.1  11/29/22  Andy4495  Initial Creation
 # 0.2.0 03/09/2023 Andy4495  Tag v0.2.0
 # 0.3.0 04/16/2023 Andy4495  Tag v0.3.0
+# 1.0.0 20-Apr-2023 Andy4495 Tag v1.0.0 - First official release
 
 
 OBJS	= \

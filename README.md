@@ -20,20 +20,7 @@ The emulator:
 - Supports the HALT statement as if it were a breakpoint. Execution is stopped and the R register is not updated while the processor is halted.
 - May not update the R register correctly in cases where there are strings of $FD/$DD opcode prefixes that do not represent a valid opcode.
 
-## Work In Progress
-
-All opcodes have been implemented and tested, including flag updates.
-
-This is a "pre-release":
-
-- The input and output file formats may change.
-- Menu items may be added, removed, modified, or re-ordered.
-
-Next steps:
-
-- Prepare final updates for release 1.0
-
-See also the [Future Functionality](#future-functionality) items below.
+The [Future Functionality](#future-functionality) items listed below may be included in later releases.
 
 ## Usage
 
@@ -92,7 +79,7 @@ I have not tried it on other platforms, but there is no machine dependent code. 
 
 ### Defining the CPU
 
-The Z80-specific code is encapsulated in a class named `Z80` which inherits from an abstract base class `abstract_CPU`. Additional CPUs can be emulated by creating classes specific to those CPUs.
+The Z80-specific code is encapsulated in a class named `Z80` which inherits from the abstract base class `abstract_CPU`. Additional CPUs can be emulated by creating classes specific to those CPUs.
 
 The CPU opcodes are defined in several tables implemented with arrays of structs for the main and extended opcodes (`Z80_opcodes.h`). Each array entry contains the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode value is represented by the array index.
 
@@ -169,16 +156,15 @@ Various workflow actions are defined to test the emulator:
 
 ## Future Functionality
 
-- Breakpoints
-  - DONE Break at a specified memory location
+- Additional breakpoint functionality
   - Break when a register contains a certain value
   - Break when a memory location contains a certain value
   - Break when a certain location/loop is accessed N times
-  - Multiple breakpoints defined
+  - Define Multiple breakpoints
 - Support additional configuration options, possibly with a configuration file and/or command line arguments
 - Allow the configuration of segments of read-only ROM, read/write RAM, overlay areas, and undefined areas
 - Support RAM and/or ROM banking
-- Support additional file formats such as Intel Hex or Motorola S-Records which would allow specific memory locations to be defined by the file.
+- Support additional input file formats such as Intel Hex or Motorola S-Records which would allow specific memory locations to be defined by the file.
 - Interrupts (maskable and non-maskable)
 - Support additonal processor types
 - HALT state handler improvements
