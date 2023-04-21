@@ -63,21 +63,23 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
-            if (*r & 0x80)
-                setFlag(C_BIT);
-            else
-                clearFlag(C_BIT);
-            *r = *r << 1;
-            // Carry contains previous bit 7, so rotate that over to bit 0
-            if (testFlag(C_BIT))
-                *r |= 0x01;
-            else
-                *r &= 0xfe;
-            update_S(*r);
-            update_Z(*r);
-            clearFlag(H_BIT);
-            update_P(*r);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                if (*r & 0x80)
+                    setFlag(C_BIT);
+                else
+                    clearFlag(C_BIT);
+                *r = *r << 1;
+                // Carry contains previous bit 7, so rotate that over to bit 0
+                if (testFlag(C_BIT))
+                    *r |= 0x01;
+                else
+                    *r &= 0xfe;
+                update_S(*r);
+                update_Z(*r);
+                clearFlag(H_BIT);
+                update_P(*r);
+                clearFlag(N_BIT);
+            }
             break;
 
         // RL r    (0xCB10 - 0xCB17)
@@ -118,16 +120,18 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
             }
             tempc = testFlag(C_BIT);
-            if (*r & 0x80)
-                setFlag(C_BIT);
-            else
-                clearFlag(C_BIT);
-            *r = ((*r << 1) & 0xfe) | tempc;
-            update_S(*r);
-            update_Z(*r);
-            clearFlag(H_BIT);
-            update_P(*r);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                if (*r & 0x80)
+                    setFlag(C_BIT);
+                else
+                    clearFlag(C_BIT);
+                *r = ((*r << 1) & 0xfe) | tempc;
+                update_S(*r);
+                update_Z(*r);
+                clearFlag(H_BIT);
+                update_P(*r);
+                clearFlag(N_BIT);
+            }
             break;
 
         // RRC r     (0xCB08 - 0xCB0f)
@@ -167,21 +171,23 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
-            if (*r & 0x01)
-                setFlag(C_BIT);
-            else
-                clearFlag(C_BIT);
-            *r = *r >> 1;
-            // Carry contains previous bit 0, so rotate that over to bit 7
-            if (testFlag(C_BIT))
-                *r |= 0x80;
-            else
-                *r &= 0x7f;
-            update_S(*r);
-            update_Z(*r);
-            clearFlag(H_BIT);
-            update_P(*r);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                if (*r & 0x01)
+                    setFlag(C_BIT);
+                else
+                    clearFlag(C_BIT);
+                *r = *r >> 1;
+                // Carry contains previous bit 0, so rotate that over to bit 7
+                if (testFlag(C_BIT))
+                    *r |= 0x80;
+                else
+                    *r &= 0x7f;
+                update_S(*r);
+                update_Z(*r);
+                clearFlag(H_BIT);
+                update_P(*r);
+                clearFlag(N_BIT);
+            }
             break;
 
         // RR  r    (0xCB18 - 0xCB1F)
@@ -226,16 +232,18 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                     break;
             }
             tempc = testFlag(C_BIT);
-            if (*r & 0x01)
-                setFlag(C_BIT);
-            else
-                clearFlag(C_BIT);
-            *r = ((*r >> 1) & 0x7f) | (tempc << 7);
-            update_S(*r);
-            update_Z(*r);
-            clearFlag(H_BIT);
-            update_P(*r);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                if (*r & 0x01)
+                    setFlag(C_BIT);
+                else
+                    clearFlag(C_BIT);
+                *r = ((*r >> 1) & 0x7f) | (tempc << 7);
+                update_S(*r);
+                update_Z(*r);
+                clearFlag(H_BIT);
+                update_P(*r);
+                clearFlag(N_BIT);
+            }
             break;
 
         // SLA r     (0xCB20 - 0xCB27)
@@ -275,16 +283,18 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
-            if (*r & 0x80)
-                setFlag(C_BIT);
-            else
-                clearFlag(C_BIT);
-            *r = *r << 1;
-            update_S(*r);
-            update_Z(*r);
-            clearFlag(H_BIT);
-            update_P(*r);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                if (*r & 0x80)
+                    setFlag(C_BIT);
+                else
+                    clearFlag(C_BIT);
+                *r = *r << 1;
+                update_S(*r);
+                update_Z(*r);
+                clearFlag(H_BIT);
+                update_P(*r);
+                clearFlag(N_BIT);
+            }
             break;
 
         // SRA  r    (0xCB28 - 0xCB2F)
@@ -324,17 +334,19 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
-            temps = *r & 0x80;    // Save the sign bit
-            if (*r & 0x01)
-                setFlag(C_BIT);
-            else
-                clearFlag(C_BIT);
-            *r = ((*r >> 1) & 0x7f) | temps;
-            update_S(*r);
-            update_Z(*r);
-            clearFlag(H_BIT);
-            update_P(*r);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                temps = *r & 0x80;    // Save the sign bit
+                if (*r & 0x01)
+                    setFlag(C_BIT);
+                else
+                    clearFlag(C_BIT);
+                *r = ((*r >> 1) & 0x7f) | temps;
+                update_S(*r);
+                update_Z(*r);
+                clearFlag(H_BIT);
+                update_P(*r);
+                clearFlag(N_BIT);
+            }
             break;
 
         // Undocumented "Shift Left Set", aka SLL "Shift Left Logical"
@@ -376,16 +388,18 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
-            if (*r & 0x80)
-                setFlag(C_BIT);
-            else
-                clearFlag(C_BIT);
-            *r = (*r << 1) | 0x01;
-            update_S(*r);
-            update_Z(*r);
-            clearFlag(N_BIT);
-            update_P(*r);
-            clearFlag(H_BIT);
+            if (r != nullptr) {
+                if (*r & 0x80)
+                    setFlag(C_BIT);
+                else
+                    clearFlag(C_BIT);
+                *r = (*r << 1) | 0x01;
+                update_S(*r);
+                update_Z(*r);
+                clearFlag(N_BIT);
+                update_P(*r);
+                clearFlag(H_BIT);
+            }
             break;
 
         // SRL  r    (0xCB38 - 0xCB3F)
@@ -425,16 +439,18 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
-            if (*r & 0x01)
-                setFlag(C_BIT);
-            else
-                clearFlag(C_BIT);
-            *r = (*r >> 1) & 0x7F;
-            clearFlag(S_BIT);
-            update_Z(*r);
-            clearFlag(H_BIT);
-            update_P(*r);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                if (*r & 0x01)
+                    setFlag(C_BIT);
+                else
+                    clearFlag(C_BIT);
+                *r = (*r >> 1) & 0x7F;
+                clearFlag(S_BIT);
+                update_Z(*r);
+                clearFlag(H_BIT);
+                update_P(*r);
+                clearFlag(N_BIT);
+            }
             break;
 
         // BIT b, r (0xCB40 - 0xCB7F)
@@ -550,6 +566,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
+            // Condition bits affected: None
             // Decode the bit position, b
             if (r != nullptr) {
                 *r |= (1 << ((IR[1] & 0x38) >> 3));
@@ -607,6 +624,7 @@ void Z80::execute_bit_opcode() {  // IR[0] == 0xCB
                          << setw(2) << (uint32_t) IR[1] << endl;
                     break;
             }
+            // Condition bits affected: None
             // Decode the bit position, b
             if (r != nullptr) {
                 *r &= ~(1 << ((IR[1] & 0x38) >> 3));

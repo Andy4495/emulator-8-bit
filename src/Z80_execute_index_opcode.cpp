@@ -112,6 +112,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         case 0x21:
             *indexH = IR[3];
             *indexL = IR[2];
+            // Condition bits affected: None
             break;
 
         // LD (nn), IX/Y (0x22)
@@ -171,76 +172,91 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         // LD (IX/Y + d), n         (0x36)
         case 0x36:
             memory[disp_index] = IR[3];
+            // Condition bits affected: None
             break;
 
         // LD B, (IX/Y + d)         (0x46)
         case 0x46:
             B = memory[disp_index];
+            // Condition bits affected: None
             break;
 
         // LD C, (IX/Y + d)         (0x4E)
         case 0x4e:
             C = memory[disp_index];
+            // Condition bits affected: None
             break;
 
         // LD D, (IX/Y + d)         (0x56)
         case 0x56:
             D = memory[disp_index];
+            // Condition bits affected: None
             break;
 
         // LD E, (IX/Y + d)         (0x5E)
         case 0x5e:
             E = memory[disp_index];
+            // Condition bits affected: None
             break;
 
         // LD H, (IX/Y + d)         (0x66)
         case 0x66:
             H = memory[disp_index];
+            // Condition bits affected: None
             break;
 
         // LD L, (IX/Y + d)         (0x6E)
         case 0x6e:
             L = memory[disp_index];
-            break;
+            // Condition bits affected: None
+           break;
 
         // LD (IX/Y + d), B         (0x70)
         case 0x70:
             memory[disp_index] = B;
+            // Condition bits affected: None
             break;
 
         // LD (IX/Y + d), B         (0x71)
         case 0x71:
             memory[disp_index] = C;
+            // Condition bits affected: None
             break;
 
         // LD (IX/Y + d), B         (0x72)
         case 0x72:
             memory[disp_index] = D;
+            // Condition bits affected: None
             break;
 
         // LD (IX/Y + d), B         (0x73)
         case 0x73:
             memory[disp_index] = E;
+            // Condition bits affected: None
             break;
 
         // LD (IX/Y + d), B         (0x74)
         case 0x74:
             memory[disp_index] = H;
+            // Condition bits affected: None
             break;
 
         // LD (IX/Y + d), B         (0x75)
         case 0x75:
             memory[disp_index] = L;
+            // Condition bits affected: None
             break;
 
         // LD (IX/Y + d), B         (0x77)
         case 0x77:
             memory[disp_index] = A;
+            // Condition bits affected: None
             break;
 
         // LD (IX/Y + d), B         (0x7E)
         case 0x7e:
             A = memory[disp_index];
+            // Condition bits affected: None
             break;
 
         // ADD A, (IX/Y + d)         (0x86)
@@ -360,6 +376,7 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
         // JP (IX/Y)    (0xE9)
         case 0xe9:
             setPC(*indexH, *indexL);
+            // Condition bits affected: None
             break;
 
         // LD SP, IX/Y   (0xF9)
@@ -386,16 +403,19 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: INC r" << endl; break;
             }
-            if (*r == 0x7f)
-                setFlag(PV_BIT);
-            else
-                clearFlag(PV_BIT);
-            update_H(ADD, *r, 1);
-            (*r)++;
-            update_S(*r);
-            update_Z(*r);
-            clearFlag(N_BIT);
-
+            if (r != nullptr) {
+                if (*r == 0x7f)
+                    setFlag(PV_BIT);
+                else
+                    clearFlag(PV_BIT);
+                update_H(ADD, *r, 1);
+                (*r)++;
+                update_S(*r);
+                update_Z(*r);
+                clearFlag(N_BIT);
+            } else {
+                cout << "Error: nullptr." << endl;
+            }
             break;
 
         // DEC r instructions (0x05, 0x0D, 0x15, 0x1D, 0x25, 0x2D, 0x3D)
@@ -412,16 +432,19 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: DEC r" << endl; break;
             }
-            if (*r == 0x80)
-                setFlag(PV_BIT);
-            else
-                clearFlag(PV_BIT);
-            update_H(SUB, *r, 1);
-            (*r)--;
-            update_S(*r);
-            update_Z(*r);
-            setFlag(N_BIT);
-
+            if (r != nullptr) {
+                if (*r == 0x80)
+                    setFlag(PV_BIT);
+                else
+                    clearFlag(PV_BIT);
+                update_H(SUB, *r, 1);
+                (*r)--;
+                update_S(*r);
+                update_Z(*r);
+                setFlag(N_BIT);
+            } else {
+                cout << "Error: nullptr." << endl;
+            }
             break;
 
         // LD r, n instructions (0x06/0x0e - 0x26/0x3e)
@@ -438,7 +461,11 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: LD r, n" << endl; break;
             }
-            *r = IR[2];        // LD r, n
+            if (r != nullptr) {
+                *r = IR[2];        // LD r, n
+             } else {
+                cout << "Error: nullptr." << endl;
+            }           
             // Condition bits affected: None
             break;
 
@@ -481,7 +508,11 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: LD r, r' r" << endl; break;
             }
-            *r = *r_;        // LD r, r'
+            if (r != nullptr) {
+                *r = *r_;        // LD r, r'
+            } else {
+                cout << "Error: nullptr." << endl;
+            }
             // Condition bits affected: None
             break;
 
@@ -499,13 +530,17 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: ADD A, r" << endl; break;
             }
-            update_V(ADD, A, *r);
-            update_H(ADD, A, *r);
-            update_C(ADD, A, *r);
-            A += *r;
-            update_S(A);
-            update_Z(A);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                update_V(ADD, A, *r);
+                update_H(ADD, A, *r);
+                update_C(ADD, A, *r);
+                A += *r;
+                update_S(A);
+                update_Z(A);
+                clearFlag(N_BIT);
+            } else {
+                cout << "Error: nullptr." << endl;
+            } 
             break;
 
         // ADC A, r instructions (0x88 - 0x8D, 0x8F)
@@ -523,13 +558,17 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: ADC A, r" << endl; break;
             }
             temp = testFlag(C_BIT);
-            update_V(ADC, A, *r);
-            update_H(ADC, A, *r);
-            update_C(ADC, A, *r);
-            A = A + *r + temp;
-            update_S(A);
-            update_Z(A);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                update_V(ADC, A, *r);
+                update_H(ADC, A, *r);
+                update_C(ADC, A, *r);
+                A = A + *r + temp;
+                update_S(A);
+                update_Z(A);
+                clearFlag(N_BIT);
+            } else {
+                cout << "Error: nullptr." << endl;
+            }            
             break;
 
         // SUB A, r instructions (0x90 - 0x95, 0x97)
@@ -546,13 +585,17 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: SUB A, r" << endl; break;
             }
-            update_V(SUB, A, *r);
-            update_H(SUB, A, *r);
-            update_C(SUB, A, *r);
-            A = A - *r;
-            update_S(A);
-            update_Z(A);
-            setFlag(N_BIT);
+            if (r != nullptr) {
+                update_V(SUB, A, *r);
+                update_H(SUB, A, *r);
+                update_C(SUB, A, *r);
+                A = A - *r;
+                update_S(A);
+                update_Z(A);
+                setFlag(N_BIT);
+            } else {
+                cout << "Error: nullptr." << endl;
+            }
             break;
 
         // SBC A, r instructions (0x98 - 0x9D, 0x9F)
@@ -570,13 +613,17 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: SBC A, r" << endl; break;
             }
             temp = testFlag(C_BIT);
-            update_V(SBC, A, *r);
-            update_H(SBC, A, *r);
-            update_C(SBC, A, *r);
-            A = A - *r - temp;
-            update_S(A);
-            update_Z(A);
-            setFlag(N_BIT);
+            if (r != nullptr) {
+                update_V(SBC, A, *r);
+                update_H(SBC, A, *r);
+                update_C(SBC, A, *r);
+                A = A - *r - temp;
+                update_S(A);
+                update_Z(A);
+                setFlag(N_BIT);
+            } else {
+                cout << "Error: nullptr." << endl;
+            }
             break;
 
         // AND A, r instructions (0xA0 - 0xA5, 0xA7)
@@ -593,13 +640,17 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: AND A, r" << endl; break;
             }
-            A = A & *r;
-            update_S(A);
-            update_Z(A);
-            setFlag(H_BIT);
-            update_P(A);
-            clearFlag(N_BIT);
-            clearFlag(C_BIT);
+            if (r != nullptr) {
+                A = A & *r;
+                update_S(A);
+                update_Z(A);
+                setFlag(H_BIT);
+                update_P(A);
+                clearFlag(N_BIT);
+                clearFlag(C_BIT);
+            } else {
+                cout << "Error: nullptr." << endl;
+            }
             break;
 
         // XOR A, r instructions (0xA8 - 0xAD, 0xAF)
@@ -616,13 +667,17 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: XOR A, r" << endl; break;
             }
-            A = A ^ *r;
-            update_S(A);
-            update_Z(A);
-            clearFlag(H_BIT);
-            update_P(A);
-            clearFlag(N_BIT);
-            clearFlag(C_BIT);
+            if (r != nullptr) {
+                A = A ^ *r;
+                update_S(A);
+                update_Z(A);
+                clearFlag(H_BIT);
+                update_P(A);
+                clearFlag(N_BIT);
+                clearFlag(C_BIT);
+            } else {
+                cout << "Error: nullptr." << endl;
+            }
             break;
 
         // OR A, r instructions (0xB0 - 0xB5, 0xB7)
@@ -639,13 +694,17 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: OR A, r" << endl; break;
             }
-            A = A | *r;
-            update_S(A);
-            update_Z(A);
-            clearFlag(H_BIT);
-            update_P(A);
-            clearFlag(N_BIT);
-            clearFlag(C_BIT);
+            if (r != nullptr) {
+                A = A | *r;
+                update_S(A);
+                update_Z(A);
+                clearFlag(H_BIT);
+                update_P(A);
+                clearFlag(N_BIT);
+                clearFlag(C_BIT);
+            } else {
+                cout << "Error: nullptr." << endl;
+            }
             break;
 
         // CP r instructions (0xB8 - 0xBD, 0xBF)
@@ -664,12 +723,16 @@ void Z80::execute_index_opcode() {  // IR[0] = 0xDD or 0xFD
                 default: cout << "Invalid opcode: CP r" << endl; break;
             }
             // Compare only; register contents unchanged
-            update_S(A - *r);
-            update_Z(A - *r);
-            update_H(SUB, A, *r);
-            update_V(SUB, A, *r);
-            setFlag(N_BIT);
-            update_C(SUB, A, *r);
+            if (r != nullptr) {
+                update_S(A - *r);
+                update_Z(A - *r);
+                update_H(SUB, A, *r);
+                update_V(SUB, A, *r);
+                setFlag(N_BIT);
+                update_C(SUB, A, *r);
+            } else {
+                cout << "Error: nullptr." << endl;
+            }
             break;
 
         default:

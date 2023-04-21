@@ -85,6 +85,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         case 0xf4: case 0xf5: case 0xf6: case 0xf7:
         case 0xf8: case 0xf9: case 0xfa: case 0xfb:
         case 0xfc: case 0xfd: case 0xfe: case 0xff:
+            // Condition bits affected: None
             break;
 
         // ************* Input and Output Group **************
@@ -123,12 +124,14 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                     cout << "Invalid opcode: IN r, (C) 0xed70" << endl;
                     break;
             }
-            *r = in[C];
-            update_S(*r);
-            update_Z(*r);
-            clearFlag(H_BIT);
-            update_P(*r);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                *r = in[C];
+                update_S(*r);
+                update_Z(*r);
+                clearFlag(H_BIT);
+                update_P(*r);
+                clearFlag(N_BIT);
+            }
             break;
 
         // IN (C) (0xED70)
@@ -242,14 +245,16 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                     cout << "Invalid opcode OUT (C), r  0xed71" << endl;
                     break;
             }
-            out[C] = *r;
+            if (r != nullptr) out[C] = *r;
+            // Condition bits affected: None
             break;
 
         // OUT (C), 0 (0xED71)
         // Undocumented. Outputs 0 to port pointed to by C. Flags unaffected.
         case 0x71:
             out[C] = 0;
-            break;
+            // Condition bits affected: None
+           break;
 
         // OUTI (0xEDA3)
         case 0xa3:
@@ -346,11 +351,13 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         // LD I, A (0xED47)
         case 0x47:
             I = A;
+            // Condition bits affected: None
             break;
 
         // LD R, A (0xED4F)
         case 0x4f:
             R = A;
+            // Condition bits affected: None
             break;
 
         // LD dd, (nn) (0xED4B, 0xED5B, 0xED6B, 0xED7B)
@@ -401,6 +408,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
                     break;
                 default: cout << "Invalid opcode: LD  (nn), dd" << endl; break;
             }
+            // Condition bits affected: None
             break;
 
         // LDI (0xEDA0)
@@ -569,16 +577,19 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         // IM 0 (0xED46)
         case 0x46:
             INT_MODE = 0;
+            // Condition bits affected: None
             break;
 
         // IM 1 (0xED56)
         case 0x56:
             INT_MODE = 1;
+            // Condition bits affected: None
             break;
 
         // IM 2 (0xED5E)
         case 0x5e:
             INT_MODE = 2;
+            // Condition bits affected: None
             break;
 
         // ADC HL, ss  (0x4A, 0x5A, 0x6A, 0x7A)
@@ -759,6 +770,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
         case 0x4d:
             PC = (memory[SP + 1] << 8) + memory[SP];
             SP += 2;
+            // Condition bits affected: None
             break;
 
         // RETN (0xED45)
@@ -766,6 +778,7 @@ void Z80::execute_misc_opcode() {  // IR[0] = 0xED
             PC = (memory[SP + 1] << 8) + memory[SP];
             IFF1 = IFF2;
             SP += 2;
+            // Condition bits affected: None
             break;
 
         default:

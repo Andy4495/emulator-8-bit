@@ -80,7 +80,7 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: LD r, r'" << endl; break;
             }
-            *r = *r_;        // LD r, r'
+            if ((r != nullptr) && (r_ != nullptr)) *r = *r_;        // LD r, r'
             // Condition bits affected: None
             break;
 
@@ -103,7 +103,7 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: LD r, n" << endl; break;
             }
-            *r = IR[1];        // LD r, n
+            if (r != nullptr) *r = IR[1];        // LD r, n
             // Condition bits affected: None
             break;
 
@@ -191,8 +191,8 @@ void Z80::execute_main_opcode() {
                 case 0b11: r = &A; r_ = &F; break;
                 default: cout << "Invalid opcode PUSH qq" << endl; break;
             }
-            memory[--SP] = *r;
-            memory[--SP] = *r_;
+            if (r  != nullptr) memory[--SP] = *r;
+            if (r_ != nullptr) memory[--SP] = *r_;
             // Condition bits affected: None
             break;
 
@@ -205,8 +205,8 @@ void Z80::execute_main_opcode() {
                 case 0b11: r = &A; r_ = &F; break;
                 default: cout << "Invalid opcode: POP qq" << endl; break;
             }
-            *r_ = memory[SP++];
-            *r  = memory[SP++];
+            if (r_ != nullptr) *r_ = memory[SP++];
+            if (r  != nullptr) *r  = memory[SP++];
             // Condition bits affected: None
             break;
 
@@ -291,13 +291,15 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: ADD A, r" << endl; break;
             }
-            update_V(ADD, A, *r);
-            update_H(ADD, A, *r);
-            update_C(ADD, A, *r);
-            A += *r;
-            update_S(A);
-            update_Z(A);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                update_V(ADD, A, *r);
+                update_H(ADD, A, *r);
+                update_C(ADD, A, *r);
+                A += *r;
+                update_S(A);
+                update_Z(A);
+                clearFlag(N_BIT);
+            }
             break;
 
         // ADD A, n    (0xC6)
@@ -331,13 +333,15 @@ void Z80::execute_main_opcode() {
                 default: cout << "Invalid opcode: ADC A, r" << endl; break;
             }
             temp = testFlag(C_BIT);
-            update_V(ADC, A, *r);
-            update_H(ADC, A, *r);
-            update_C(ADC, A, *r);
-            A = A + *r + temp;
-            update_S(A);
-            update_Z(A);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                update_V(ADC, A, *r);
+                update_H(ADC, A, *r);
+                update_C(ADC, A, *r);
+                A = A + *r + temp;
+                update_S(A);
+                update_Z(A);
+                clearFlag(N_BIT);
+            }
             break;
 
         // ADC A, n    (0xCE)
@@ -371,13 +375,15 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: SUB A, r" << endl; break;
             }
-            update_V(SUB, A, *r);
-            update_H(SUB, A, *r);
-            update_C(SUB, A, *r);
-            A = A - *r;
-            update_S(A);
-            update_Z(A);
-            setFlag(N_BIT);
+            if (r != nullptr) {
+                update_V(SUB, A, *r);
+                update_H(SUB, A, *r);
+                update_C(SUB, A, *r);
+                A = A - *r;
+                update_S(A);
+                update_Z(A);
+                setFlag(N_BIT);
+            }
             break;
 
         // SUB A, n    (0xD6)
@@ -411,13 +417,15 @@ void Z80::execute_main_opcode() {
                 default: cout << "Invalid opcode: SBC A, r" << endl; break;
             }
             temp = testFlag(C_BIT);
-            update_V(SBC, A, *r);
-            update_H(SBC, A, *r);
-            update_C(SBC, A, *r);
-            A = A - *r - temp;
-            update_S(A);
-            update_Z(A);
-            setFlag(N_BIT);
+            if (r != nullptr) {
+                update_V(SBC, A, *r);
+                update_H(SBC, A, *r);
+                update_C(SBC, A, *r);
+                A = A - *r - temp;
+                update_S(A);
+                update_Z(A);
+                setFlag(N_BIT);
+            }
             break;
 
         // SBC A, n    (0xDE)
@@ -451,13 +459,15 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: AND A, r" << endl; break;
             }
-            A = A & *r;
-            update_S(A);
-            update_Z(A);
-            setFlag(H_BIT);
-            update_P(A);
-            clearFlag(N_BIT);
-            clearFlag(C_BIT);
+            if (r != nullptr) {
+                A = A & *r;
+                update_S(A);
+                update_Z(A);
+                setFlag(H_BIT);
+                update_P(A);
+                clearFlag(N_BIT);
+                clearFlag(C_BIT);
+            }
             break;
 
         // AND A, n    (0xE6)
@@ -490,13 +500,15 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: OR A, r" << endl; break;
             }
-            A = A | *r;
-            update_S(A);
-            update_Z(A);
-            clearFlag(H_BIT);
-            update_P(A);
-            clearFlag(N_BIT);
-            clearFlag(C_BIT);
+            if (r != nullptr) {
+                A = A | *r;
+                update_S(A);
+                update_Z(A);
+                clearFlag(H_BIT);
+                update_P(A);
+                clearFlag(N_BIT);
+                clearFlag(C_BIT);
+            }
             break;
 
         // OR A, n    (0xF6)
@@ -529,13 +541,15 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: XOR A, r" << endl; break;
             }
-            A = A ^ *r;
-            update_S(A);
-            update_Z(A);
-            clearFlag(H_BIT);
-            update_P(A);
-            clearFlag(N_BIT);
-            clearFlag(C_BIT);
+            if (r != nullptr) {
+                A = A ^ *r;
+                update_S(A);
+                update_Z(A);
+                clearFlag(H_BIT);
+                update_P(A);
+                clearFlag(N_BIT);
+                clearFlag(C_BIT);
+            }
             break;
 
         // XOR A, n    (0xEE)
@@ -569,12 +583,14 @@ void Z80::execute_main_opcode() {
                 default: cout << "Invalid opcode: CP r" << endl; break;
             }
             // Compare only; register contents unchanged
-            update_S(A - *r);
-            update_Z(A - *r);
-            update_H(SUB, A, *r);
-            update_V(SUB, A, *r);
-            setFlag(N_BIT);
-            update_C(SUB, A, *r);
+            if (r != nullptr) {
+                update_S(A - *r);
+                update_Z(A - *r);
+                update_H(SUB, A, *r);
+                update_V(SUB, A, *r);
+                setFlag(N_BIT);
+                update_C(SUB, A, *r);
+            }
             break;
 
         // CP n    (0xFE)
@@ -607,15 +623,17 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: INC r" << endl; break;
             }
-            if (*r == 0x7f)
-                setFlag(PV_BIT);
-            else
-                clearFlag(PV_BIT);
-            update_H(ADD, *r, 1);
-            (*r)++;
-            update_S(*r);
-            update_Z(*r);
-            clearFlag(N_BIT);
+            if (r != nullptr) {
+                if (*r == 0x7f)
+                    setFlag(PV_BIT);
+                else
+                    clearFlag(PV_BIT);
+                update_H(ADD, *r, 1);
+                (*r)++;
+                update_S(*r);
+                update_Z(*r);
+                clearFlag(N_BIT);
+            }
             break;
 
         // DEC r instructions (0x05, 0x0D, 0x15, 0x1D, 0x25, 0x2D, 0x3D)
@@ -637,15 +655,17 @@ void Z80::execute_main_opcode() {
                 case 0b111: r = &A; break;
                 default: cout << "Invalid opcode: DEC r" << endl; break;
             }
-            if (*r == 0x80)
-                setFlag(PV_BIT);
-            else
-                clearFlag(PV_BIT);
-            update_H(SUB, *r, 1);
-            (*r)--;
-            update_S(*r);
-            update_Z(*r);
-            setFlag(N_BIT);
+            if (r != nullptr) {
+                if (*r == 0x80)
+                    setFlag(PV_BIT);
+                else
+                    clearFlag(PV_BIT);
+                update_H(SUB, *r, 1);
+                (*r)--;
+                update_S(*r);
+                update_Z(*r);
+                setFlag(N_BIT);
+            }
             break;
 
         // *** General Purpose Arithmetic and CPU Control Groups ***
