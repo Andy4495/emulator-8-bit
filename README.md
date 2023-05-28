@@ -12,13 +12,13 @@ I created it as a learning exercise to refresh my C++ programming skills and to 
 The emulator:
 
 - Is text-based
-- Supports all official Zilog opcodes and all undocumented opcodes listed in this [table][4].
+- Supports all official Zilog opcodes and all undocumented Z80 opcodes listed in this [table][4]
 - Emulates at the instruction level (it is not "clock accurate")
 - Does not emulate external hardware
-- Does not update the undocumented flag bits 5 and 3 (sometimes referred to as XF and YF).
-- Does not emulate the undocumented internal MEMPTR and Q registers.
-- Supports the HALT statement as if it were a breakpoint. Execution is stopped and the R register is not updated while the processor is halted.
-- May not update the R register correctly in cases where there are strings of $FD/$DD opcode prefixes that do not represent a valid opcode.
+- Does not update the undocumented flag bits 5 and 3 (sometimes referred to as XF and YF)
+- Does not emulate the undocumented internal MEMPTR and Q registers
+- Supports the HALT statement as if it were a breakpoint. Execution is stopped and the R register is not updated while the processor is halted
+- May not update the R register correctly in cases where there are strings of $FD/$DD opcode prefixes that do not represent a valid opcode
 
 The [Future Functionality](#future-functionality) items listed below may be included in later releases.
 
@@ -39,7 +39,7 @@ No error checking is performed on the input file, except that a maximum of 65536
 The repository contains a Makefile to automate the build process. To build the `emulator` executable, simply run `make` at the command line from the top-level directory of the repo:
 
 ```shell
-  make
+make
 ```
 
 The Makefile also has the following targets defined:
@@ -54,7 +54,7 @@ make clean    # Removes the executable, object, and linker files
 
 The emulator was developed using Ubuntu 20.04 with gcc version 9.4.0 (by way of [WSL 2][26]) and MacOS Ventura with clang version 12.0.0.
 
-It is also known to be compatible with Ubuntu 22.04 and gcc version 11.3.0 (the GitHub Actions environment).
+It is also known to be compatible with Ubuntu 22.04 and gcc version 11.3.0 within the GitHub Actions environment.
 
 I have not tried it on other platforms, but there is no machine dependent code. It should work as-is (or with minimal changes) on other unix-like platforms and compiler versions.
 
@@ -63,19 +63,24 @@ I have not tried it on other platforms, but there is no machine dependent code. 
 1. Parse the command line.
 2. Read the input file into an array representing the processor's memory
 3. Display menu and choose operating mode
-4. Execute mode:
-    - Loop:
-      - Fetch and decode instruction
-      - Execute instruction
-      - Print instruction
-      - Continue loop until HALT reached
-    - Display machine state (execute mode)
-5. Disassemble mode:
-    - Loop:
-      - Fetch and decode instruction
-      - Print instruction
-      - Continue loop until ending address reached
-6. Return to step 3
+
+    A. Execute mode:
+
+      - Loop:
+        - Fetch and decode instruction
+        - Execute instruction
+        - Print instruction
+        - Continue loop until HALT reached
+      - Display machine state
+
+    B. Disassemble mode:
+
+      - Loop:
+        - Fetch and decode instruction
+        - Print instruction
+        - Continue loop until ending address reached
+
+4. Return to step 3
 
 ### Defining the CPU
 
