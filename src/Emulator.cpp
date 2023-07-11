@@ -8,10 +8,11 @@
    0.2.0 03/09/2023 Andy4495  Tag v0.2.0
    0.3.0 04/16/2023 Andy4495  Tag v0.3.0
    1.0.0 20-Apr-2023 Andy4495 Tag v1.0.0 - First official release
+   1.0.1 10-Jul-2023 Andy4495 Tag v1.0.1 - Fix version string
 
 */
 
-const char* VERSION = "v0.3.0";
+const char* VERSION = "v1.0.1";
 
 // 1. Read command line and parse arguments parseCommandLine()
 // 2. Read memory file (hex, s-record) loadProgram()
