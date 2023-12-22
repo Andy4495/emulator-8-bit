@@ -2,6 +2,7 @@
 ;    https://github.com/Andy4495/emulator-8-bit
 ;
 ; 13-Mar-2023  Andy4495 Initial version
+; 21-Dec-2023  Andy4495 Update for z88dk compatibility
 ; 
 ; Z80 opcodes that affect flags
 ; 
@@ -14,28 +15,29 @@
 	pop af
 	jp	start
 	defs 1,0	; fill between with zeros
-	org 8
+;	org 8
 	ret
 	defs 7,0	; fill between with zeros
-	org $10
+;	org $10
 	ret
 	defs 7,0	; fill between with zeros
-	org $18
+;	org $18
 	ret
 	defs 7,0	; fill between with zeros
-	org $20
+;	org $20
 	ret
 	defs 7,0	; fill between with zeros
-	org $28
+;	org $28
 	ret
 	defs 7,0	; fill between with zeros
-	org $30
+;	org $30
 	ret
 	defs 7,0	; fill between with zeros
-	org $38
+;	org $38
 	ret
 	defs 7,0	; fill between with zeros
-	org $66		; NMI vector
+	defs $26,$ff	; Fill with $ff for compatibility with previous test file versions
+;	org $66		; NMI vector
 	retn
 
 start: 
@@ -5168,7 +5170,10 @@ end_program:
 	halt
 	jp	end_program
 
-	org $3000
+; Define space for compatiblity with previous versions of test file
+; Current PC: $26d5
+	defs $92b,$ff
+;	org $3000
 	defm "Results:"
 
 results:

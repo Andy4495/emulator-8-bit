@@ -113,13 +113,16 @@ The `Z80` class contains:
     - Generate a string containing the disassembled instruction and data
   - Execute the actual instruction (load, store, jump, etc.)
 
-## Z80 Assembler
+## Z80 Assemblers
 
-I have been using the [`zasm`][24] assembler for testing. Disassembled code generated from my emulator can be assembled with `zasm`, and used as a "round-trip" test of any changes to verify that the opcodes are decoded into the correct mnemonics.
+I have tested the emulator with the following Z80 assemblers:
 
-I have included the `zasm` linux executable in this repo as a convenience in automated testing. See the file [zasm_LICENSE.txt][22] for licensing details specifically for `zasm`.
+- [`zasm`][24]
+- [`z88dk--z80asm`][33]
 
-This emulator is based off the orignal Zilog-manufactured Z80 chips. The undocumented opcodes behave a little differently depending on the manufacturer. In order to test the undocumented opcodes supported by this emulator, the `--ixcbr2` [command line option][23] should be used:
+I have included x86 linux executables for these assemblers in this repo as a convenience in automated testing.
+
+When testing with `zasm`, the `--ixcbr2` [command line option][23] should be used so that the undocumented opcodes are interpreted correctly:
 
 ```bash
 zasm --ixcbr2 filename.asm
@@ -152,12 +155,12 @@ Various workflow actions are defined to test the emulator:
 
 #### Round Trip
 
-- Tests the disassembler functionality of the emulator. The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassemble mode. The disassembled output is then recompiled with `zasm`, and the resultant `.rom` file is compared against the `.rom` file created with the input file.
+- Tests the disassembler functionality of the emulator. The input file is assembled. The assembled output `.rom` file is run through the emulator in disassemble mode. The disassembled output is assembled again to create a second `.rom` file. This second `.rom` file is compared against the initial `.rom` file created with the input file.
 
 #### Known Good
 
-- For disassemble mode: The input file is assembled with `zasm`. The assembled output `.rom` file is run through the emulator in disassemble mode. The disassembled output is then compared against a "known good" disassemble file. This type of test is needed in cases where re-assembling the disassembled mnemonic will not produce the same opcode values (e.g., in the case of undocumented opcodes that perform the same function as documented opcodes).
-- For execute mode: The input file is assembled with `zasm`. The assembled output `.rom` file is input to the emulator and executed. The memory and registers are dumped to a file which is then compared to a known good memory/register file.
+- For disassemble mode: The input file is assembled. The assembled output `.rom` file is run through the emulator in disassemble mode. The disassembled output is then compared against a "known good" disassemble file. This type of test is needed in cases where re-assembling the disassembled mnemonic will not produce the same opcode values (e.g., in the case of undocumented opcodes that perform the same function as documented opcodes).
+- For execute mode: The input file is assembled. The assembled output `.rom` file is input to the emulator and executed. The memory and registers are dumped to a file which is then compared to a known good memory/register file.
 
 ## Future Functionality
 
@@ -184,10 +187,13 @@ Various workflow actions are defined to test the emulator:
 - [Z80 Info][5]: Comprehensive source of Z80 information: hardware, compilers, assemblers, documentation
 - Z80 [opcode table][4] ([GitHub repo][31])
 - [*The Undocumented Z80 Documented*][18] white paper
-- [`zasm`][24] - Z80 assembler: [online version][6] or [download][7]
-  - GitHub [repo][20]
+- Z80 assemblers:
+  - [`zasm`][24] - [online version][6] or [download][7]
+    - GitHub [repo][20]
+  - [`z88dk-z80asm`][34] - Z88DK - The Development Kit for Z80 Computers
+    - GitHub [repo][33]
+  - [SDCC][8] - Small Device C Compiler and [manual][9]
 - [Z80 emulator project][19] which includes test cases and a substantial reference list
-- [SDCC][8] - Small Device C Compiler and [manual][9]
 - [hex2bin][10] - Tool for converting [Intex Hex][11] or [Motorola S-Record][12] files to binary
 - [Make reference][2]
 - Online Makefile [generator][3]
@@ -195,7 +201,9 @@ Various workflow actions are defined to test the emulator:
 
 ## License
 
-The `zasm` assembler is released under the [BSD 2-Clause license][25]. See [zasm_LICENSE.txt][22] in this repository or [LICENSE][21] in the source repository for details.
+The `zasm` assembler is distributed under the [BSD 2-Clause license][25]. See [zasm_LICENSE.txt][22] in the `tools/zasm` directory.
+
+The `z88dk-z80asm` assembler is distributed under the [Clarified Artistic License][32]. See [LICENSE.txt][35] in the `tools/z88dk` directory.  `z88dk-z80asm` was built on 20-Dec-2023 from the source files available at <https://github.com/z88dk/z88dk>.
 
 The other software and files in this repository are released under what is commonly called the [MIT License][100]. See the file [`LICENSE.txt`][101] in this repository.
 
@@ -217,8 +225,7 @@ The other software and files in this repository are released under what is commo
 [18]: http://www.myquest.nl/z80undocumented/z80-documented-v0.91.pdf
 [19]: https://github.com/redcode/Z80
 [20]: https://github.com/Megatokio/zasm
-[21]: https://raw.githubusercontent.com/Megatokio/zasm/master/LICENSE
-[22]: ./tools/zasm_LICENSE.txt
+[22]: ./tools/zasm/zasm_LICENSE.txt
 [23]: https://k1.spdns.de/Develop/Projects/zasm/Documentation/z25.htm
 [24]: https://k1.spdns.de/Develop/Projects/zasm/Documentation/index.html
 [25]: https://choosealicense.com/licenses/bsd-2-clause/
@@ -227,6 +234,10 @@ The other software and files in this repository are released under what is commo
 [28]: ./.github/workflows/TestOpcodes.yml
 [29]: http://www.primrosebank.net/computers/z80/z80_special_reset.htm
 [31]: https://github.com/deeptoaster/opcode-table
+[32]: https://directory.fsf.org/wiki/License:ClArtistic
+[33]: https://github.com/z88dk/z88dk
+[34]: https://z88dk.org/site/
+[35]: ./tools/z88dk/LICENSE.txt
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)

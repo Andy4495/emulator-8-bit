@@ -13,14 +13,26 @@ on:
 
 jobs:
   test-disassembly: 
+    strategy:
+      matrix:
+        include:
+          - assembler: 'zasm'
+            exec: 'zasm/zasm'
+            options: '--ixcbr2'
+            outputfileoption: '-o '
+          - assembler: 'z88dk'
+            exec: 'z88dk/z88dk-z80asm'
+            options: '-v -b'
+            outputfileoption: '-o'
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup emulator and zasm
+      - name: Setup emulator and assembler
         run: |
           make
           cd tools
-          chmod +x ./zasm
+          chmod +x ${{ matrix.exec }}
       - name: Round-trip assemble, disassemble, compare
         env:
           FILES: test_disassembler_1 test_disassembler_2 test_disassembler_3
@@ -28,7 +40,7 @@ jobs:
           cd tools
           for f in $FILES; do
             echo "file basename: ${f}"
-            ./zasm --ixcbr2 ${f}.asm
+            ${{ matrix.exec }} ${{ matrix.options }} ${f}.asm ${{ matrix.outputfileoption}}${f}.rom
             echo "1" > options.txt
             echo "3" >> options.txt
             echo "0" >> options.txt
@@ -39,7 +51,7 @@ jobs:
             ../emulator ${f}.rom > ${f}_disassembled.asm <options.txt
             # Strip out the non-assembly top lines of the emulator output
             tail -n +14 ${f}_disassembled.asm >${f}_tail.asm
-            ./zasm --ixcbr2 ${f}_tail.asm
+            ${{ matrix.exec }} ${{matrix.options }} ${f}_tail.asm ${{ matrix.outputfileoption}}${f}_tail.rom
             echo "Comparing... ${f}.rom ${f}_tail.rom"
             cmp ${f}.rom ${f}_tail.rom
           done
@@ -50,7 +62,7 @@ jobs:
           cd tools
           for f in $FILES; do
             echo "file basename: ${f}"
-            ./zasm --ixcbr2 ${f}.asm
+            ${{ matrix.exec }} ${{ matrix.options }} ${f}.asm ${{ matrix.outputfileoption}}${f}.rom
             echo "1" > options.txt
             echo "2" >> options.txt
             echo "0" >> options.txt

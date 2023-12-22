@@ -2,6 +2,7 @@
 ;    https://github.com/Andy4495/emulator-8-bit
 ;
 ; 13-Apr-2023  Andy4495 Initial version
+; 21-Dec-2023  Andy4495 Update for z88dk compatibility
 ; 
 ; Run through DAA combinations
 ; 
@@ -123,7 +124,10 @@ tests_2:
 	defb $35, $43, $92, $83 ;      H = 0, C = 1 before DAA
 	defb $ff, $ff, $ff, $ff	; end of list marker
 
-	org $1000
+; define empty space for compatibility with previous versions of this test file
+; current PC: 0x0110
+	defs $0ef0,$ff
+;	org $1000
 	defm "Results:"
 
 results:

@@ -2,6 +2,7 @@
 ;    https://github.com/Andy4495/emulator-8-bit
 ;
 ; 01-Mar-2023  Andy4495 Initial version
+; 21-Dec-2023  Andy4495 Update for z88dk compatibility
 ; 
 ; See list of opcodes from http://k1.spdns.de/Develop/Projects/zasm/Documentation/z79.htm
 ; 
@@ -696,10 +697,10 @@
 	sll (HL)
 	sll A
 
-; for NMOS CPUs -- undocumented opcode 0xED71 acts differently depending on chip type
-; Andy4495 emulator decodes this as "out (c), 0"
-	out (c),$FF    
-; for CMOS CPUs -- undocumented opcode 0xED71 acts differently depending on chip type
+; opcode 0xED71 -- undocumented. Outputs zero to port number reference by C register
+;   Some references on the web mention that the CMOS version of Z80 outputs $FF instead of 0
+;   The standard mnemonic of this instruction is still listed as "out (c),0" regardless
+;   The emulator disasembles 0xED71 as "out (c),0"
 	out (c),0        
 ; affects flags only   
 	in  F,(c)

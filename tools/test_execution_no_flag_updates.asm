@@ -1,5 +1,6 @@
 ; Z80 test file for 8-bit emulator
 ;    https://github.com/Andy4495/emulator-8-bit
+; 21-Dec-2023  Andy4495 Update for z88dk compatibility
 ;
 ; 13-Mar-2023  Andy4495 Initial version
 ; 
@@ -11,25 +12,25 @@
     org 0
 	jp	start
 	defs 5,0	; fill between with zeros
-	org 8
+;	org 8
 	ret
 	defs 7,0	; fill between with zeros
-	org $10
+;	org $10
 	ret
 	defs 7,0	; fill between with zeros
-	org $18
+;	org $18
 	ret
 	defs 7,0	; fill between with zeros
-	org $20
+;	org $20
 	ret
 	defs 7,0	; fill between with zeros
-	org $28
+;	org $28
 	ret
 	defs 7,0	; fill between with zeros
-	org $30
+;	org $30
 	ret
 	defs 7,0	; fill between with zeros
-	org $38
+;	org $38
 	ret
 	defs 7,0	; fill between with zeros
 
@@ -1976,7 +1977,10 @@ return_point:
 	rst  $30
 	rst  $38
 
-	org $1000
+; Define space for compatibility with previous versions of this test file
+; Current PC: $0967
+	defs $699,$ff
+;	org $1000
 	defm "Results:"
 
 results:

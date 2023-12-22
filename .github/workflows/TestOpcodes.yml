@@ -13,14 +13,26 @@ on:
 
 jobs:
   test-opcodes: 
+    strategy:
+      matrix:
+        include:
+          - assembler: 'zasm'
+            exec: 'zasm/zasm'
+            options: '--ixcbr2'
+            outputfileoption: '-o '
+          - assembler: 'z88dk'
+            exec: 'z88dk/z88dk-z80asm'
+            options: '-v -b'
+            outputfileoption: '-o'
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup emulator and zasm
+      - name: Setup emulator and assembler
         run: |
           make
           cd tools
-          chmod +x ./zasm
+          chmod +x ${{ matrix.exec }}
       - name: Test opcodes
         env:
           FILES: test_execution_no_flag_updates test_execution_call_jump_loop_return test_execution_with_flag_updates test_execution_daa test_execution_duplicate_mnemonics
@@ -28,7 +40,7 @@ jobs:
           cd tools
           for f in $FILES; do
             echo "file basename: ${f}"
-            ./zasm --ixcbr2 ${f}.asm
+            ${{ matrix.exec }} ${{ matrix.options }} ${f}.asm ${{ matrix.outputfileoption}}${f}.rom
             echo "2" > options.txt
             echo "1" >> options.txt
             echo "7" >> options.txt

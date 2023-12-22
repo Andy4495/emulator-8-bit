@@ -2,6 +2,7 @@
 ;    https://github.com/Andy4495/emulator-8-bit
 ;
 ; 19-Apr-2023  Andy4495 Initial version
+; 21-Dec-2023  Andy4495 Update for z88dk compatibility
 ; 
 ; Z80 undocumented opcodes which have mnemonics which 
 ; are duplicates of documented opcodes
@@ -15,28 +16,29 @@
 	pop af
 	jp	start
 	defs 1,0	; fill between with zeros
-	org 8
+;	org 8
 	ret
 	defs 7,0	; fill between with zeros
-	org $10
+;	org $10
 	ret
 	defs 7,0	; fill between with zeros
-	org $18
+;	org $18
 	ret
 	defs 7,0	; fill between with zeros
-	org $20
+;	org $20
 	ret
 	defs 7,0	; fill between with zeros
-	org $28
+;	org $28
 	ret
 	defs 7,0	; fill between with zeros
-	org $30
+;	org $30
 	ret
 	defs 7,0	; fill between with zeros
-	org $38
+;	org $38
 	ret
 	defs 7,0	; fill between with zeros
-	org $66		; NMI vector
+	defs $26,$ff	; Fill with $ff for compatibility with previous test file versions
+;	org $66		; NMI vector
 	retn
 
 start: 
@@ -600,14 +602,20 @@ end_program:
 	halt
 	jp	end_program
 
-	org $3000
+; Define space for compatiblity with previous version of test Program
+; Current PC: $0545
+	defs $2abb,$ff
+;	org $3000
 	defm "Results:"
 
 results:
 	defs $ff,'.'		; Results area. 'P' ($50): Pass. 'F' ($46): FAIL. '.' - no result recorded
 	defs $ff,'.'
 
-	org $4000
+; Define space for compatibility with previous version of test Program
+; Current PC: $3206
+	defs $0dfa,$ff
+;	org $4000
 	defm "Values->"
 values:
 	defs $ff,$00

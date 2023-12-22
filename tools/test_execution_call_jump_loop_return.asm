@@ -2,6 +2,7 @@
 ;    https://github.com/Andy4495/emulator-8-bit
 ;
 ; 13-Mar-2023  Andy4495 Initial version
+; 21-Dec-2023  Andy4495 Update for z88dk compatibility
 ; 
 ; Z80 opcodes for conditional calls, conditional jumps, loops, 
 ;                 conditional returns, restarts (rst)
@@ -14,36 +15,36 @@
 	ret	z		;1
 	ld a,$a5
 	jp	start	;3
-;	defs 2,0	; fill between with zeros
-	org 8
+;	org 8
 	ld a,$02
 	ret
 	defs 5,0	; fill between with zeros
-	org $10
+;	org $10
 	ld 	a,$04
 	ret
 	defs 5,0	; fill between with zeros
-	org $18
+;	org $18
 	ld a,$08
 	ret
 	defs 5,0	; fill between with zeros
-	org $20
+;	org $20
 	ld a,$10
 	ret
 	defs 5,0	; fill between with zeros
-	org $28
+;	org $28
 	ld a,$20
 	ret
 	defs 5,0	; fill between with zeros
-	org $30
+;	org $30
 	ld a,$40
 	ret
 	defs 5,0	; fill between with zeros
-	org $38
+;	org $38
 	ld a,$80
 	ret
 	defs 5,0	; fill between with zeros
-	org $66		; NMI vector
+	defs $26,$ff	; Fill in remaining as $ff for compatiblity with previous versions of this test file	
+;	org $66		; NMI vector
 	jp retn
 
 start: 
@@ -577,7 +578,10 @@ return_point:
 	ld a,$5a
 	ret
 
-	org $0800
+; define space for compatibility with previous version of test file
+; current PC at $04f2
+	defs $30e,$ff
+;	org $0800
 	defm "Results:"
 results:
 	defs $30,'.'		; Results area. 'P' ($50): Pass. 'F' ($46): FAIL. '.' - no result recorded
