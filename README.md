@@ -192,7 +192,6 @@ Various workflow actions are defined to test the emulator:
     - GitHub [repo][20]
   - [`z88dk-z80asm`][34] - Z88DK - The Development Kit for Z80 Computers
     - GitHub [repo][33]
-  - [SDCC][8] - Small Device C Compiler and [manual][9]
 - [Z80 emulator project][19] which includes test cases and a substantial reference list
 - [hex2bin][10] - Tool for converting [Intex Hex][11] or [Motorola S-Record][12] files to binary
 - [Make reference][2]
@@ -214,8 +213,6 @@ The other software and files in this repository are released under what is commo
 [5]: http://z80.info/index.html
 [6]: http://k1.spdns.de/cgi-bin/zasm.cgi
 [7]: https://k1.spdns.de/Develop/Projects/zasm/Distributions/
-[8]: https://sdcc.sourceforge.net
-[9]: https://sdcc.sourceforge.net/doc/sdccman.pdf
 [10]: https://hex2bin.sourceforge.net
 [11]: https://developer.arm.com/documentation/ka003292/latest
 [12]: https://en.wikipedia.org/wiki/SREC_(file_format)
