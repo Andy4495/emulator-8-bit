@@ -1,7 +1,7 @@
 # 8-bit Emulator
 
 [![Build](https://github.com/Andy4495/emulator-8-bit/actions/workflows/Build.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/Build.yml)
-[![Check Markdown Links](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/CheckMarkdownLinks.yml)
+[![Check Markdown Links](https://github.com/Andy4495/emulator-8-bit/actions/workflows/check-links.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/check-links.yml)
 [![Test Disassembler](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml)
 [![Test Opcodes](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestOpcodes.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestOpcodes.yml)
 
@@ -207,7 +207,6 @@ The `z88dk-z80asm` assembler is distributed under the [Clarified Artistic Licens
 The other software and files in this repository are released under what is commonly called the [MIT License][100]. See the file [`LICENSE.txt`][101] in this repository.
 
 [2]: https://www.gnu.org/software/make/manual/make.html
-<!-- markdown-link-check-disable-next-line -->
 [3]: https://nicomedes.assistedcoding.eu/#/app/makefilegen
 [4]: https://clrhome.org/table/
 [5]: http://z80.info/index.html
