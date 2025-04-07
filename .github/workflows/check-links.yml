@@ -29,5 +29,7 @@ jobs:
       override-args: ${{ inputs.override-args }}
       # Use the following to exclude certain URLs from the check. Need to include "--exclude" in the definition.
       # For example, --exclude '43oh.com'
-      exclude: 
+      # Can also add any command line option here; it will be added to the default options when calling check-links
+      # Increase timeout to 60 seconds from default of 20
+      exclude: -t 60
     
