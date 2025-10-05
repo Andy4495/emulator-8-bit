@@ -207,7 +207,7 @@ The `z88dk-z80asm` assembler is distributed under the [Clarified Artistic Licens
 The other software and files in this repository are released under what is commonly called the [MIT License][100]. See the file [`LICENSE.txt`][101] in this repository.
 
 [2]: https://www.gnu.org/software/make/manual/make.html
-[3]: https://nicomedes.assistedcoding.eu/#/app/makefilegen
+[3]: https://nicomedes.codia.space/app/makefilegen/c
 [4]: https://clrhome.org/table/
 [5]: http://z80.info/index.html
 [6]: http://k1.spdns.de/cgi-bin/zasm.cgi
