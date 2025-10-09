@@ -1,4 +1,4 @@
-/* Z80 Emulator 
+/* 8-bit CPU Emulator 
    Copyright 2023 Andreas Taylor
    https://github.com/Andy4495/emulator-8-bit
    MIT License
@@ -9,10 +9,11 @@
    0.3.0 04/16/2023 Andy4495  Tag v0.3.0
    1.0.0 20-Apr-2023 Andy4495 Tag v1.0.0 - First official release
    1.0.1 10-Jul-2023 Andy4495 Tag v1.0.1 - Fix version string
+   2.0.0 08-Oct-2025 Andy4495 Add Homemade-CPU support
 
 */
 
-const char* VERSION = "v1.0.1";
+const char* VERSION = "v2.0.0";
 
 // 1. Read command line and parse arguments parseCommandLine()
 // 2. Read memory file (hex, s-record) loadProgram()
@@ -38,11 +39,13 @@ const char* VERSION = "v1.0.1";
 //
 
 #include "Z80.h"
+#include "HomemadeCPU.h"
 #include <iostream>
 #include <fstream>
 #include <cassert>
 #include <cstdint>
 #include <string>
+#include <cstring>
 using std::ifstream;
 using std::iostream;
 using std::ios;
@@ -59,9 +62,6 @@ int display_disassemble_menu();
 int display_execute_menu();
 int display_debug_menu();
 
-/// Use default values for rom and ram definitions for now
-Z80 cpu;
-
 // Breakpoints -- save current instruction and replace with HALT
 // Only single breakpoint supported for now
 // Eventually need to use class function. For now, hardcode Z80 HALT opcode.
@@ -72,6 +72,7 @@ int answer;
 
 // Main() function: where the execution of program begins
 int main(int argc, char** argv) {
+
     // All CPU class functions use hex (hexadecimal) for cout
     // Anywhere dec is desired, temporarily switch to dec and
     // then swtich back to hex when done writing to cout
@@ -79,10 +80,15 @@ int main(int argc, char** argv) {
     cout.fill('0');
 
     // prints hello world
-    cout << "Z80 Emulator Version: " << VERSION << endl;
+    cout << "8-bit Emulator Version: " << VERSION << endl;
+
+    abstract_CPU*   cpu;
+    Z80*            Z80_cpu;
+    HomemadeCPU*    Homemade_cpu;
 
     const int MAXWIDTH=128;
     char fname[MAXWIDTH]; 
+    char input_fname[MAXWIDTH];
     char c;
     bool exit_on_disassemble = false;
     uint16_t start_addr, end_addr;
@@ -95,13 +101,50 @@ int main(int argc, char** argv) {
                     EXIT}
                     state = MAIN_MENU;
 
-    if (argc == 2) {  // Use pathname passed on command line
-        cout << "Loading memory from file: " << argv[1] << " . . . ";
-        cpu.load_memory(argv[1]);
-    } else {  // Use default filename
-        cout << "Loading memory from file: " << "data.bin" << " . . . ";
-        cpu.load_memory("data.bin");
+    enum archType {Z80CPU, HOMEMADECPU};
+    bool displayHelp = false;
+    archType arch = Z80CPU;    // Default to Z80 for backwards compatibility
+
+    strncpy(input_fname, "data.bin", MAXWIDTH);
+
+    // Parse the arguments, if any
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-a") == 0 && (i + 1) < argc) {
+            // Option -a followed by architecture
+            i++; // Skip the architecture in the next iteration
+            if (strcmp(argv[i], "h") == 0) { // assume Z80 unless specified otherwise
+                arch = HOMEMADECPU;
+            }
+        } else if (strcmp(argv[i], "-h") == 0) {
+            displayHelp = true;
+        } else { // If it isn't a flag, then assume it is a filename
+            strncpy(input_fname,argv[1],MAXWIDTH);
+        }
+        // Add more parsing logic for other options or positional arguments
     }
+
+    if (displayHelp == true) {
+        cout << "emulator [-a arch] [-h] [input-file]"               << endl;
+        cout << "  -a specified CPU architecture:"                   << endl;
+        cout << "     arch is 'z' for Z80 or "                       << endl;
+        cout << "             'h' for Homemade CPU"                  << endl;
+        cout << "     if '-a'  is not specified, the default is Z80" << endl;
+        cout << "  -h print this help text"                          << endl;
+        cout << "  [input-file] is binary file containing code and data (default is 'data.bin')" << endl;
+        exit(0);
+    }
+
+    if (arch == Z80CPU) {
+        Z80_cpu = new Z80;
+        cpu = Z80_cpu;
+    } else {
+        Homemade_cpu = new HomemadeCPU;
+        cpu = Homemade_cpu;
+    }
+
+    cout << "Loading memory from file: " << input_fname << " . . . ";
+    cpu->load_memory(input_fname);
+
     cout << "DONE." << endl;
 
     while (state != EXIT) {
@@ -139,7 +182,7 @@ int main(int argc, char** argv) {
                         cout << "Enter ending address in hex: 0x";
                         cin >> hex >> end_addr;
                         prevPC = start_addr;
-                        cpu.run_from_address(start_addr);
+                        cpu->run_from_address(start_addr);
                         state = DISASSEMBLE;
                         break;                    
                     case 3:  // Disassemble into compilable assembly
@@ -154,7 +197,7 @@ int main(int argc, char** argv) {
                         prevPC = start_addr;
                         cout << endl << ";----- Program starts here ------" << endl;
                         cout << "      org    $" << hex << start_addr << endl;
-                        cpu.run_from_address(start_addr);
+                        cpu->run_from_address(start_addr);
                         state = DISASSEMBLE;
                         break;
                     case 8: 
@@ -173,27 +216,27 @@ int main(int argc, char** argv) {
             case EXECUTE_MENU:
                 switch (display_execute_menu()) {
                     case 1:  // Cold reset
-                        cpu.cold_reset();
+                        cpu->cold_reset();
                         state = RUN_EXECUTE;
                         break;
                     case 2:  // Warm Reset; reset PC to zero
-                        cpu.warm_reset();
+                        cpu->warm_reset();
                         state = RUN_EXECUTE;
                         break;
                     case 3:  // Run from address
                         cout << "Enter address to run in hex: 0x";
                         cin >> hex >> start_addr;
-                        cpu.run_from_address(start_addr);
+                        cpu->run_from_address(start_addr);
                         state = RUN_EXECUTE;
                         break;
                     case 4:  // Single step program from current PC
-                        cpu.run_from_address(cpu.getPC());
+                        cpu->run_from_address(cpu->getPC());
                         state = SINGLE_STEP_EXECUTE;
                         cout << endl << "Press <SPC> to step; <x> to end." << endl;
                         break;
                     case 5:  // Continue
-                        cout << "Continuing execution from 0x" << hex << cpu.getPC() << endl;
-                        cpu.run_from_address(cpu.getPC());
+                        cout << "Continuing execution from 0x" << hex << cpu->getPC() << endl;
+                        cpu->run_from_address(cpu->getPC());
                         state = RUN_EXECUTE;
                         break;                        
                     case 6:  // Print memory
@@ -202,13 +245,13 @@ int main(int argc, char** argv) {
                         cin >> hex >> start_addr;
                         cout << "Enter ending address in hex: 0x";
                         cin >> hex >> end_addr;                        
-                        cpu.print_memory(start_addr, end_addr);
+                        cpu->print_memory(start_addr, end_addr);
                         break;
                     case 7:  // Dump memory to file
                         cout << "Enter filename: "; 
                         cin >> setw(MAXWIDTH) >> fname;
                         cout << endl; 
-                        cpu.dump_memory_to_file(fname);
+                        cpu->dump_memory_to_file(fname);
                         break;
                     case 8:  // Return to main menu
                         state = MAIN_MENU;
@@ -226,7 +269,7 @@ int main(int argc, char** argv) {
             case DEBUG_MENU:
                 switch (display_debug_menu()) {
                     case 1:  // Cold reset
-                        cpu.cold_reset();
+                        cpu->cold_reset();
                         state = RUN_DEBUG;
                         break;
                     case 2:  // Breakpoints
@@ -237,14 +280,14 @@ int main(int argc, char** argv) {
                             cout << "Enter 1 to replace, 2 to delete, anything else to leave as-is: ";
                             cin >> answer;
                             if (answer == 1) {
-                                cpu.set_memory(breakpoint_address, breakpoint_prev_val);
+                                cpu->set_memory(breakpoint_address, breakpoint_prev_val);
                                 cout << "  Enter breakpoint address in hex: 0x";
                                 cin >> breakpoint_address;
-                                breakpoint_prev_val = cpu.get_memory(breakpoint_address);
-                                cpu.set_memory(breakpoint_address, cpu.halt_opcode());
+                                breakpoint_prev_val = cpu->get_memory(breakpoint_address);
+                                cpu->set_memory(breakpoint_address, cpu->halt_opcode());
                                 cout << "New breakpoint set at 0x" << setw(4) << breakpoint_address << endl;
                             } else if (answer == 2) {
-                                cpu.set_memory(breakpoint_address, breakpoint_prev_val);
+                                cpu->set_memory(breakpoint_address, breakpoint_prev_val);
                                 breakpoint_set = false;
                                 cout << "Breakpoint cleared." << endl;
                             }
@@ -255,8 +298,8 @@ int main(int argc, char** argv) {
                             if (c == 'y' or c == 'Y') {
                                 cout << "  Enter breakpoint address in hex: 0x";
                                 cin >> breakpoint_address;
-                                breakpoint_prev_val = cpu.get_memory(breakpoint_address);
-                                cpu.set_memory(breakpoint_address, cpu.halt_opcode());
+                                breakpoint_prev_val = cpu->get_memory(breakpoint_address);
+                                cpu->set_memory(breakpoint_address, cpu->halt_opcode());
                                 breakpoint_set = true;
                                 cout << "New breakpoint set at 0x" << setw(4) << breakpoint_address << endl;
                             }
@@ -267,17 +310,17 @@ int main(int argc, char** argv) {
                     case 3:  // Run from address
                         cout << "Enter address to run in hex: 0x";
                         cin >> hex >> start_addr;
-                        cpu.run_from_address(start_addr);
+                        cpu->run_from_address(start_addr);
                         state = RUN_DEBUG;
                         break;
                     case 4:  // Single step program from current PC
-                        cpu.run_from_address(cpu.getPC());
+                        cpu->run_from_address(cpu->getPC());
                         state = SINGLE_STEP_DEBUG;
                         cout << endl << "Press <SPC> to step; <x> to end." << endl;
                         break;
                     case 5:  // Continue
-                        cout << "Continuing execution from 0x" << hex << cpu.getPC() << endl;
-                        cpu.run_from_address(cpu.getPC());
+                        cout << "Continuing execution from 0x" << hex << cpu->getPC() << endl;
+                        cpu->run_from_address(cpu->getPC());
                         state = RUN_DEBUG;
                         break;                        
                     case 6:  // Print memory
@@ -286,27 +329,27 @@ int main(int argc, char** argv) {
                         cin >> hex >> start_addr;
                         cout << "Enter ending address in hex: 0x";
                         cin >> hex >> end_addr;                        
-                        cpu.print_memory(start_addr, end_addr);
+                        cpu->print_memory(start_addr, end_addr);
                         break;
                     case 7:  //  Edit memory
                         cout << "Enter address in hex: 0x";
                         cin >> hex >> start_addr;
                         cout << "Current value at 0x" << setw(4) << hex << start_addr << ": 0x" 
-                             << setw(2) << hex << (int) cpu.get_memory(start_addr) << endl;
+                             << setw(2) << hex << (int) cpu->get_memory(start_addr) << endl;
                         cout << "Enter new value in hex: 0x";
                         cin >> hex >> value;
-                        cpu.set_memory(start_addr, value);
+                        cpu->set_memory(start_addr, value);
                         cout << endl;
                         state = DEBUG_MENU;
                         break;
                     case 8:  //  Print registers
                         cout << endl << "Register values:" << endl;
-                        cpu.print_registers();
+                        cpu->print_registers();
                         cout << endl;
                         state = DEBUG_MENU;
                         break;
                     case 9:  //  Edit register
-                        cpu.set_register();
+                        cpu->set_register();
                         state = DEBUG_MENU;
                         break;
                     case 10: //  Print Input Port values
@@ -316,7 +359,7 @@ int main(int argc, char** argv) {
                         for (uint32_t i = 0; i < 256; i += 16) {
                             cout << hex << setw(1) << i/16 << "x" << ":  ";
                             for (int j = 0; j < 16; j ++) {
-                                cout << hex << setw(2) << (uint16_t) cpu.get_input_port(i + j) << " ";
+                                cout << hex << setw(2) << (uint16_t) cpu->get_input_port(i + j) << " ";
                             }
                             cout << endl;
                         }
@@ -327,10 +370,10 @@ int main(int argc, char** argv) {
                         cout << "Enter port number in hex: 0x";
                         cin >> hex >> start_addr;
                         cout << "Current value at inport port 0x" << setw(2) << hex << start_addr << ": 0x" 
-                             << setw(2) << hex << (int) cpu.get_input_port(start_addr) << endl;
+                             << setw(2) << hex << (int) cpu->get_input_port(start_addr) << endl;
                         cout << "Enter new value in hex: 0x";
                         cin >> hex >> value;
-                        cpu.set_input_port(start_addr, value);
+                        cpu->set_input_port(start_addr, value);
                         cout << endl;
                         state = DEBUG_MENU;
                         break;
@@ -341,7 +384,7 @@ int main(int argc, char** argv) {
                         for (uint32_t i = 0; i < 256; i += 16) {
                             cout << hex << setw(1) << i/16 << "x" << ":  ";
                             for (int j = 0; j < 16; j ++) {
-                                cout << hex << setw(2) << (uint16_t) cpu.get_output_port(i + j) << " ";
+                                cout << hex << setw(2) << (uint16_t) cpu->get_output_port(i + j) << " ";
                             }
                             cout << endl;
                         }
@@ -363,42 +406,42 @@ int main(int argc, char** argv) {
 
             case RUN_EXECUTE:
             case RUN_DEBUG:
-                cpu.fetch_and_decode();
-                cpu.execute();
-                cpu.print_fetched_instruction();
-                if (cpu.halted()) {
+                cpu->fetch_and_decode();
+                cpu->execute();
+                cpu->print_fetched_instruction();
+                if (cpu->halted()) {
                     cout << "CPU Halted." << endl;
-                    cpu.print_registers();
-                    cpu.print_flags();
+                    cpu->print_registers();
+                    cpu->print_flags();
                     if (state == RUN_EXECUTE) state = EXECUTE_MENU;
                     else state = DEBUG_MENU;
                 }
                 break;
 
             case DISASSEMBLE:
-                cpu.fetch_and_decode();
+                cpu->fetch_and_decode();
                 if (disassemble_mode == ASSEMBLY)
-                    cpu.print_assembly();
+                    cpu->print_assembly();
                 else
-                    cpu.print_fetched_instruction();
+                    cpu->print_fetched_instruction();
                 // Check for some corner cases so that we don't wrap around memory
-                if ((cpu.getPC() > end_addr) || (cpu.getPC() == 0) || (cpu.getPC() < prevPC)) {
+                if ((cpu->getPC() > end_addr) || (cpu->getPC() == 0) || (cpu->getPC() < prevPC)) {
                     if (exit_on_disassemble == true) {
                         state = EXIT;
                     } else {
                         state = DISASSEMBLE_MENU;
                     }
                 }
-                prevPC = cpu.getPC();
+                prevPC = cpu->getPC();
                 break;
 
             case SINGLE_STEP_EXECUTE: 
             case SINGLE_STEP_DEBUG:
-                cpu.fetch_and_decode();
-                cpu.execute();
-                cpu.print_fetched_instruction();
-                cpu.print_registers();
-                cpu.print_flags();
+                cpu->fetch_and_decode();
+                cpu->execute();
+                cpu->print_fetched_instruction();
+                cpu->print_registers();
+                cpu->print_flags();
                 c = 0;
                 system("stty raw");  // Set terminal to raw mode 
                 while ((c != ' ') && (c != 'x')) {

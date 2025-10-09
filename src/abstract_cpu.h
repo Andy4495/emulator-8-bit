@@ -18,6 +18,7 @@
 #include <cstdint>
 
 class abstract_CPU {
+  public:
     virtual void load_memory(const char* fname) = 0;
     virtual void dump_memory_to_file(const char* fname) = 0;
     virtual void cold_reset() = 0;

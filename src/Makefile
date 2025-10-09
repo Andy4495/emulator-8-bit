@@ -17,6 +17,7 @@ OBJS	= \
 	Z80_execute_misc_opcode.o \
 	Z80_execute_main_opcode.o \
 	Z80_fetch_and_decode.o \
+	HomemadeCPU.o \
 	Emulator.o
 
 OUT	= emulator
@@ -63,6 +64,9 @@ Z80_execute_main_opcode.o: Z80_execute_main_opcode.cpp Z80.h
 
 Z80_fetch_and_decode.o: Z80_fetch_and_decode.cpp Z80.h Z80_opcodes.h abstract_cpu.h
 	$(CC) $(FLAGS) Z80_fetch_and_decode.cpp 
+
+HomemadeCPU.o: HomemadeCPU.cpp HomemadeCPU.h
+	$(CC) $(FLAGS) HomemadeCPU.cpp 
 
 clean:
 	rm -f $(OBJS) $(OUT)
