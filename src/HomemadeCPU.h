@@ -98,6 +98,7 @@ class HomemadeCPU : public abstract_CPU {
    uint16_t getJA();  // Jump Address: 16-bit equivalent of JH, JL
    void setSP(uint16_t v);
    void setPC(uint8_t msb, uint8_t lsb);
+   void setPCofFetch(uint8_t msb, uint8_t lsb);
    void init_registers();
    void setFlag(FLAG_BITS f);
    void clearFlag(FLAG_BITS f);

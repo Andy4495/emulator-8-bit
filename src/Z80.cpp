@@ -197,7 +197,7 @@ uint8_t Z80::get_next_byte() {
 }
 
 void Z80::print_fetched_instruction() {
-    // Same format for ever opcode
+    // Same format for every opcode
     snprintf(instr_string, MAX_TEXT_LENGTH, "%04x  %-s  %s",
              PC_of_Fetch, fetched, mnemonic);
     cout << instr_string << endl;

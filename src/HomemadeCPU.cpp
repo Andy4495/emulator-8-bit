@@ -11,156 +11,339 @@
 */
 
 #include "HomemadeCPU.h"
+#include "HomemadeCPU_opcodes.h"
 #include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <cstring>
+#include <cassert>
+#include <cstdint>
 using std::cout;
+using std::cin;
+using std::endl;
+using std::hex;
+using std::dec;
+using std::ifstream;
+using std::ofstream;
+using std::iostream;
+using std::ios;
+using std::setw;
 
 
 // public: 
-    HomemadeCPU::HomemadeCPU(uint16_t ramstart, uint16_t ramend) {
+HomemadeCPU::HomemadeCPU(uint16_t ramstart, uint16_t ramend) {
+    _ramstart = ramstart;
+    _ramend   = ramend;
+}
 
-    }
+void HomemadeCPU::load_memory(const char* fname) {
+    // Load memory from filename fname
+    unsigned int i = 0;
+    char data;
+    uint8_t msb, lsb;
 
-    void HomemadeCPU::load_memory(const char* fname) {
+    ifstream memfile(fname, iostream::in|ios::binary);
+    assert(memfile);  // Check if open successful
 
+    while (memfile.read(&data, 1)) {
+        memory[i++] = data;
+        if (i > CPU_MAX_MEMORY - 1) {
+            cout << "Loading registers . . . ";
+            // Add registers to end of file.
+            memfile >> AC;
+            memfile >> FL;
+            memfile >> SH;
+            memfile >> SL;
+            memfile >> MH;
+            memfile >> JH;
+            memfile >> JL;
+            memfile >> msb;
+            memfile >> lsb;
+            setPC(msb, lsb);
+            memfile >> msb;
+            memfile >> lsb;
+            setPCofFetch(msb, lsb);
+            memfile >> IR;
+            memfile >> OR;
+            break;    // Make sure we don't try to load beyond memory space
+        }
     }
+}
 
-    void HomemadeCPU::dump_memory_to_file(const char* fname) {
+void HomemadeCPU::dump_memory_to_file(const char* fname) {
+    ofstream memfile(fname, iostream::out|ios::binary);
+    assert(memfile);  // Check if open successful
+    for (uint32_t i = 0; i <= 0xffff; i++) {
+        memfile << memory[i];
+    }
+    // Add registers to end of file.
+    memfile << AC;
+    memfile << FL;
+    memfile << SH;
+    memfile << SL;
+    memfile << MH;
+    memfile << JH;
+    memfile << JL;
+    memfile << (uint8_t) ((PC & 0xff00) >> 8); 
+    memfile << (uint8_t)  (PC & 0xff);
+    memfile << (uint8_t) ((PC_of_Fetch & 0xff00) >> 8);
+    memfile << (uint8_t)  (PC_of_Fetch & 0xff);
+    memfile << IR;
+    memfile << OR;
 
-    }
-    
-    void HomemadeCPU::cold_reset() {
+    memfile.close();
+}
 
-    }
-    
-    void HomemadeCPU::warm_reset() {
+void HomemadeCPU::cold_reset() {
+    // Clear RAM and registers, start from $0000
+    // CPU registers set to all zeroes
+    // RAM is left as-is
+    cout << "Cold Reset: PC and other registers set to all zeroes. "
+         << endl;
+    init_registers();
+    Halt = false;
+}
 
-    }
-    
-    void HomemadeCPU::run_from_address(uint16_t addr) {
+void HomemadeCPU::warm_reset() {
+    // Keep RAM intact, clear registers
+    cout << "Warm Reset: PC set to $0000, other registers unchanged." << endl;
+    PC = 0x0000;
+    Halt = false;
+}
 
-    }
-    
-    void HomemadeCPU::fetch_and_decode() {
+void HomemadeCPU::init_registers() {
+    AC  = 0xFF;
+    FL  = 0xFF;
+    SH  = 0x00;
+    SL  = 0x00;
+    MH = 0x00;
+    JH = 0x00;
+    JL = 0x00;
+    PC = 0x0000;
+    PC_of_Fetch = 0x0000;
+    IR = 0x00;
+    OR = 0x00;
 
-    }
-    
-    void HomemadeCPU::execute() {
+}
 
-    }
-    
-    void HomemadeCPU::print_fetched_instruction() {
+void HomemadeCPU::setFlag(FLAG_BITS f) {
+    FL |= f;
 
-    }
-    
-    void HomemadeCPU::print_registers() {
+}
 
-    }
-    
-    void HomemadeCPU::print_flags() {
+void HomemadeCPU::clearFlag(FLAG_BITS f) {
+    FL = FL & ~f;
+}
 
-    }
-    
-    void HomemadeCPU::print_memory(uint16_t start, uint16_t end) {
+uint8_t HomemadeCPU::testFlag(FLAG_BITS f) {
+    return (FL & f) ? 1 : 0;
+}
 
-    }
-    
-    uint8_t HomemadeCPU::get_memory(uint16_t loc) {
-        return 0;
-    }
+void HomemadeCPU::run_from_address(uint16_t addr) {
+    // Keep RAM and registers intact, start from addr passed into function
+    cout << ";Starting from address: 0x" << hex << addr << endl;
+    PC = addr;
+    Halt = false;
+}
 
-    void HomemadeCPU::set_memory(uint16_t loc, uint8_t val) {
-        cout << "Not supported by Homemade CPU";
-    }
-    
+uint8_t HomemadeCPU::get_next_byte() {
+    return memory[PC++];
+}
 
-    uint8_t HomemadeCPU::get_input_port(uint8_t loc) {
-        cout << "Not supported by Homemade CPU";
-        return 0;
-    }
-    
+void HomemadeCPU::print_fetched_instruction() {
+    /// To be implemented
 
-    void HomemadeCPU::set_input_port(uint8_t loc, uint8_t val) {
-        cout << "Not supported by Homemade CPU";
-    }
-    
-   uint8_t HomemadeCPU::get_output_port(uint8_t loc) {
-        cout << "Not supported by Homemade CPU";
-        return 0;
-    }
-    
-    void HomemadeCPU::set_register() {
+}
 
-    }
-    
-    uint8_t HomemadeCPU::halt_opcode() {
-        return 0;
-    }
-    
-    // If true, the CPU is halted
-    bool HomemadeCPU::halted() {  
-        return true;
-    }
-    
-    uint16_t HomemadeCPU::getPC() {
-        return 0;
-    }
-    
-    void HomemadeCPU::print_assembly() {
+void HomemadeCPU::print_assembly() {
+    /// To be implemented
+}
 
+void HomemadeCPU::print_registers() {
+    cout << hex << "AC:  " << setw(2) << (uint16_t) AC
+    <<  " FL:  "  << setw(2) << (uint16_t) FL
+    <<  " SH:  "  << setw(2) << (uint16_t) SH
+    <<  " SL:  "  << setw(2) << (uint16_t) SL
+    <<  " MH:  "  << setw(2) << (uint16_t) MH
+    <<  " JH:  "  << setw(2) << (uint16_t) JH
+    <<  " JL:  "  << setw(2) << (uint16_t) JL
+    <<  " PC:  "  << setw(4) << (uint16_t) PC
+    <<  " PC_of_Fetch: "   << setw(4) << (uint16_t) PC_of_Fetch
+    <<  " IR': "  << setw(2) << (uint16_t) IR
+    <<  " OR': "  << setw(2) << (uint16_t) OR
+
+    << endl;
+}
+
+void HomemadeCPU::print_flags() {
+    cout << "ZCSV: "
+    << (unsigned int) testFlag(HomemadeCPU::Z_BIT)
+    << (unsigned int) testFlag(HomemadeCPU::C_BIT)
+    << (unsigned int) testFlag(HomemadeCPU::S_BIT)
+    << (unsigned int) testFlag(HomemadeCPU::V_BIT)
+    << endl;
+}
+
+void HomemadeCPU::print_memory(uint16_t start, uint16_t end) {
+    cout << endl << "        0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f" << endl;
+    cout         << "       -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" << endl;
+    for (uint32_t i = (start & 0xfff0); i <= (uint32_t) end; i += 16) {
+        cout << hex << setw(3) << i/16 << "x" << ":  ";
+        for (int j = 0; j < 16; j ++) {
+            cout << hex << setw(2) << (uint16_t) memory[i + j] << " ";
+        }
+        cout << endl;
     }
-    
+    cout << endl;
+}
+
+uint8_t HomemadeCPU::get_memory(uint16_t loc) {
+    return(memory[loc]);
+}
+
+void HomemadeCPU::set_memory(uint16_t loc, uint8_t val) {
+    memory[loc] = val;
+}
+
+uint8_t HomemadeCPU::get_input_port(uint8_t loc) {
+    cout << "Not supported by Homemade CPU";
+    return 0;
+}
+
+void HomemadeCPU::set_input_port(uint8_t loc, uint8_t val) {
+    cout << "Not supported by Homemade CPU";
+}
+
+uint8_t HomemadeCPU::get_output_port(uint8_t loc) {
+    cout << "Not supported by Homemade CPU";
+    return 0;
+}
+
+void HomemadeCPU::set_register() {
+    uint16_t regno, val;
+
+    cout << "Current register values:" << endl;
+    print_registers();
+    cout << endl;
+
+    cout << "Enter the register number to update: " << endl;
+    cout << " 1: AC     2: FL     3: SH     4: SL     5: MH     6: JH     7: JL "  << endl;
+    cout << "11: PC    12: PC_of_Fetch     14: IR    15: OR"                       << endl;
+    cin >> regno; 
+    cout << "Enter new value in hex: 0x";
+    cin >> hex >> val;
+    cout << endl;
+    switch(regno) {
+        case 1:
+            AC = val;
+            break;
+        case 2:
+            FL = val;
+            break;
+        case 3:
+            SH = val;
+            break;
+        case 4:
+            SL = val;
+            break;
+        case 5:
+            MH = val;
+            break;
+        case 6:
+            JH = val;
+            break;
+        case 7:
+            JL = val;
+            break;
+        case 11:
+            PC = val;
+            break;
+        case 12:
+            PC_of_Fetch = val;
+            break;
+        case 14:
+            IR = val;
+            break;
+        case 15:
+            OR = val;
+            break;
+        default:
+            cout << "Invalid register number: " << regno << endl;
+            break;
+    }
+}
+
+uint8_t HomemadeCPU::halt_opcode() {
+    return 0xFF;
+}
+
+// If true, the CPU is halted
+bool HomemadeCPU::halted() {  
+    return Halt;
+}
+
+uint16_t HomemadeCPU::getPC() {
+    return PC;
+}
+
+void HomemadeCPU::fetch_and_decode() {
+    /// To be implemented
+
+}
+
+void HomemadeCPU::execute() {
+    /// To be implemented
+
+}
 
 // private:
-    void HomemadeCPU::update_C(uint8_t val1, uint8_t val2) {
+void HomemadeCPU::update_C(uint8_t val1, uint8_t val2) {
+    /// To be implemented
 
-    }
-    
-    void HomemadeCPU::update_V(uint8_t val1, uint8_t val2) {
+}
 
-    }
-    
-    void HomemadeCPU::update_Z(uint8_t val) {
+void HomemadeCPU::update_V(uint8_t val1, uint8_t val2) {
+    /// To be implemented
 
-    }
-    
-    void HomemadeCPU::update_S(uint8_t val) {
+}
 
-    }
-    
-    uint16_t HomemadeCPU::getSP() {
-        return 0;
-    }
-    
-    // Jump Address: 16-bit equivalent of JH, JL
-    uint16_t HomemadeCPU::getJA() {  
-        return 0;
-    }
-    
-    void HomemadeCPU::setSP(uint16_t v) {
+void HomemadeCPU::update_Z(uint8_t val) {
+    /// To be implemented
 
-    }
-    
-    void HomemadeCPU::setPC(uint8_t msb, uint8_t lsb) {
+}
 
-    }
-    
-    void HomemadeCPU::init_registers() {
+void HomemadeCPU::update_S(uint8_t val) {
+    /// To be implemented
 
-    }
-    
-    void HomemadeCPU::setFlag(FLAG_BITS f) {
+}
 
-    }
-    
-    void HomemadeCPU::clearFlag(FLAG_BITS f) {
+// Jump Address: 16-bit equivalent of SH, SL
+uint16_t HomemadeCPU::getSP() {
+    return (SH << 8) + SL;
+}
 
-    }
-    
-    void HomemadeCPU::decode_instruction() {
+// Jump Address: 16-bit equivalent of JH, JL
+uint16_t HomemadeCPU::getJA() {  
+    return (JH << 8) + JL;
+}
 
-    }
-    
-    void HomemadeCPU::execute_instruction() {
+void HomemadeCPU::setSP(uint16_t v) {
+    SH = ((v & 0xff00)>>8);
+    SL = v & 0x00ff;
+}
 
-    }
-    
+void HomemadeCPU::setPC(uint8_t msb, uint8_t lsb) {
+    PC = (msb << 8) + lsb;
+}
+
+void HomemadeCPU::setPCofFetch(uint8_t msb, uint8_t lsb) {
+    PC_of_Fetch = (msb << 8) + lsb;
+}
+
+void HomemadeCPU::decode_instruction() {
+
+}
+
+void HomemadeCPU::execute_instruction() {
+
+}
