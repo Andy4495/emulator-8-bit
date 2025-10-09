@@ -230,7 +230,7 @@ The other software and files in this repository are released under what is commo
 [28]: ./.github/workflows/TestOpcodes.yml
 [29]: http://www.primrosebank.net/computers/z80/z80_special_reset.htm
 [31]: https://github.com/deeptoaster/opcode-table
-[32]: https://directory.fsf.org/wiki/License:ClArtistic
+[32]: https://spdx.org/licenses/ClArtistic.html
 [33]: https://github.com/z88dk/z88dk
 [34]: https://z88dk.org/site/
 [35]: ./tools/z88dk/LICENSE.txt
