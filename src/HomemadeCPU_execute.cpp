@@ -467,46 +467,71 @@ void HomemadeCPU::execute() {
             break;
 
         // Note that for all jumps, there will need to be a branch delay slot
-        // that will be executed after all jumps (conditional and unconditional)
-        // *** This behavior is not currently supported by the emulator ***
+        // that will be executed after all jumps
         case 0xc0:      // JPVC #aa
-            if (!(FL & V_BIT)) setPC(JH, OR);
+            if (!(FL & V_BIT)) {
+                setPC(JH, OR);
+                delay_slot = true; 
+            }
             break;
 
         case 0xc2:      // JPSC #aa
-            if (!(FL & S_BIT)) setPC(JH, OR);
+            if (!(FL & S_BIT)) {
+                setPC(JH, OR);
+                delay_slot = true; 
+            }
             break;
 
         case 0xc4:      // JPCC #aa
-            if (!(FL & C_BIT)) setPC(JH, OR);
+            if (!(FL & C_BIT)) {
+                setPC(JH, OR);
+                delay_slot = true; 
+            }
             break;
 
         case 0xc6:      // JPZC #aa
-            if (!(FL & Z_BIT)) setPC(JH, OR);
+            if (!(FL & Z_BIT)) {
+                setPC(JH, OR);
+                delay_slot = true; 
+            }
             break;
 
         case 0xd0:      // JPVS #aa
-            if (FL & V_BIT) setPC(JH, OR);
+            if (FL & V_BIT) {
+                setPC(JH, OR);
+                delay_slot = true; 
+            }
             break;
 
         case 0xd2:      // JPSS #aa
-            if (FL & S_BIT) setPC(JH, OR);
+            if (FL & S_BIT) {
+                setPC(JH, OR);
+                delay_slot = true; 
+            }
             break;
 
         case 0xd4:      // JPCS #aa
-            if (FL & C_BIT) setPC(JH, OR);
+            if (FL & C_BIT) {
+                setPC(JH, OR);
+                delay_slot = true; 
+            }
             break;
 
         case 0xd6:      // JPZS #aa
-            if (FL & Z_BIT) setPC(JH, OR);
+            if (FL & Z_BIT) {
+                setPC(JH, OR);
+                delay_slot = true; 
+            }
             break;
 
         case 0xe0:      // JUMP #aa
             setPC(JH, OR);
+            delay_slot = true; 
             break;
 
         case 0xe6:      // JUMP JL
             setPC(JH, JL);
+            delay_slot = true; 
             break;
 
         case 0xfc:      // NOOP

@@ -56,6 +56,8 @@ class HomemadeCPU : public abstract_CPU {
    uint16_t _ramstart;
    uint16_t _ramend;
 
+   bool delay_slot = false; 
+
    enum FLAG_BITS { Z_BIT = 0x08, C_BIT = 0x04, S_BIT = 0x02, V_BIT = 0x01};
 
    // State variables
@@ -105,7 +107,5 @@ class HomemadeCPU : public abstract_CPU {
    void init_registers();
    void setFlag(FLAG_BITS f);
    void clearFlag(FLAG_BITS f);
-   void decode_instruction();
-   void execute_instruction();
 };
 #endif  // _HOMEMADECPU_H_

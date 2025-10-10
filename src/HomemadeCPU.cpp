@@ -34,6 +34,7 @@ using std::setw;
 HomemadeCPU::HomemadeCPU(uint16_t ramstart, uint16_t ramend) {
     _ramstart = ramstart;
     _ramend   = ramend;
+    delay_slot = false;
 }
 
 void HomemadeCPU::load_memory(const char* fname) {
@@ -99,6 +100,7 @@ void HomemadeCPU::cold_reset() {
          << endl;
     init_registers();
     Halt = false;
+    delay_slot = false;
 }
 
 void HomemadeCPU::warm_reset() {
@@ -106,6 +108,7 @@ void HomemadeCPU::warm_reset() {
     cout << "Warm Reset: PC set to $0000, other registers unchanged." << endl;
     PC = 0x0000;
     Halt = false;
+    delay_slot = false;
 }
 
 void HomemadeCPU::init_registers() {
@@ -119,12 +122,10 @@ void HomemadeCPU::init_registers() {
     PC = 0x0000;
     IR = 0x00;
     OR = 0x00;
-
 }
 
 void HomemadeCPU::setFlag(FLAG_BITS f) {
     FL |= f;
-
 }
 
 void HomemadeCPU::clearFlag(FLAG_BITS f) {
@@ -285,11 +286,26 @@ uint16_t HomemadeCPU::getPC() {
 }
 
 void HomemadeCPU::fetch_and_decode() {
-    PC_of_Fetch = PC;  // Save the current PC for printing later
-
     // All instructions are 2 bytes long
-    IR = memory[PC++];
-    OR = memory[PC++];
+
+    // Check if this is a branch delay slot instruction
+    // If there is a jump, then the next instruction is already in the pipeline,
+    // so it needs to be executed without changing the PC (since PC already has 
+    // new jump-to location)
+    if (delay_slot) {
+        // Need to use PC_of_Fetch, since that contains address of last executed instruction
+        // and need to increment it to point to the delay slot instruction
+        cout << ">>> Branch delay slot <<<" << endl;
+        PC_of_Fetch++;
+        IR = memory[PC_of_Fetch++];
+        OR = memory[PC_of_Fetch];
+        delay_slot = false; 
+    }
+    else { // No delay slot, so fetch normally
+        PC_of_Fetch = PC;  // Save the current PC for printing later
+        IR = memory[PC++];
+        OR = memory[PC++];
+    }
 
     // Decode 
     instr_length = 2;
@@ -321,7 +337,6 @@ void HomemadeCPU::update_Z(uint8_t val) {
 void HomemadeCPU::update_S(uint8_t val) {
     if (val & 0x80) setFlag(S_BIT);
     else            clearFlag(S_BIT);
-
 }
 
 uint8_t HomemadeCPU::getSH() {
@@ -354,10 +369,3 @@ void HomemadeCPU::setPC(uint8_t msb, uint8_t lsb) {
     PC = (msb << 8) + lsb;
 }
 
-void HomemadeCPU::decode_instruction() {
-
-}
-
-void HomemadeCPU::execute_instruction() {
-
-}
