@@ -52,8 +52,10 @@ void HomemadeCPU::load_memory(const char* fname) {
             // Add registers to end of file.
             memfile >> AC;
             memfile >> FL;
-            memfile >> SH;
-            memfile >> SL;
+            memfile >> msb;
+            setSH(msb);
+            memfile >> lsb;
+            setSL(lsb);
             memfile >> MH;
             memfile >> JH;
             memfile >> JL;
@@ -62,7 +64,6 @@ void HomemadeCPU::load_memory(const char* fname) {
             setPC(msb, lsb);
             memfile >> msb;
             memfile >> lsb;
-            setPCofFetch(msb, lsb);
             memfile >> IR;
             memfile >> OR;
             break;    // Make sure we don't try to load beyond memory space
@@ -79,8 +80,8 @@ void HomemadeCPU::dump_memory_to_file(const char* fname) {
     // Add registers to end of file.
     memfile << AC;
     memfile << FL;
-    memfile << SH;
-    memfile << SL;
+    memfile << getSH();
+    memfile << getSL();
     memfile << MH;
     memfile << JH;
     memfile << JL;
@@ -112,8 +113,8 @@ void HomemadeCPU::warm_reset() {
 void HomemadeCPU::init_registers() {
     AC  = 0xFF;
     FL  = 0xFF;
-    SH  = 0x00;
-    SL  = 0x00;
+    setSH(0x00);
+    setSL(0x00);
     MH = 0x00;
     JH = 0x00;
     JL = 0x00;
@@ -165,14 +166,14 @@ void HomemadeCPU::print_assembly() {
 void HomemadeCPU::print_registers() {
     cout << hex << "AC:  " << setw(2) << (uint16_t) AC
     <<  " FL:  "  << setw(2) << (uint16_t) FL
-    <<  " SH:  "  << setw(2) << (uint16_t) SH
-    <<  " SL:  "  << setw(2) << (uint16_t) SL
+    <<  " SH:  "  << setw(2) << (uint16_t) getSH()
+    <<  " SL:  "  << setw(2) << (uint16_t) getSL()
     <<  " MH:  "  << setw(2) << (uint16_t) MH
     <<  " JH:  "  << setw(2) << (uint16_t) JH
     <<  " JL:  "  << setw(2) << (uint16_t) JL
     <<  " PC:  "  << setw(4) << (uint16_t) PC
-    <<  " IR': "  << setw(2) << (uint16_t) IR
-    <<  " OR': "  << setw(2) << (uint16_t) OR
+    <<  " IR: "  << setw(2) << (uint16_t) IR
+    <<  " OR: "  << setw(2) << (uint16_t) OR
 
     << endl;
 }
@@ -243,10 +244,10 @@ void HomemadeCPU::set_register() {
             FL = val;
             break;
         case 3:
-            SH = val;
+            setSH(val);
             break;
         case 4:
-            SL = val;
+            setSL(val);
             break;
         case 5:
             MH = val;
@@ -312,35 +313,25 @@ void HomemadeCPU::fetch_and_decode() {
     }
 }
 
-void HomemadeCPU::execute() {
-    /// To be implemented
-
-}
-
 // private:
-void HomemadeCPU::update_C(uint8_t val1, uint8_t val2) {
-    /// To be implemented
-
-}
-
-void HomemadeCPU::update_V(uint8_t val1, uint8_t val2) {
-    /// To be implemented
-
-}
 
 void HomemadeCPU::update_Z(uint8_t val) {
-    /// To be implemented
-
+    if (val == 0) setFlag(Z_BIT);
+    else          clearFlag(Z_BIT);
 }
 
 void HomemadeCPU::update_S(uint8_t val) {
-    /// To be implemented
+    if (val & 0x80) setFlag(S_BIT);
+    else            clearFlag(S_BIT);
 
 }
 
-// Jump Address: 16-bit equivalent of SH, SL
-uint16_t HomemadeCPU::getSP() {
-    return (SH << 8) + SL;
+uint8_t HomemadeCPU::getSH() {
+    return (SP >> 8);
+}
+
+uint8_t HomemadeCPU::getSL() {
+    return SP & 0x00ff;
 }
 
 // Jump Address: 16-bit equivalent of JH, JL
@@ -348,17 +339,21 @@ uint16_t HomemadeCPU::getJA() {
     return (JH << 8) + JL;
 }
 
-void HomemadeCPU::setSP(uint16_t v) {
-    SH = ((v & 0xff00)>>8);
-    SL = v & 0x00ff;
+// Jump Address: 16-bit equivalent of MH and OR (which contains ML)
+uint16_t HomemadeCPU::getMA() {
+    return (MH << 8) + OR;
+}
+
+void HomemadeCPU::setSH(uint8_t v) {
+    SP = (v << 8) + (SP & 0x00ff);
+}
+
+void HomemadeCPU::setSL(uint8_t v) {
+    SP = (SP & 0xff00) + v;
 }
 
 void HomemadeCPU::setPC(uint8_t msb, uint8_t lsb) {
     PC = (msb << 8) + lsb;
-}
-
-void HomemadeCPU::setPCofFetch(uint8_t msb, uint8_t lsb) {
-    PC_of_Fetch = (msb << 8) + lsb;
 }
 
 void HomemadeCPU::decode_instruction() {

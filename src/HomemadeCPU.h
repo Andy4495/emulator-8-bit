@@ -69,8 +69,8 @@ class HomemadeCPU : public abstract_CPU {
 
    // Special purpose registers
    // Stack pointer
-   uint8_t SH;
-   uint8_t SL;
+   // SP is implemented as a 16-bit counter, and uses getters/setters to access MSB/LSB individually
+   uint16_t SP;
    // Memory pointer MSB
    uint8_t MH;
    // Jump Address
@@ -93,15 +93,15 @@ class HomemadeCPU : public abstract_CPU {
 
    uint8_t  testFlag(FLAG_BITS f);
    uint8_t get_next_byte();
-   void update_C(uint8_t val1, uint8_t val2);
-   void update_V(uint8_t val1, uint8_t val2);
    void update_Z(uint8_t val);
    void update_S(uint8_t val);
-   uint16_t getSP();
+   uint8_t getSH();
+   uint8_t getSL();
    uint16_t getJA();  // Jump Address: 16-bit equivalent of JH, JL
-   void setSP(uint16_t v);
+   uint16_t getMA();  // Memory address: 16-bit equivalent of MH and OR (which contains ML)
+   void setSH(uint8_t v);
+   void setSL(uint8_t v);
    void setPC(uint8_t msb, uint8_t lsb);
-   void setPCofFetch(uint8_t msb, uint8_t lsb);
    void init_registers();
    void setFlag(FLAG_BITS f);
    void clearFlag(FLAG_BITS f);
