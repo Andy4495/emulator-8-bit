@@ -5,34 +5,44 @@
 [![Test Disassembler](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml)
 [![Test Opcodes](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestOpcodes.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestOpcodes.yml)
 
-This is a simple 8-bit CPU emulator and disassembler. It currently supports the Z80; other CPUs may be added in the future.
+This is a simple 8-bit CPU emulator and disassembler. It currently supports the Z80 and my [Homemade CPU][36]. Other CPUs may be added in the future.
 
 I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture.
 
 The emulator:
 
 - Is text-based
-- Supports all official Zilog opcodes and all undocumented Z80 opcodes listed in this [table][4]
-- Emulates at the instruction level (it is not "clock accurate")
+- Emulates at the instruction level (it is not "clock cycle accurate")
 - Does not emulate external hardware
-- Does not update the undocumented flag bits 5 and 3 (sometimes referred to as XF and YF)
-- Does not emulate the undocumented internal MEMPTR and Q registers
-- Supports the HALT statement as if it were a breakpoint. Execution is stopped and the R register is not updated while the processor is halted
-- May not update the R register correctly in cases where there are strings of $FD/$DD opcode prefixes that do not represent a valid opcode
+- The HALT statement is supported as if it were a breakpoint. Execution is stopped.
+
+For the Z80:
+
+- All official Zilog opcodes and all undocumented Z80 opcodes listed in this [table][4] are supported
+- Undocumented flag bits 5 and 3 (sometimes referred to as XF and YF) are not updated
+- The R register is not updated while the processor is halted
+- The R register may not be updated correctly in cases where there are strings of $FD/$DD opcode prefixes that do not represent a valid opcode
+- The undocumented internal MEMPTR and Q registers are not emulated
+
+For the Homemade CPU:
+
+- Branch delay slot is not implemented. If a jump occurs (unconditional, or condition is true), then execution proceeds at the new PC value. In reality, the hardware will execute the next instruction in the pipeline before the jump occurs.
 
 The [Future Functionality](#future-functionality) items listed below may be included in later releases.
 
 ## Usage
 
 ```shell
-emulator [input-file]
+emulator [-az | -ah] [-h] [input-file]
 ```
 
-`input-file` is an optional parameter which is the path of a binary file containing the program code and data. The first byte of the file represents location $0000 in memory, and each successive byte represents the next memory location.
+Optional parameters `-az` or `ah` specify the architecture to emulate: `-az` for Z80, `-ah` for the Homemade CPU. If no architecture parameter is specified, then Z80 is emulated.
 
-If `input-file` is not specified, then the default name `data.bin` is used.
+`-h` displays a brief help summary, then exits the program.
 
-No error checking is performed on the input file, except that a maximum of 65536 bytes are read into memory. If the file is larger than 65536 bytes, then the next 29 bytes are assumed to be the processor registers and interrupt settings. Any data beyond that is ignored.
+`input-file` is an optional parameter which is the path of a binary file containing the program code and data. The first byte of the file represents location $0000 in memory, and each successive byte represents the next memory location. If `input-file` is not specified, then the default name `data.bin` is used.
+
+No error checking is performed on the input file, except that a maximum of 65536 bytes are read into memory. If the file is larger than 65536 bytes, then the following bytes are assumed to be processor state information (registers and similar data): 29 bytes for the Z80, or 11 bytes for the Homemade CPU.
 
 ## Building the Emulator
 
@@ -54,7 +64,9 @@ make clean    # Removes the executable, object, and linker files
 
 The emulator was developed using Ubuntu 20.04 with gcc version 9.4.0 (by way of [WSL 2][26]) and MacOS Ventura with clang version 12.0.0.
 
-It is also known to be compatible with Ubuntu 22.04 and gcc version 11.3.0 within the GitHub Actions environment.
+It is compatible with MacOS Sequoia and clang version 17.0. It should also work with other versions of MacOS and clang, but has not been tested.
+
+It is compatible with Ubuntu 22.04/gcc 11.3 and Ubuntu 24.04/gcc 13.2 within the GitHub Actions environment.
 
 I have not tried it on other platforms, but there is no machine dependent code. It should work as-is (or with minimal changes) on other unix-like platforms and compiler versions.
 
@@ -84,11 +96,9 @@ I have not tried it on other platforms, but there is no machine dependent code. 
 
 ### Defining the CPU
 
-The Z80-specific code is encapsulated in a class named `Z80` which inherits from the abstract base class `abstract_CPU`. Additional CPUs can be emulated by creating classes specific to those CPUs.
+The CPU-specific code is encapsulated in classes named `Z80` and `HomemadeCPU` which inherit from the abstract base class `abstract_CPU`. Additional CPUs can be emulated by creating classes specific to those CPUs.
 
-The CPU opcodes are defined in several tables implemented with arrays of structs for the main and extended opcodes (`Z80_opcodes.h`). Each array entry contains the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode value is represented by the array index.
-
-Zilog-documented and undocumented opcodes are defined and supported by the emulator.
+The CPU opcodes are defined in several tables implemented with arrays of structs for the main and extended opcodes (`Z80_opcodes.h`, `HomemadeCPU_opcodes.h`). Each array entry contains the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode value is represented by the array index.
 
 The `Z80` class contains:
 
@@ -113,6 +123,8 @@ The `Z80` class contains:
     - Generate a string containing the disassembled instruction and data
   - Execute the actual instruction (load, store, jump, etc.)
 
+The `HomemadeCPU` class structure is similar to the `Z80` class, but simplified in many areas due to the RISC vs. CISC differences in the processor architectures. One notable difference is that the Homemade CPU has fixed-length 2-byte instructions.
+
 ## Z80 Assemblers
 
 I have tested the emulator with the following Z80 assemblers:
@@ -130,9 +142,11 @@ zasm --ixcbr2 filename.asm
 
 ## Automated Test
 
-Various workflow actions are defined to test the emulator:
+Various workflow actions are defined to test the emulator.
 
-### Disassemble Mode - [`TestDisassembler.yml`][27]
+### Z80 Emulator Tests
+
+#### Disassemble Mode - [`TestDisassembler.yml`][27]
 
 | Input File              | Test Type  | Notes                                        |
 | ----------------------- | ---------- | -------------------------------------------- |
@@ -141,7 +155,7 @@ Various workflow actions are defined to test the emulator:
 | test_disassembler_3.asm | Round Trip | All undefined opcodes.                       |
 | test_disassembler_4.asm | Known Good | Opcodes that duplicate other mnemonics.      |
 
-### Execute Mode - [`TestOpcodes.yml`][28]
+#### Execute Mode - [`TestOpcodes.yml`][28]
 
 | Input File                               | Test Type  | Notes                                             |
 | ---------------------------------------- | ---------- | ------------------------------------------------- |
@@ -150,6 +164,10 @@ Various workflow actions are defined to test the emulator:
 | test_execution_with_flag_updates.asm     | Known Good | Opcodes that affect flags                         |
 | test_execution_daa.asm                   | Known Good | DAA opcode and flags                              |
 | test_execution_duplicate_mnemonics.asm   | Known Good | Opcodes where mnemonics are same as other opcodes |
+
+### Homemade CPU Tests
+
+Workflow actions have not yet been created for the Homemade CPU.
 
 ### Test Types
 
@@ -164,6 +182,9 @@ Various workflow actions are defined to test the emulator:
 
 ## Future Functionality
 
+- Homemade CPU:
+  - Add branch delay slot support
+  - Add automated tests
 - Additional breakpoint functionality
   - Break when a register contains a certain value
   - Break when a memory location contains a certain value
@@ -193,6 +214,7 @@ Various workflow actions are defined to test the emulator:
   - [`z88dk-z80asm`][34] - Z88DK - The Development Kit for Z80 Computers
     - GitHub [repo][33]
 - [Z80 emulator project][19] which includes test cases and a substantial reference list
+- [Homemade CPU project][36] and [wiki][37]
 - [hex2bin][10] - Tool for converting [Intex Hex][11] or [Motorola S-Record][12] files to binary
 - [Make reference][2]
 - Online Makefile [generator][3]
@@ -234,6 +256,8 @@ The other software and files in this repository are released under what is commo
 [33]: https://github.com/z88dk/z88dk
 [34]: https://z88dk.org/site/
 [35]: ./tools/z88dk/LICENSE.txt
+[36]: https://github.com/Andy4495/Homemade-CPU
+[37]: https://github.com/Andy4495/Homemade-CPU/wiki
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)

@@ -120,10 +120,9 @@ int main(int argc, char** argv) {
     }
 
     if (displayHelp == true) {
-        cout << "emulator [-a arch] [-h] [input-file]"               << endl;
-        cout << "  -az use Z80 architecture"                         << endl;
+        cout << "emulator [-az | -ah] [-h] [input-file]"             << endl;
+        cout << "  -az use Z80 architecture (default)"               << endl;
         cout << "  -ah use Homemade CPU architecture"                << endl;
-        cout << "  if neither '-ah' nor '-az' is  specified, the default is Z80" << endl;
         cout << "  -h print this help text"                          << endl;
         cout << "  [input-file] is binary file containing code and data (default is 'data.bin')" << endl;
         exit(0);

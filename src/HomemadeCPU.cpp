@@ -62,8 +62,6 @@ void HomemadeCPU::load_memory(const char* fname) {
             memfile >> msb;
             memfile >> lsb;
             setPC(msb, lsb);
-            memfile >> msb;
-            memfile >> lsb;
             memfile >> IR;
             memfile >> OR;
             break;    // Make sure we don't try to load beyond memory space
