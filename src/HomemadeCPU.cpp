@@ -86,8 +86,6 @@ void HomemadeCPU::dump_memory_to_file(const char* fname) {
     memfile << JL;
     memfile << (uint8_t) ((PC & 0xff00) >> 8); 
     memfile << (uint8_t)  (PC & 0xff);
-    memfile << (uint8_t) ((PC_of_Fetch & 0xff00) >> 8);
-    memfile << (uint8_t)  (PC_of_Fetch & 0xff);
     memfile << IR;
     memfile << OR;
 
@@ -120,7 +118,6 @@ void HomemadeCPU::init_registers() {
     JH = 0x00;
     JL = 0x00;
     PC = 0x0000;
-    PC_of_Fetch = 0x0000;
     IR = 0x00;
     OR = 0x00;
 
@@ -151,12 +148,18 @@ uint8_t HomemadeCPU::get_next_byte() {
 }
 
 void HomemadeCPU::print_fetched_instruction() {
-    /// To be implemented
-
+    // Same format for every opcode
+    snprintf(instr_string, CPU_MAX_TEXT_LENGTH, "%04x  %-s  %s",
+             PC_of_Fetch, fetched, mnemonic);
+    cout << instr_string << endl;
 }
 
+// This is the same as print_fetched_instruction, except it doesn't
+// print the address, so that it can be input into an assembler
 void HomemadeCPU::print_assembly() {
-    /// To be implemented
+    // Same format for every opcode
+    snprintf(instr_string, CPU_MAX_TEXT_LENGTH, "      %s", mnemonic);
+    cout << instr_string << endl;
 }
 
 void HomemadeCPU::print_registers() {
@@ -168,7 +171,6 @@ void HomemadeCPU::print_registers() {
     <<  " JH:  "  << setw(2) << (uint16_t) JH
     <<  " JL:  "  << setw(2) << (uint16_t) JL
     <<  " PC:  "  << setw(4) << (uint16_t) PC
-    <<  " PC_of_Fetch: "   << setw(4) << (uint16_t) PC_of_Fetch
     <<  " IR': "  << setw(2) << (uint16_t) IR
     <<  " OR': "  << setw(2) << (uint16_t) OR
 
@@ -228,7 +230,7 @@ void HomemadeCPU::set_register() {
 
     cout << "Enter the register number to update: " << endl;
     cout << " 1: AC     2: FL     3: SH     4: SL     5: MH     6: JH     7: JL "  << endl;
-    cout << "11: PC    12: PC_of_Fetch     14: IR    15: OR"                       << endl;
+    cout << "11: PC    12: IR    13: OR"                                           << endl;
     cin >> regno; 
     cout << "Enter new value in hex: 0x";
     cin >> hex >> val;
@@ -259,12 +261,9 @@ void HomemadeCPU::set_register() {
             PC = val;
             break;
         case 12:
-            PC_of_Fetch = val;
-            break;
-        case 14:
             IR = val;
             break;
-        case 15:
+        case 13:
             OR = val;
             break;
         default:
@@ -287,8 +286,30 @@ uint16_t HomemadeCPU::getPC() {
 }
 
 void HomemadeCPU::fetch_and_decode() {
-    /// To be implemented
+    PC_of_Fetch = PC;  // Save the current PC for printing later
 
+    // All instructions are 2 bytes long
+    IR = memory[PC++];
+    OR = memory[PC++];
+
+    // Decode 
+    instr_length = 2;
+    snprintf(fetched, CPU_MAX_FETCHED_LENGTH, "%02x%02x    ",
+                IR, OR);
+    switch (opcodes[IR].s) {
+        case ON:
+            snprintf(mnemonic, CPU_MAX_MNEMONIC_LENGTH, opcodes[IR].mn, OR);
+            break;
+        case OU:
+            snprintf(mnemonic, CPU_MAX_MNEMONIC_LENGTH, "%s", opcodes[IR].mn);
+            break;
+        case NN:
+            snprintf(mnemonic, CPU_MAX_MNEMONIC_LENGTH, opcodes[IR].mn, IR, OR);
+            break;
+        default:  // Invalid instruction layout
+            strncpy(mnemonic, "Invalid layout", CPU_MAX_MNEMONIC_LENGTH);
+            break;
+    }
 }
 
 void HomemadeCPU::execute() {

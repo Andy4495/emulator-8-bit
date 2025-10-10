@@ -83,8 +83,6 @@ int main(int argc, char** argv) {
     cout << "8-bit Emulator Version: " << VERSION << endl;
 
     abstract_CPU*   cpu;
-    Z80*            Z80_cpu;
-    HomemadeCPU*    Homemade_cpu;
 
     const int MAXWIDTH=128;
     char fname[MAXWIDTH]; 
@@ -109,37 +107,32 @@ int main(int argc, char** argv) {
 
     // Parse the arguments, if any
     for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-a") == 0 && (i + 1) < argc) {
-            // Option -a followed by architecture
-            i++; // Skip the architecture in the next iteration
-            if (strcmp(argv[i], "h") == 0) { // assume Z80 unless specified otherwise
+        if (strcmp(argv[i], "-az") == 0) {
+            arch = Z80CPU;
+        } else if (strcmp(argv[i], "-ah") == 0) {
                 arch = HOMEMADECPU;
-            }
         } else if (strcmp(argv[i], "-h") == 0) {
             displayHelp = true;
         } else { // If it isn't a flag, then assume it is a filename
-            strncpy(input_fname,argv[1],MAXWIDTH);
+            strncpy(input_fname,argv[i],MAXWIDTH);
         }
         // Add more parsing logic for other options or positional arguments
     }
 
     if (displayHelp == true) {
         cout << "emulator [-a arch] [-h] [input-file]"               << endl;
-        cout << "  -a specified CPU architecture:"                   << endl;
-        cout << "     arch is 'z' for Z80 or "                       << endl;
-        cout << "             'h' for Homemade CPU"                  << endl;
-        cout << "     if '-a'  is not specified, the default is Z80" << endl;
+        cout << "  -az use Z80 architecture"                         << endl;
+        cout << "  -ah use Homemade CPU architecture"                << endl;
+        cout << "  if neither '-ah' nor '-az' is  specified, the default is Z80" << endl;
         cout << "  -h print this help text"                          << endl;
         cout << "  [input-file] is binary file containing code and data (default is 'data.bin')" << endl;
         exit(0);
     }
 
     if (arch == Z80CPU) {
-        Z80_cpu = new Z80;
-        cpu = Z80_cpu;
+        cpu = new Z80;
     } else {
-        Homemade_cpu = new HomemadeCPU;
-        cpu = Homemade_cpu;
+        cpu = new HomemadeCPU;
     }
 
     cout << "Loading memory from file: " << input_fname << " . . . ";

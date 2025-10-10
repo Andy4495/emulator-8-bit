@@ -87,6 +87,9 @@ class HomemadeCPU : public abstract_CPU {
    uint8_t IR;
    // Operand Register
    uint8_t OR;
+   // Storage for the fetched IR/OR bytes
+   char fetched[CPU_MAX_FETCHED_LENGTH + 1];
+
 
    uint8_t  testFlag(FLAG_BITS f);
    uint8_t get_next_byte();
