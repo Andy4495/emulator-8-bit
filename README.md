@@ -26,8 +26,8 @@ For the Z80:
 
 For the Homemade CPU:
 
-- Emulates a branch delay slot which executes the instruction already in the pipeline if a jump occurs.  The emulator may not produce the correct results if the instruction in the delay slot is another jump (but this will probably be disallowed either by the hardware or the assembler anyway).
-- A store-to-memory delay slot is probably also needed, but is not implemented (`STOR (mm)` and `PUSH` instructions). Or this may be better described as a delayed fetch, because the fetch that would occur during the execution phase would need to be delayed until the existing write to memory has completed.
+- A branch delay slot executes the instruction already in the pipeline if a jump occurs.  The emulator may not produce the correct results if the instruction in the delay slot is another jump (but this will probably be disallowed either by the hardware or the assembler anyway).
+- A store-to-memory delay slot is probably also needed, but is not implemented (`STOR (mm)` and `PUSH` instructions). This may be better described as a delayed fetch, because the fetch that would occur during the execution phase of a store-to-memory instruction would need to be delayed until the existing write to memory has completed.
 
 The [Future Functionality](#future-functionality) items listed below may be included in later releases.
 
