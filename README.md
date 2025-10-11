@@ -26,18 +26,18 @@ For the Z80:
 
 For the Homemade CPU:
 
-- A branch delay slot executes the instruction already in the pipeline if a jump occurs.  The emulator may not produce the correct results if the instruction in the delay slot is another jump (but this will probably be disallowed either by the hardware or the assembler anyway).
-- A store-to-memory delay slot is probably also needed, but is not implemented (`STOR (mm)` and `PUSH` instructions). This may be better described as a delayed fetch, because the fetch that would occur during the execution phase of a store-to-memory instruction would need to be delayed until the existing write to memory has completed.
+- The emulator always executes the instruction after a jump instruction (a branch delay slot), since that instruction is already in the pipeline in the actual CPU hardware. The emulator may not produce the correct results if the instruction in the delay slot is another jump (but this will probably be disallowed either by the hardware or the assembler anyway).
+- A store-to-memory (`STOR (mm)` and `PUSH` instructions) delay slot is probably also needed, but is not implemented. This may be better described as a delayed fetch, because the fetch that would occur during the execution phase of a store-to-memory instruction would need to be delayed until the existing write to memory has completed.
 
 The [Future Functionality](#future-functionality) items listed below may be included in later releases.
 
 ## Usage
 
-```shell
+```text
 emulator [-az | -ah] [-h] [input-file]
 ```
 
-Optional parameters `-az` or `ah` specify the architecture to emulate: `-az` for Z80, `-ah` for the Homemade CPU. If no architecture parameter is specified, then Z80 is emulated.
+Optional parameters `-az` or `-ah` specify the architecture to emulate: `-az` for Z80, `-ah` for the Homemade CPU. If no architecture parameter is specified, then Z80 is emulated.
 
 `-h` displays a brief help summary, then exits the program.
 
@@ -61,15 +61,17 @@ make verbose  # Adds --verbose to the compiler and linker options
 make clean    # Removes the executable, object, and linker files
 ```
 
+## Supported OSes
+
+The emulator should compile and run on any modern unix or Linux OS.
+
+It was originally developed and tested using Ubuntu 20.04 with gcc version 9.4.0 (by way of [WSL 2][26]) and MacOS Ventura with clang version 12.0.0.
+
+Further development and testing was done with MacOS Sequoia and clang version 17.0.
+
+Within the GitHub Actions environment, it has been tested with Ubuntu 22.04/gcc 11.3 and Ubuntu 24.04/gcc 13.2.
+
 ## Implementation Details
-
-The emulator was developed using Ubuntu 20.04 with gcc version 9.4.0 (by way of [WSL 2][26]) and MacOS Ventura with clang version 12.0.0.
-
-It is compatible with MacOS Sequoia and clang version 17.0. It should also work with other versions of MacOS and clang, but has not been tested.
-
-It is compatible with Ubuntu 22.04/gcc 11.3 and Ubuntu 24.04/gcc 13.2 within the GitHub Actions environment.
-
-I have not tried it on other platforms, but there is no machine dependent code. It should work as-is (or with minimal changes) on other unix-like platforms and compiler versions.
 
 ### General Program Flow
 
@@ -99,7 +101,7 @@ I have not tried it on other platforms, but there is no machine dependent code. 
 
 The CPU-specific code is encapsulated in classes named `Z80` and `HomemadeCPU` which inherit from the abstract base class `abstract_CPU`. Additional CPUs can be emulated by creating classes specific to those CPUs.
 
-The CPU opcodes are defined in several tables implemented with arrays of structs for the main and extended opcodes (`Z80_opcodes.h`, `HomemadeCPU_opcodes.h`). Each array entry contains the size of the instruction, the opcode/data layout, and the instruction mnemonic. The opcode value is represented by the array index.
+The CPU opcodes are defined in several tables implemented with arrays of structs for the main and extended opcodes (`Z80_opcodes.h`, `HomemadeCPU_opcodes.h`). Each array entry contains the opcode/data layout, the instruction mnemonic, and, if necessary, the length of the instruction. The opcode value is represented by the array index.
 
 The `Z80` class contains:
 
@@ -124,7 +126,7 @@ The `Z80` class contains:
     - Generate a string containing the disassembled instruction and data
   - Execute the actual instruction (load, store, jump, etc.)
 
-The `HomemadeCPU` class structure is similar to the `Z80` class, but simplified in many areas due to the RISC vs. CISC differences in the processor architectures. One notable difference is that the Homemade CPU has fixed-length 2-byte instructions.
+The `HomemadeCPU` class structure is similar to the `Z80` class, but simplified in many areas due to the RISC vs. CISC differences in the processor architectures. One notable difference is that the Homemade CPU has fixed-length 2-byte instructions, and therefore does not need to specify the instruction length in the opcodes array.
 
 ## Z80 Assemblers
 
