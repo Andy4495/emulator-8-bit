@@ -5,7 +5,7 @@
 [![Test Disassembler](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestDisassembler.yml)
 [![Test Opcodes](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestOpcodes.yml/badge.svg)](https://github.com/Andy4495/emulator-8-bit/actions/workflows/TestOpcodes.yml)
 
-This is a simple 8-bit CPU emulator and disassembler. It currently supports the Z80 and my [Homemade CPU][36]. Other CPUs may be added in the future.
+This is a simple 8-bit CPU emulator and disassembler. It currently supports the [Z80][38] and my [Homemade CPU][36]. Other CPUs may be added in the future.
 
 I created it as a learning exercise to refresh my C++ programming skills and to spend some time diving into the Z80 CPU architecture.
 
@@ -261,6 +261,7 @@ The other software and files in this repository are released under what is commo
 [35]: ./tools/z88dk/LICENSE.txt
 [36]: https://github.com/Andy4495/Homemade-CPU
 [37]: https://github.com/Andy4495/Homemade-CPU/wiki
+[38]: https://en.wikipedia.org/wiki/Zilog_Z80
 [100]: https://choosealicense.com/licenses/mit/
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)
