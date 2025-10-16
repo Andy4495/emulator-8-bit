@@ -17,6 +17,8 @@ OBJS	= \
 	Z80_execute_misc_opcode.o \
 	Z80_execute_main_opcode.o \
 	Z80_fetch_and_decode.o \
+	HomemadeCPUv1.o \
+	HomemadeCPUv1_execute.o \
 	HomemadeCPU.o \
 	HomemadeCPU_execute.o \
 	Emulator.o
@@ -65,6 +67,12 @@ Z80_execute_main_opcode.o: Z80_execute_main_opcode.cpp Z80.h
 
 Z80_fetch_and_decode.o: Z80_fetch_and_decode.cpp Z80.h Z80_opcodes.h abstract_cpu.h
 	$(CC) $(FLAGS) Z80_fetch_and_decode.cpp 
+
+HomemadeCPUv1.o: HomemadeCPUv1.cpp HomemadeCPUv1.h HomemadeCPUv1_opcodes.h
+	$(CC) $(FLAGS) HomemadeCPUv1.cpp 
+
+HomemadeCPUv1_execute.o: HomemadeCPUv1_execute.cpp HomemadeCPUv1.h HomemadeCPUv1_opcodes.h
+	$(CC) $(FLAGS) HomemadeCPUv1_execute.cpp 
 
 HomemadeCPU.o: HomemadeCPU.cpp HomemadeCPU.h HomemadeCPU_opcodes.h
 	$(CC) $(FLAGS) HomemadeCPU.cpp 

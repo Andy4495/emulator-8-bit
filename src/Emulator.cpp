@@ -40,6 +40,7 @@ const char* VERSION = "v2.0.0";
 
 #include "Z80.h"
 #include "HomemadeCPU.h"
+#include "HomemadeCPUv1.h"
 #include <iostream>
 #include <fstream>
 #include <cassert>
@@ -99,7 +100,7 @@ int main(int argc, char** argv) {
                     EXIT}
                     state = MAIN_MENU;
 
-    enum archType {Z80CPU, HOMEMADECPU};
+    enum archType {Z80CPU, HOMEMADECPU, HOMEMADECPUV1};
     bool displayHelp = false;
     archType arch = Z80CPU;    // Default to Z80 for backwards compatibility
 
@@ -111,6 +112,8 @@ int main(int argc, char** argv) {
             arch = Z80CPU;
         } else if (strcmp(argv[i], "-ah") == 0) {
                 arch = HOMEMADECPU;
+        } else if (strcmp(argv[i], "-ahv1") == 0) {
+                arch = HOMEMADECPU;
         } else if (strcmp(argv[i], "-h") == 0) {
             displayHelp = true;
         } else { // If it isn't a flag, then assume it is a filename
@@ -120,18 +123,27 @@ int main(int argc, char** argv) {
     }
 
     if (displayHelp == true) {
-        cout << "emulator [-az | -ah] [-h] [input-file]"             << endl;
-        cout << "  -az use Z80 architecture (default)"               << endl;
-        cout << "  -ah use Homemade CPU architecture"                << endl;
-        cout << "  -h print this help text"                          << endl;
+        cout << "emulator [-az | -ah | -ahv1] [-h] [input-file]"       << endl;
+        cout << "  -az use Z80 architecture (default)"                 << endl;
+        cout << "  -ah use Homemade CPU architecture current version"  << endl;
+        cout << "  -ahv1 use Homemade CPU architecture version 1"      << endl;
+        cout << "  -h print this help text"                            << endl;
         cout << "  [input-file] is binary file containing code and data (default is 'data.bin')" << endl;
         exit(0);
     }
 
     if (arch == Z80CPU) {
         cpu = new Z80;
-    } else {
+        cout << "Emulating Z80 CPU." << endl;
+    } else if (arch == HOMEMADECPU) {
         cpu = new HomemadeCPU;
+        cout << "Emulating Homemade CPU current design version." << endl;
+    } else if (arch == HOMEMADECPUV1) {
+        cpu = new HomemadeCPUv1;
+        cout << "Emulating Homemade CPU design version 1." << endl;
+    } else {
+        cpu = new Z80;
+        cout << "Architecture option not recognized. Emulating Z80 CPU." << endl;        
     }
 
     cout << "Loading memory from file: " << input_fname << " . . . ";

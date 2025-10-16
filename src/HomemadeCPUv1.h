@@ -1,19 +1,19 @@
-/* Homemade CPU Emulator 
+/* Homemade CPU Emulator, Version 1
    Copyright 2025 Andreas Taylor
    https://github.com/Andy4495/emulator-8-bit
    MIT License
 
    See https://github.com/Andy4495/Homemade-CPU for the CPU this emulates
 
-   This code is based off version 2 of the CPU design.
+   This code is based off version 1 of the CPU design. It has been superseded by Version 2.
 
-   0.1  15-Oct-2025  Andy4495  Initial Creation
+   0.1  08-Oct-2025  Andy4495  Initial Creation
 
 
 */
 
-#ifndef _HOMEMADECPU2_H_
-#define _HOMEMADECPU2_H_
+#ifndef _HOMEMADECPU1_H_
+#define _HOMEMADECPU1_H_
 
 #include "./abstract_cpu.h"
 
@@ -24,9 +24,9 @@
 #define CPU_MAX_MNEMONIC_LENGTH 49
 #define CPU_MAX_TEXT_LENGTH 72
 
-class HomemadeCPU : public abstract_CPU {
+class HomemadeCPUv1 : public abstract_CPU {
   public:
-   HomemadeCPU(uint16_t ramstart = 0x8000, uint16_t ramend = 0xffff);
+   HomemadeCPUv1(uint16_t ramstart = 0x8000, uint16_t ramend = 0xffff);
    void load_memory(const char* fname);
    void dump_memory_to_file(const char* fname);
    void cold_reset();
@@ -59,16 +59,14 @@ class HomemadeCPU : public abstract_CPU {
 
    bool delay_slot = false; 
 
-   enum FLAG_BITS { Z_BIT = 0x80, C_BIT = 0x40, S_BIT = 0x20, V_BIT = 0x10};
+   enum FLAG_BITS { Z_BIT = 0x08, C_BIT = 0x04, S_BIT = 0x02, V_BIT = 0x01};
 
    // State variables
    bool Halt;
 
    // Main register set
-   // Accumulator A
-   uint8_t AA;
-   // Accumulator B
-   uint8_t AB;   
+   // Accumulator
+   uint8_t AC;
    // Flags
    uint8_t FL;
 
@@ -76,10 +74,9 @@ class HomemadeCPU : public abstract_CPU {
    // Stack pointer
    // SP is implemented as a 16-bit counter, and uses getters/setters to access MSB/LSB individually
    uint16_t SP;
-   // Memory pointer (combined 16-bit "MR")
+   // Memory pointer MSB
    uint8_t MH;
-   uint8_t ML;
-   // Jump Address (combined 16-bit "JR")
+   // Jump Address
    uint8_t JH;
    uint8_t JL;
 
@@ -91,6 +88,8 @@ class HomemadeCPU : public abstract_CPU {
    uint16_t PC_of_Fetch;
    // Instruction Register
    uint8_t IR;
+   // Operand Register
+   uint8_t OR;
    // Storage for the fetched IR/OR bytes
    char fetched[CPU_MAX_FETCHED_LENGTH + 1];
 
@@ -101,8 +100,8 @@ class HomemadeCPU : public abstract_CPU {
    void update_S(uint8_t val);
    uint8_t getSH();
    uint8_t getSL();
-   uint16_t getJR();  // Jump Address: 16-bit representation of JH, JL
-   uint16_t getMR();  // Memory address: 16-bit representation of MH, ML
+   uint16_t getJA();  // Jump Address: 16-bit equivalent of JH, JL
+   uint16_t getMA();  // Memory address: 16-bit equivalent of MH and OR (which contains ML)
    void setSH(uint8_t v);
    void setSL(uint8_t v);
    void setPC(uint8_t msb, uint8_t lsb);
@@ -110,4 +109,4 @@ class HomemadeCPU : public abstract_CPU {
    void setFlag(FLAG_BITS f);
    void clearFlag(FLAG_BITS f);
 };
-#endif  // _HOMEMADECPU2_H_
+#endif  // _HOMEMADECPU1_H_

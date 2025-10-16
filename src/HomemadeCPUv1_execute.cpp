@@ -1,18 +1,18 @@
-/* Homemade CPU Emulator 
+/* Homemade CPU Emulator, Version 1
    Copyright 2025 Andreas Taylor
    https://github.com/Andy4495/emulator-8-bit
    MIT License
 
    See https://github.com/Andy4495/Homemade-CPU for the CPU this emulates
 
-   This code is based off version 2 of the CPU design.
+   This code is based off version 1 of the CPU design. It has been superseded by Version 2.
 
-   0.1  15-Oct-2025  Andy4495  Initial Creation
+   0.1  09-Oct-2025  Andy4495  Initial Creation
 
 
 */
 
-#include "HomemadeCPU.h"
+#include "HomemadeCPUv1.h"
 #include <iostream>
 #include <fstream>
 #include <cassert>
@@ -22,87 +22,87 @@ using std::endl;
 using std::hex;
 using std::setw;
 
-void HomemadeCPU::execute() {
+void HomemadeCPUv1::execute() {
     uint16_t result;
     uint8_t  temp_bit;
 
     switch (IR) {
         case 0x00:      // LOAD #dd
-            AA = AB;
+            AC = OR;
             break;
 
         case 0x08:      // LOAD (mm)
-            AA = memory[getMR()];
+            AC = memory[getMA()];
             break;
 
-        case 0x10:      // LOAD AA
+        case 0x10:      // LOAD AC
 //            Commenting this out to clear a compiler warning.
 //            TBD whether the hardware actually implements the move
 //            Either way is the net effect of this is a NOOP
-//            AA = AA;
+//            AC = AC;
             break;
 
         case 0x11:      // LOAD FL
-            AA = FL;
+            AC = FL;
             break;
 
         case 0x12:      // LOAD SH
-            AA = getSH(); 
+            AC = getSH(); 
             break;
 
         case 0x13:      // LOAD SL
-            AA = getSL();
+            AC = getSL();
             break;
 
         case 0x14:      // LOAD MH
-            AA = MH; 
+            AC = MH; 
             break;
 
         case 0x15:      // LOAD JH
-            AA = JH;
+            AC = JH;
             break;
 
         case 0x16:      // LOAD JL
-            AA = JL;
+            AC = JL;
             break;
 
         case 0x18:      // STOR (mm)
-            memory[getMR()] = AA;
+            memory[getMA()] = AC;
             break;
 
-        case 0x20:      // STOR AA
+        case 0x20:      // STOR AC
 //            Commenting this out to clear a compiler warning.
 //            TBD whether the hardware actually implements the move
 //            Either way is the net effect of this is a NOOP            
-//            AA = AA; 
+//            AC = AC; 
             break;
 
         case 0x21:      // STOR FL
-            FL = AA;
+            FL = AC;
             break;
 
         case 0x22:      // STOR SH
-            setSH(AA); 
+            setSH(AC); 
             break;
 
         case 0x23:      // STOR SL
-            setSL(AA); 
+            setSL(AC); 
             break;
         
         case 0x24:      // STOR MH
-            MH = AA;
+            MH = AC;
             break;
 
         case 0x25:      // STOR JH
-            JH = AA; 
+            JH = AC; 
             break;
 
         case 0x26:      // STOR JL
-            JL = AA;
+            JL = AC;
             break;
 
-        case 0x28:      // PUSH AA
-            memory[SP--] = AA;
+        case 0x28:      // PUSH AC
+            memory[SP--] = AC;
             break;
 
         case 0x29:      // PUSH FL
@@ -130,11 +130,11 @@ void HomemadeCPU::execute() {
             break;
 
         case 0x30:      // PUSH #dd
-            memory[SP--] = AB;
+            memory[SP--] = OR;
             break;
 
-        case 0x38:      // POPP AA
-            AA = memory[SP++];
+        case 0x38:      // POPP AC
+            AC = memory[SP++];
             break;
 
         case 0x39:      // POPP FL
@@ -161,9 +161,9 @@ void HomemadeCPU::execute() {
             break;
 
         case 0x40:      // COMP #dd - result not saved
-            result = AA - AB - testFlag(C_BIT);
+            result = AC - OR - testFlag(C_BIT);
             update_Z(result);
-            if ((AB + testFlag(C_BIT)) > AA) setFlag(C_BIT);
+            if ((OR + testFlag(C_BIT)) > AC) setFlag(C_BIT);
             else                             clearFlag(C_BIT);
             update_S(result);
             // Overflow algorithm:
@@ -174,12 +174,12 @@ void HomemadeCPU::execute() {
             //     - If difference is different sign than subtrahend, then no overflow
             //
             // operands are same signs, no overflow
-            if ((AA & 0x80) == (AB & 0x80)) {
+            if ((AC & 0x80) == (OR & 0x80)) {
                 clearFlag(V_BIT);
             // different signs, compare subtrahend and difference signs
             // same sign -> overflow
             } else {
-                if ( ((AA - AB - testFlag(C_BIT)) & 0x80) == (AB & 0x80) )
+                if ( ((AC - OR - testFlag(C_BIT)) & 0x80) == (OR & 0x80) )
                         setFlag(V_BIT);
                 else
                         clearFlag(V_BIT);
@@ -187,9 +187,9 @@ void HomemadeCPU::execute() {
             break;
 
         case 0x42:      // SUBB #dd
-            result = AA - AB - testFlag(C_BIT);;
+            result = AC - OR - testFlag(C_BIT);;
             update_Z(result);
-            if ((AB + testFlag(C_BIT)) > AA) setFlag(C_BIT);
+            if ((OR + testFlag(C_BIT)) > AC) setFlag(C_BIT);
             else                             clearFlag(C_BIT);
             update_S(result);
             // Overflow algorithm:
@@ -200,23 +200,23 @@ void HomemadeCPU::execute() {
             //     - If difference is different sign than subtrahend, then no overflow
             //
             // operands are same signs, no overflow
-            if ((AA & 0x80) == (AB & 0x80)) {
+            if ((AC & 0x80) == (OR & 0x80)) {
                 clearFlag(V_BIT);
             // different signs, compare subtrahend and difference signs
             // same sign -> overflow
             } else {
-                if ( ((AA - AB - testFlag(C_BIT)) & 0x80) == (AB & 0x80) )
+                if ( ((AC - OR - testFlag(C_BIT)) & 0x80) == (OR & 0x80) )
                         setFlag(V_BIT);
                 else
                         clearFlag(V_BIT);
             }
-            AA = result;
+            AC = result;
             break;
 
         case 0x44:      // ADDD #dd
-            result = AA + AB + testFlag(C_BIT);
+            result = AC + OR + testFlag(C_BIT);
             update_Z(result);
-            if ((AA + AB + testFlag(C_BIT)) & 0x0100) setFlag(C_BIT);
+            if ((AC + OR + testFlag(C_BIT)) & 0x0100) setFlag(C_BIT);
             else                                      clearFlag(C_BIT);
             update_S(result);
             // Overflow algorithm:
@@ -227,145 +227,145 @@ void HomemadeCPU::execute() {
             //     - If sum is same sign as addends, then no overflow
             //
             // operands with different signs --> no overflow
-            if ((AA & 0x80) != (AB & 0x80)) {
+            if ((AC & 0x80) != (OR & 0x80)) {
                 clearFlag(V_BIT);
             } else {
                 // both operands negative, result positive --> overflow
-                if ((AA & 0x80)) {
-                    if ((AA + AB + testFlag(C_BIT)) & 0x80)
+                if ((AC & 0x80)) {
+                    if ((AC + OR + testFlag(C_BIT)) & 0x80)
                         clearFlag(V_BIT);
                     else
                         setFlag(V_BIT);
                 } else {
                     // both operands positive, result negative --> overflow
-                    if ((AA + AB + testFlag(C_BIT)) & 0x80)
+                    if ((AC + OR + testFlag(C_BIT)) & 0x80)
                         setFlag(V_BIT);
                     else
                         clearFlag(V_BIT);
                 }
             }
-            AA = result;
+            AC = result;
             break;
 
         case 0x50:      // ANDD #dd
-            AA = AA & AB;
-            update_Z(AA);
+            AC = AC & OR;
+            update_Z(AC);
             clearFlag(C_BIT);
             clearFlag(S_BIT);
             clearFlag(V_BIT);
             break;  
             
         case 0x52:      // ORRR #dd
-            AA = AA | AB;
-            update_Z(AA);
+            AC = AC | OR;
+            update_Z(AC);
             clearFlag(C_BIT);
             clearFlag(S_BIT);
             clearFlag(V_BIT);
             break;
 
         case 0x54:      // XORR #dd
-            AA = AA ^ AB;
-            update_Z(AA);
+            AC = AC ^ OR;
+            update_Z(AC);
             clearFlag(C_BIT);
             clearFlag(S_BIT);
             clearFlag(V_BIT);
             break;
 
         case 0x56:      // NAND #dd
-            AA = ~(AA & AB);
-            update_Z(AA);
+            AC = ~(AC & OR);
+            update_Z(AC);
             clearFlag(C_BIT);
             clearFlag(S_BIT);
             clearFlag(V_BIT);
             break;
 
         case 0x58:      // NORR #dd
-            AA = ~(AA | AB);
-            update_Z(AA);
+            AC = ~(AC | OR);
+            update_Z(AC);
             clearFlag(C_BIT);
             clearFlag(S_BIT);
             clearFlag(V_BIT);
             break;
 
         case 0x60:      // NOTT
-            AA = ~AA;
-            update_Z(AA);
+            AC = ~AC;
+            update_Z(AC);
             clearFlag(C_BIT);
             clearFlag(S_BIT);
             clearFlag(V_BIT);
             break;
 
         case 0x70:      // SHRL
-            if (AA & 0x01) setFlag(C_BIT);
+            if (AC & 0x01) setFlag(C_BIT);
             else           clearFlag(C_BIT);
-            AA = AA >> 1;
-            update_Z(AA);
+            AC = AC >> 1;
+            update_Z(AC);
             clearFlag(S_BIT);
             clearFlag(V_BIT);
             break;
 
         case 0x72:      // SHLL
-            if (AA & 0x80) setFlag(C_BIT);
+            if (AC & 0x80) setFlag(C_BIT);
             else           clearFlag(C_BIT);
-            AA = AA << 1;
-            update_Z(AA);
+            AC = AC << 1;
+            update_Z(AC);
             clearFlag(S_BIT);
             clearFlag(V_BIT);
             break;
 
         case 0x74:      // SHRA
-            if (AA & 0x80) temp_bit = 0x80;
+            if (AC & 0x80) temp_bit = 0x80;
             else           temp_bit = 0x00;
-            if (AA & 0x01) setFlag(C_BIT);
+            if (AC & 0x01) setFlag(C_BIT);
             else           clearFlag(C_BIT);
-            AA = AA >> 1;
-            AA |= temp_bit;
-            update_S(AA);
-            update_Z(AA);
+            AC = AC >> 1;
+            AC |= temp_bit;
+            update_S(AC);
+            update_Z(AC);
             clearFlag(V_BIT);
             break;
             
         case 0x78:      // ROTR
-            if (AA & 0x01) setFlag(C_BIT);
+            if (AC & 0x01) setFlag(C_BIT);
             else           clearFlag(C_BIT);
-            AA = AA >> 1;
-            if (FL & C_BIT) AA |= 0x80;
-            update_Z(AA);
-            update_S(AA);
+            AC = AC >> 1;
+            if (FL & C_BIT) AC |= 0x80;
+            update_Z(AC);
+            update_S(AC);
             clearFlag(V_BIT);
             break;
 
         case 0x7a:      // RRTC
             if (FL & C_BIT) temp_bit = 0x80;
             else            temp_bit = 0x00;
-            if (AA & 0x01) setFlag(C_BIT);
+            if (AC & 0x01) setFlag(C_BIT);
             else           clearFlag(C_BIT);
-            AA = AA >> 1;
-            if (temp_bit) AA |= 0x80;
-            update_Z(AA);
-            update_S(AA);
+            AC = AC >> 1;
+            if (temp_bit) AC |= 0x80;
+            update_Z(AC);
+            update_S(AC);
             clearFlag(V_BIT);
             break;        
 
         case 0x7c:      // ROTL
-            if (AA & 0x80) setFlag(C_BIT);
+            if (AC & 0x80) setFlag(C_BIT);
             else           clearFlag(C_BIT);
-            AA = AA << 1;
-            if (FL & C_BIT) AA |= 0x01;
-            update_Z(AA);
-            update_S(AA);
+            AC = AC << 1;
+            if (FL & C_BIT) AC |= 0x01;
+            update_Z(AC);
+            update_S(AC);
             clearFlag(V_BIT);
             break;            
 
         case 0x7e:      // RLTC
             if (FL & C_BIT) temp_bit = 0x01;
             else            temp_bit = 0x00;
-            if (AA & 0x80) setFlag(C_BIT);
+            if (AC & 0x80) setFlag(C_BIT);
             else           clearFlag(C_BIT);
-            AA = AA << 1;
-            if (temp_bit) AA |= 0x01;
-            update_Z(AA);
-            update_S(AA);
+            AC = AC << 1;
+            if (temp_bit) AC |= 0x01;
+            update_Z(AC);
+            update_S(AC);
             clearFlag(V_BIT);
             break; 
 
@@ -373,67 +373,67 @@ void HomemadeCPU::execute() {
         // with all the same opcode (one for BITC, one for BITS), and the operand
         // gives the mask for what is set/clear.
         case 0x80:      // BITC 0
-            AA = AA & 0xFE;
+            AC = AC & 0xFE;
             break;
 
         case 0x82:      // BITC 1
-            AA = AA & 0xFD;
+            AC = AC & 0xFD;
             break;
 
         case 0x84:      // BITC 2
-            AA = AA & 0xFB;
+            AC = AC & 0xFB;
             break;
 
         case 0x86:      // BITC 3
-            AA = AA & 0xF7;
+            AC = AC & 0xF7;
             break;
 
         case 0x88:      // BITC 4
-            AA = AA & 0xEF;
+            AC = AC & 0xEF;
             break;
 
         case 0x8a:      // BITC 5
-            AA = AA & 0xDF;
+            AC = AC & 0xDF;
             break;
 
         case 0x8c:      // BITC 6
-            AA = AA & 0xBF;
+            AC = AC & 0xBF;
             break;
 
         case 0x8e:      // BITC 7
-            AA = AA & 0x7F;
+            AC = AC & 0x7F;
             break;
 
         case 0x90:      // BITS 0
-            AA = AA | 0x01;
+            AC = AC | 0x01;
             break;
 
         case 0x92:      // BITS 1
-            AA = AA | 0x02;
+            AC = AC | 0x02;
             break;
 
         case 0x94:      // BITS 2
-            AA = AA | 0x04;
+            AC = AC | 0x04;
             break;
 
         case 0x96:      // BITS 3
-            AA = AA | 0x08;
+            AC = AC | 0x08;
             break;
 
         case 0x98:      // BITS 4
-            AA = AA | 0x10;
+            AC = AC | 0x10;
             break;
 
         case 0x9a:      // BITS 5
-            AA = AA | 0x20;
+            AC = AC | 0x20;
             break;
 
         case 0x9c:      // BITS 6
-            AA = AA | 0x40;
+            AC = AC | 0x40;
             break;
 
         case 0x9e:      // BITS 7
-            AA = AA | 0x80;
+            AC = AC | 0x80;
             break;
 
         case 0xa0:      // CLRV
@@ -472,62 +472,62 @@ void HomemadeCPU::execute() {
         // that will be executed after all jumps
         case 0xc0:      // JPVC #aa
             if (!(FL & V_BIT)) {
-                setPC(JH, AB);
+                setPC(JH, OR);
                 delay_slot = true; 
             }
             break;
 
         case 0xc2:      // JPSC #aa
             if (!(FL & S_BIT)) {
-                setPC(JH, AB);
+                setPC(JH, OR);
                 delay_slot = true; 
             }
             break;
 
         case 0xc4:      // JPCC #aa
             if (!(FL & C_BIT)) {
-                setPC(JH, AB);
+                setPC(JH, OR);
                 delay_slot = true; 
             }
             break;
 
         case 0xc6:      // JPZC #aa
             if (!(FL & Z_BIT)) {
-                setPC(JH, AB);
+                setPC(JH, OR);
                 delay_slot = true; 
             }
             break;
 
         case 0xd0:      // JPVS #aa
             if (FL & V_BIT) {
-                setPC(JH, AB);
+                setPC(JH, OR);
                 delay_slot = true; 
             }
             break;
 
         case 0xd2:      // JPSS #aa
             if (FL & S_BIT) {
-                setPC(JH, AB);
+                setPC(JH, OR);
                 delay_slot = true; 
             }
             break;
 
         case 0xd4:      // JPCS #aa
             if (FL & C_BIT) {
-                setPC(JH, AB);
+                setPC(JH, OR);
                 delay_slot = true; 
             }
             break;
 
         case 0xd6:      // JPZS #aa
             if (FL & Z_BIT) {
-                setPC(JH, AB);
+                setPC(JH, OR);
                 delay_slot = true; 
             }
             break;
 
         case 0xe0:      // JUMP #aa
-            setPC(JH, AB);
+            setPC(JH, OR);
             delay_slot = true; 
             break;
 

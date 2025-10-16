@@ -5,7 +5,9 @@
 
    See https://github.com/Andy4495/Homemade-CPU for the CPU this emulates
 
-   0.1  09-Oct-2025  Andy4495  Initial Creation
+   This code is based off version 2 of the CPU design.
+
+   0.1  15-Oct-2025  Andy4495  Initial Creation
 
 
 */
@@ -15,14 +17,13 @@
 // Structure to define Homemade CPU opcodes and mnemonics
 // All instructions are of length 2
 
-#ifndef SRC_HOMEMADE_CPU_OPCODES_H_
-#define SRC_HOMEMADE_CPU_OPCODES_H_
+#ifndef SRC_HOMEMADE_CPU2_OPCODES_H_
+#define SRC_HOMEMADE_CPU2_OPCODES_H_
 
 // Specify the instruction byte structure
-// O -> Opcode
-// N -> Data byte
-// U -> Unused byte
-enum CPU_OPCODE_STRUCTURE {ON, OU, NN};
+// O -> Opcode nibble
+// N -> Data nibble
+enum CPU_OPCODE_STRUCTURE {OO, ON, NN};
 
 struct Homemade_CPU_opcodes {      // The opcode value is implicit in the array index
     CPU_OPCODE_STRUCTURE s;
@@ -31,263 +32,262 @@ struct Homemade_CPU_opcodes {      // The opcode value is implicit in the array 
 
 // The actual opcode value is implicitly represented by the array index
 const Homemade_CPU_opcodes opcodes[] = {
-    {ON, "LOAD #$%02x"},                                           // 0x00
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x01
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x02
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x03
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x04
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x05
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x06
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x07
-    {ON, "LOAD ($%02x)"},                                          // 0x08
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x09
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x0A
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x0B
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x0C
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x0D
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x0E
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x0F
-    {OU, "LOAD AC"},                                               // 0x10
-    {OU, "LOAD FL"},                                               // 0x11
-    {OU, "LOAD SH"},                                               // 0x12
-    {OU, "LOAD SL"},                                               // 0x13
-    {OU, "LOAD MH"},                                               // 0x14
-    {OU, "LOAD JH"},                                               // 0x15
-    {OU, "LOAD JL"},                                               // 0x16
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x17
-    {ON, "STOR ($%02x)"},                                          // 0x18
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x19
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x1A
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x1B
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x1C
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x1D
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x1E
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x1F   
-    {OU, "STOR AC"},                                               // 0x20
-    {OU, "STOR FL"},                                               // 0x21
-    {OU, "STOR SH"},                                               // 0x22
-    {OU, "STOR SL"},                                               // 0x23
-    {OU, "STOR MH"},                                               // 0x24
-    {OU, "STOR JH"},                                               // 0x25
-    {OU, "STOR JL"},                                               // 0x26
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x27
-    {OU, "PUSH AC"},                                               // 0x28
-    {OU, "PUSH FL"},                                               // 0x29
-    {OU, "PUSH SH"},                                               // 0x2A
-    {OU, "PUSH SL"},                                               // 0x2B
-    {OU, "PUSH MH"},                                               // 0x2C
-    {OU, "PUSH JH"},                                               // 0x2D
-    {OU, "PUSH JL"},                                               // 0x2E
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x2F   
-    {ON, "PUSH #$%02x"},                                           // 0x30
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x31
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x32
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x33
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x34
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x35
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x36
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x37
-    {OU, "POPP AC"},                                               // 0x38
-    {OU, "POPP FL"},                                               // 0x39
-    {OU, "POPP SH"},                                               // 0x3A
-    {OU, "POPP SL"},                                               // 0x3B
-    {OU, "POPP MH"},                                               // 0x3C
-    {OU, "POPP JH"},                                               // 0x3D
-    {OU, "POPP JL"},                                               // 0x3E
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x3F    
-    {ON, "COMP #$%02x"},                                           // 0x40
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x41
-    {ON, "SUBB #$%02x"},                                           // 0x42
-    {NN, "DEFB $%02x, $%02"},                                      // 0x43
-    {ON, "ADDD #$%02x"},                                           // 0x44
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x45
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x46
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x47
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x48
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x49
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x4A
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x4B
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x4C
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x4D
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x4E
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x4F    
-    {ON, "ANDD #$%02x"},                                           // 0x50
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x51
-    {ON, "ORRR #$%02x"},                                           // 0x52
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x53
-    {ON, "XORR #$%02x"},                                           // 0x54
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x55
-    {ON, "NAND #$%02x"},                                           // 0x56
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x57
-    {ON, "NORR #$%02x"},                                           // 0x58
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x59
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x5A
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x5B
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x5C
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x5D
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x5E
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x5F    
-    {OU, "NOTT"},                                                  // 0x60
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x61
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x62
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x63
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x64
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x65
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x66
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x67
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x68
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x69
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x6A
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x6B
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x6C
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x6D
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x6E
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x6F    
-    {OU, "SHRL"},                                                  // 0x70
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x71
-    {OU, "SHLL"},                                                  // 0x72
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x73
-    {OU, "SHRA"},                                                  // 0x74
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x75
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x76
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x77
-    {OU, "ROTR"},                                                  // 0x78
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x79
-    {OU, "RRTC"},                                                  // 0x7A
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x7B
-    {OU, "ROTL"},                                                  // 0x7C
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x7D
-    {OU, "RLTC"},                                                  // 0x7E
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x7F    
-    {OU, "BITC 0"},                                                // 0x80
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x81
-    {OU, "BITC 1"},                                                // 0x82
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x83
-    {OU, "BITC 2"},                                                // 0x84
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x85
-    {OU, "BITC 3"},                                                // 0x86
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x87
-    {OU, "BITC 4"},                                                // 0x88
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x89
-    {OU, "BITC 5"},                                                // 0x8A
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x8B
-    {OU, "BITC 6"},                                                // 0x8C
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x8D
-    {OU, "BITC 7"},                                                // 0x8E
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x8F    
-    {OU, "BITS 0"},                                                // 0x90
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x91
-    {OU, "BITS 1"},                                                // 0x92
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x93
-    {OU, "BITS 2"},                                                // 0x94
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x95
-    {OU, "BITS 3"},                                                // 0x96
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x97
-    {OU, "BITS 4"},                                                // 0x98
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x99
-    {OU, "BITS 5"},                                                // 0x9A
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x9B
-    {OU, "BITS 6"},                                                // 0x9C
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x9D
-    {OU, "BITS 7"},                                                // 0x9E
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0x9F    
-    {OU, "CLRV"},                                                  // 0xA0
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xA1
-    {OU, "CLRS"},                                                  // 0xA2
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xA3
-    {OU, "CLRC"},                                                  // 0xA4
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xA5
-    {OU, "CLRZ"},                                                  // 0xA6
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xA7
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xA8
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xA9
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xAA
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xAB
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xAC
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xAD
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xAE
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xAF    
-    {OU, "SETV"},                                                  // 0xB0
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xB1
-    {OU, "SETS"},                                                  // 0xB2
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xB3
-    {OU, "SETC"},                                                  // 0xB4
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xB5
-    {OU, "SETZ"},                                                  // 0xB6
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xB7
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xB8
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xB9
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xBA
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xBB
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xBC
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xBD
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xBE
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xBF    
-    {ON, "JPVC #$%02x"},                                           // 0xC0
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xC1
-    {ON, "JPSC #$%02x"},                                           // 0xC2
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xC3
-    {ON, "JPCC #$%02x"},                                           // 0xC4
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xC5
-    {ON, "JPZC #$%02x"},                                           // 0xC6
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xC7
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xC8
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xC9
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xCA
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xCB
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xCC
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xCD
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xCE
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xCF    
-    {ON, "JPVS #$%02x"},                                           // 0xD0
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xD1
-    {ON, "JPSS #$%02x"},                                           // 0xD2
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xD3
-    {ON, "JPCS #$%02x"},                                           // 0xD4
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xD5
-    {ON, "JPZS #$%02x"},                                           // 0xD6
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xD7
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xD8
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xD9
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xDA
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xDB
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xDC
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xDD
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xDE
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xDF    
-    {ON, "JUMP #$%02x"},                                           // 0xE0
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xE1
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xE2
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xE3
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xE4
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xE5
-    {OU, "JUMP JL"},                                               // 0xE6
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xE7
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xE8
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xE9
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xEA
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xEB
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xEC
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xED
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xEE
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xEF    
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xF0
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xF1
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xF2
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xF3
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xF4
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xF5
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xF6
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xF7
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xF8
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xF9
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xFA
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xFB
-    {OU, "NOOP"},                                                  // 0xFC
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xFD
-    {NN, "DEFB $%02x, $%02x    ;Invalid opcode"},                  // 0xFE
-    {OU, "HALT"},                                                  // 0xFF
-
+    {ON, "LDAL #$0"},                                              // 0x00
+    {ON, "LDAL #$1"},                                              // 0x01
+    {ON, "LDAL #$2"},                                              // 0x02
+    {ON, "LDAL #$3"},                                              // 0x03
+    {ON, "LDAL #$4"},                                              // 0x04
+    {ON, "LDAL #$5"},                                              // 0x05
+    {ON, "LDAL #$6"},                                              // 0x06
+    {ON, "LDAL #$7"},                                              // 0x07
+    {ON, "LDAL #$8"},                                              // 0x08
+    {ON, "LDAL #$9"},                                              // 0x09
+    {ON, "LDAL #$A"},                                              // 0x0A
+    {ON, "LDAL #$B"},                                              // 0x0B
+    {ON, "LDAL #$C"},                                              // 0x0C
+    {ON, "LDAL #$D"},                                              // 0x0D
+    {ON, "LDAL #$E"},                                              // 0x0E
+    {ON, "LDAL #$F"},                                              // 0x0F
+    {ON, "LDAH #$0"},                                              // 0x10
+    {ON, "LDAH #$1"},                                              // 0x11
+    {ON, "LDAH #$2"},                                              // 0x12
+    {ON, "LDAH #$3"},                                              // 0x13
+    {ON, "LDAH #$4"},                                              // 0x14
+    {ON, "LDAH #$5"},                                              // 0x15
+    {ON, "LDAH #$6"},                                              // 0x16
+    {ON, "LDAH #$7"},                                              // 0x17
+    {ON, "LDAH #$8"},                                              // 0x18
+    {ON, "LDAH #$9"},                                              // 0x19
+    {ON, "LDAH #$A"},                                              // 0x1A
+    {ON, "LDAH #$B"},                                              // 0x1B
+    {ON, "LDAH #$C"},                                              // 0x1C
+    {ON, "LDAH #$D"},                                              // 0x1D
+    {ON, "LDAH #$E"},                                              // 0x1E
+    {ON, "LDAH #$F"},                                              // 0x1F
+    {ON, "LDBL #$0"},                                              // 0x20
+    {ON, "LDBL #$1"},                                              // 0x21
+    {ON, "LDBL #$2"},                                              // 0x22
+    {ON, "LDBL #$3"},                                              // 0x23
+    {ON, "LDBL #$4"},                                              // 0x24
+    {ON, "LDBL #$5"},                                              // 0x25
+    {ON, "LDBL #$6"},                                              // 0x26
+    {ON, "LDBL #$7"},                                              // 0x27
+    {ON, "LDBL #$8"},                                              // 0x28
+    {ON, "LDBL #$9"},                                              // 0x29
+    {ON, "LDBL #$A"},                                              // 0x2A
+    {ON, "LDBL #$B"},                                              // 0x2B
+    {ON, "LDBL #$C"},                                              // 0x2C
+    {ON, "LDBL #$D"},                                              // 0x2D
+    {ON, "LDBL #$E"},                                              // 0x2E
+    {ON, "LDBL #$F"},                                              // 0x2F
+    {ON, "LDBH #$0"},                                              // 0x30
+    {ON, "LDBH #$1"},                                              // 0x31
+    {ON, "LDBH #$2"},                                              // 0x32
+    {ON, "LDBH #$3"},                                              // 0x33
+    {ON, "LDBH #$4"},                                              // 0x34
+    {ON, "LDBH #$5"},                                              // 0x35
+    {ON, "LDBH #$6"},                                              // 0x36
+    {ON, "LDBH #$7"},                                              // 0x37
+    {ON, "LDBH #$8"},                                              // 0x38
+    {ON, "LDBH #$9"},                                              // 0x39
+    {ON, "LDBH #$A"},                                              // 0x3A
+    {ON, "LDBH #$B"},                                              // 0x3B
+    {ON, "LDBH #$C"},                                              // 0x3C
+    {ON, "LDBH #$D"},                                              // 0x3D
+    {ON, "LDBH #$E"},                                              // 0x3E
+    {ON, "LDBH #$F"},                                              // 0x3F
+    {ON, "LJLL #$0"},                                              // 0x40
+    {ON, "LJLL #$1"},                                              // 0x41
+    {ON, "LJLL #$2"},                                              // 0x42
+    {ON, "LJLL #$3"},                                              // 0x43
+    {ON, "LJLL #$4"},                                              // 0x44
+    {ON, "LJLL #$5"},                                              // 0x45
+    {ON, "LJLL #$6"},                                              // 0x46
+    {ON, "LJLL #$7"},                                              // 0x47
+    {ON, "LJLL #$8"},                                              // 0x48
+    {ON, "LJLL #$9"},                                              // 0x49
+    {ON, "LJLL #$A"},                                              // 0x4A
+    {ON, "LJLL #$B"},                                              // 0x4B
+    {ON, "LJLL #$C"},                                              // 0x4C
+    {ON, "LJLL #$D"},                                              // 0x4D
+    {ON, "LJLL #$E"},                                              // 0x4E
+    {ON, "LJLL #$F"},                                              // 0x4F
+    {ON, "LJLH #$0"},                                              // 0x50
+    {ON, "LJLH #$1"},                                              // 0x51
+    {ON, "LJLH #$2"},                                              // 0x52
+    {ON, "LJLH #$3"},                                              // 0x53
+    {ON, "LJLH #$4"},                                              // 0x54
+    {ON, "LJLH #$5"},                                              // 0x55
+    {ON, "LJLH #$6"},                                              // 0x56
+    {ON, "LJLH #$7"},                                              // 0x57  
+    {ON, "LJLH #$8"},                                              // 0x58
+    {ON, "LJLH #$9"},                                              // 0x59
+    {ON, "LJLH #$A"},                                              // 0x5A
+    {ON, "LJLH #$B"},                                              // 0x5B
+    {ON, "LJLH #$C"},                                              // 0x5C
+    {ON, "LJLH #$D"},                                              // 0x5D
+    {ON, "LJLH #$E"},                                              // 0x5E
+    {ON, "LJLH #$F"},                                              // 0x5F  
+    {ON, "LJHL #$0"},                                              // 0x60
+    {ON, "LJHL #$1"},                                              // 0x61
+    {ON, "LJHL #$2"},                                              // 0x62
+    {ON, "LJHL #$3"},                                              // 0x63
+    {ON, "LJHL #$4"},                                              // 0x64
+    {ON, "LJHL #$5"},                                              // 0x65
+    {ON, "LJHL #$6"},                                              // 0x66
+    {ON, "LJHL #$7"},                                              // 0x67
+    {ON, "LJHL #$8"},                                              // 0x68
+    {ON, "LJHL #$9"},                                              // 0x69
+    {ON, "LJHL #$A"},                                              // 0x6A
+    {ON, "LJHL #$B"},                                              // 0x6B
+    {ON, "LJHL #$C"},                                              // 0x6C
+    {ON, "LJHL #$D"},                                              // 0x6D
+    {ON, "LJHL #$E"},                                              // 0x6E
+    {ON, "LJHL #$F"},                                              // 0x6F
+    {ON, "LJHH #$0"},                                              // 0x70
+    {ON, "LJHH #$1"},                                              // 0x71
+    {ON, "LJHH #$2"},                                              // 0x72
+    {ON, "LJHH #$3"},                                              // 0x73
+    {ON, "LJHH #$4"},                                              // 0x74
+    {ON, "LJHH #$5"},                                              // 0x75
+    {ON, "LJHH #$6"},                                              // 0x76
+    {ON, "LJHH #$7"},                                              // 0x77
+    {ON, "LJHH #$8"},                                              // 0x78
+    {ON, "LJHH #$9"},                                              // 0x79
+    {ON, "LJHH #$A"},                                              // 0x7A
+    {ON, "LJHH #$B"},                                              // 0x7B
+    {ON, "LJHH #$C"},                                              // 0x7C
+    {ON, "LJHH #$D"},                                              // 0x7D
+    {ON, "LJHH #$E"},                                              // 0x7E
+    {ON, "LJHH #$F"},                                              // 0x7F
+    {OO, "BCAA 0"},                                                // 0x80
+    {OO, "BCAA 1"},                                                // 0x81
+    {OO, "BCAA 2"},                                                // 0x82
+    {OO, "BCAA 3"},                                                // 0x83
+    {OO, "BCAA 4"},                                                // 0x84
+    {OO, "BCAA 5"},                                                // 0x85
+    {OO, "BCAA 6"},                                                // 0x86
+    {OO, "BCAA 7"},                                                // 0x87
+    {OO, "BSAA 0"},                                                // 0x88
+    {OO, "BSAA 1"},                                                // 0x89
+    {OO, "BSAA 2"},                                                // 0x8A
+    {OO, "BSAA 3"},                                                // 0x8B
+    {OO, "BSAA 4"},                                                // 0x8C
+    {OO, "BSAA 5"},                                                // 0x8D
+    {OO, "BSAA 6"},                                                // 0x8E
+    {OO, "BSAA 7"},                                                // 0x8F
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x90
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x91
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x92
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x93
+    {OO, "BCFL 4               ; or BCFL V"},                      // 0x94
+    {OO, "BCFL 5               ; or BCFL C"},                      // 0x95
+    {OO, "BCFL 6               ; or BCFL Z"},                      // 0x96
+    {OO, "BCFL 7               ; or BCFL S"},                      // 0x97
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x98
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x99
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x9A
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x9B
+    {OO, "BSFL 4               ; or BSFL V"},                      // 0x9C
+    {OO, "BSFL 5               ; or BSFL C"},                      // 0x9D
+    {OO, "BSFL 6               ; or BSFL Z"},                      // 0x9E
+    {OO, "BSFL 7               ; or BSFL Z"},                      // 0x9F
+    {OO, "LDA0"},                                                  // 0xA0
+    {OO, "LDA1"},                                                  // 0xA1
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xA2
+    {OO, "LDAF"},                                                  // 0xA3
+    {OO, "LDB0"},                                                  // 0xA4
+    {OO, "LDB1"},                                                  // 0xA5
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xA6
+    {OO, "LDBF"},                                                  // 0xA7
+    {OO, "LDSF"},                                                  // 0xA8
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xA9
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xAA
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xAB
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xAC
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xAD
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xAE
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xAF
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xB0
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xB1
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xB2
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xB3
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xB4
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xB5
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xB6
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xB7
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xB8
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xB9
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xBA
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xBB
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xBC
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xBD
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xBE
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xBF
+    {OO, "LOAD (MR)"},                                             // 0xC0
+    {OO, "LOAD AB"},                                               // 0xC1
+    {OO, "LOAD SL"},                                               // 0xC2
+    {OO, "LOAD SH"},                                               // 0xC3
+    {OO, "LOAD ML"},                                               // 0xC4
+    {OO, "LOAD MH"},                                               // 0xC5
+    {OO, "LOAD JL"},                                               // 0xC6
+    {OO, "LOAD JH"},                                               // 0xC7
+    {OO, "STOR (MR)"},                                             // 0xC8
+    {OO, "STOR AB"},                                               // 0xC9
+    {OO, "STOR SL"},                                               // 0xCA
+    {OO, "STOR SH"},                                               // 0xCB
+    {OO, "STOR ML"},                                               // 0xCC
+    {OO, "STOR MH"},                                               // 0xCD
+    {OO, "STOR JL"},                                               // 0xCE
+    {OO, "STOR JH"},                                               // 0xCF
+    {OO, "PUSH AA"},                                               // 0xD0
+    {OO, "PUSH AB"},                                               // 0xD1
+    {OO, "PUSH SL"},                                               // 0xD2
+    {OO, "PUSH SH"},                                               // 0xD3
+    {OO, "PUSH ML"},                                               // 0xD4
+    {OO, "PUSH MH"},                                               // 0xD5
+    {OO, "PUSH JL"},                                               // 0xD6
+    {OO, "PUSH JH"},                                               // 0xD7
+    {OO, "POPP AA"},                                               // 0xD8
+    {OO, "POPP AB"},                                               // 0xD9
+    {OO, "POPP SL"},                                               // 0xDA
+    {OO, "POPP SH"},                                               // 0xDB
+    {OO, "POPP ML"},                                               // 0xDC
+    {OO, "POPP MH"},                                               // 0xDD
+    {OO, "POPP JL"},                                               // 0xDE
+    {OO, "POPP JH"},                                               // 0xDF
+    {OO, "COMP"},                                                  // 0xE0
+    {OO, "SUBB"},                                                  // 0xE1
+    {OO, "ADDD"},                                                  // 0xE2
+    {OO, "ANDD"},                                                  // 0xE3
+    {OO, "ORRR"},                                                  // 0xE4
+    {OO, "XORR"},                                                  // 0xE5
+    {OO, "NAND"},                                                  // 0xE6
+    {OO, "NORR"},                                                  // 0xE7
+    {OO, "NOTT"},                                                  // 0xE8
+    {OO, "NEGG"},                                                  // 0xE9
+    {OO, "SHRL"},                                                  // 0xEA
+    {OO, "SHLL"},                                                  // 0xEB
+    {OO, "SHRA"},                                                  // 0xEC
+    {OO, "SRLC"},                                                  // 0xEE
+    {OO, "SLLC"},                                                  // 0xEE
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xEF
+    {OO, "JPVC"},                                                  // 0xF0
+    {OO, "JPVS"},                                                  // 0xF1
+    {OO, "JPCC"},                                                  // 0xF2
+    {OO, "JPCS"},                                                  // 0xF3
+    {OO, "JPZC"},                                                  // 0xF4
+    {OO, "JPZS"},                                                  // 0xF5
+    {OO, "JPSC"},                                                  // 0xF6
+    {OO, "JPSS"},                                                  // 0xF7
+    {OO, "INCA"},                                                  // 0xF8
+    {OO, "DECA"},                                                  // 0xF9
+    {OO, "INCB"},                                                  // 0xFA
+    {OO, "DECB"},                                                  // 0xFB
+    {OO, "INCM"},                                                  // 0xFC
+    {OO, "JUMP"},                                                  // 0xFD
+    {OO, "NOOP"},                                                  // 0xFE
+    {OO, "HALT"},                                                  // 0xFF
 };
 
-#endif // SRC_HOMEMADE_CPU_OPCODES_H_
+#endif // SRC_HOMEMADE_CPU2_OPCODES_H_
