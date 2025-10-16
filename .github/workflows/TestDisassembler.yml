@@ -50,7 +50,7 @@ jobs:
             cat options.txt
             ../emulator ${f}.rom > ${f}_disassembled.asm <options.txt
             # Strip out the non-assembly top lines of the emulator output
-            tail -n +14 ${f}_disassembled.asm >${f}_tail.asm
+            tail -n +15 ${f}_disassembled.asm >${f}_tail.asm
             ${{ matrix.exec }} ${{matrix.options }} ${f}_tail.asm ${{ matrix.outputfileoption}}${f}_tail.rom
             echo "Comparing... ${f}.rom ${f}_tail.rom"
             cmp ${f}.rom ${f}_tail.rom
@@ -72,7 +72,7 @@ jobs:
             cat options.txt
             ../emulator ${f}.rom > ${f}_disassembled.asm <options.txt
             # Strip out the non-assembly top lines of the emulator output
-            tail -n +14 ${f}_disassembled.asm >${f}_tail.asm
+            tail -n +15 ${f}_disassembled.asm >${f}_tail.asm
             echo "Comparing... ${f}_tail.asm ${f}_compare_file.txt"
             diff -w --strip-trailing-cr ${f}_tail.asm ${f}_compare_file.txt
           done      
