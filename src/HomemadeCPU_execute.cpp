@@ -27,140 +27,315 @@ void HomemadeCPU::execute() {
     uint8_t  temp_bit;
 
     switch (IR) {
-        case 0x00:      // LOAD #dd
-            AA = AB;
+        case 0x00: case 0x01: case 0x02: case 0x03:     // LDAL #d
+        case 0x04: case 0x05: case 0x06: case 0x07:
+        case 0x08: case 0x09: case 0x0a: case 0x0b:
+        case 0x0c: case 0x0d: case 0x0e: case 0x0f:
+            AA = (AA & 0xF0) | (IR & 0x0F);
             break;
 
-        case 0x08:      // LOAD (mm)
+        case 0x10: case 0x11: case 0x12: case 0x13:     // LDAH #d
+        case 0x14: case 0x15: case 0x16: case 0x17:
+        case 0x18: case 0x19: case 0x1a: case 0x1b:
+        case 0x1c: case 0x1d: case 0x1e: case 0x1f: 
+            AA = (AA & 0x0F) | (IR & 0xF0);
+            break;
+
+        case 0x20: case 0x21: case 0x22: case 0x23:     // LDBL #d
+        case 0x24: case 0x25: case 0x26: case 0x27:
+        case 0x28: case 0x29: case 0x2a: case 0x2b:
+        case 0x2c: case 0x2d: case 0x2e: case 0x2f:
+            AB = (AB & 0xF0) | (IR & 0x0F);
+            break;
+
+        case 0x30: case 0x31: case 0x32: case 0x33:     // LDBH #d
+        case 0x34: case 0x35: case 0x36: case 0x37:
+        case 0x38: case 0x39: case 0x3a: case 0x3b:
+        case 0x3c: case 0x3d: case 0x3e: case 0x3f:
+            AB = (AB & 0x0F) | (IR & 0xF0);
+            break;
+
+        case 0x40: case 0x41: case 0x42: case 0x43:     // LJLL #d
+        case 0x44: case 0x45: case 0x46: case 0x47:
+        case 0x48: case 0x49: case 0x4a: case 0x4b:
+        case 0x4c: case 0x4d: case 0x4e: case 0x4f:
+            JL = (JL & 0xF0) | (IR & 0x0F);
+            break;
+
+        case 0x50: case 0x51: case 0x52: case 0x53:     // LJLH #d
+        case 0x54: case 0x55: case 0x56: case 0x57:
+        case 0x58: case 0x59: case 0x5a: case 0x5b:
+        case 0x5c: case 0x5d: case 0x5e: case 0x5f:            
+            JL = (JL & 0x0F) | (IR & 0xF0);
+            break;
+
+        case 0x60: case 0x61: case 0x62: case 0x63:     // LJHL #d
+        case 0x64: case 0x65: case 0x66: case 0x67:
+        case 0x68: case 0x69: case 0x6a: case 0x6b:
+        case 0x6c: case 0x6d: case 0x6e: case 0x6f:
+            JH = (JH & 0xF0) | (IR & 0x0F);
+            break;
+
+        case 0x70: case 0x71: case 0x72: case 0x73:     // LLHH #d
+        case 0x74: case 0x75: case 0x76: case 0x77:
+        case 0x78: case 0x79: case 0x7a: case 0x7b:
+        case 0x7c: case 0x7d: case 0x7e: case 0x7f:
+            JH = (JH & 0x7F) | (IR & 0xF0);
+            break;
+
+        case 0x80:                                       // BCAA    0
+            AA = AA & 0xFE;
+            break;
+        
+        case 0x81:                                       // BCAA    1
+            AA = AA & 0xFD;
+            break;
+        
+        case 0x82:                                       // BCAA    2
+            AA = AA & 0xFB;
+            break;
+        
+        case 0x83:                                       // BCAA    3
+            AA = AA & 0xF7;
+            break;
+        
+        case 0x84:                                       // BCAA    4
+            AA = AA & 0xEF;
+            break;
+        
+        case 0x85:                                       // BCAA    5
+            AA = AA & 0xDF;
+            break;
+        
+        case 0x86:                                       // BCAA    6
+            AA = AA & 0xBF;
+            break;
+        
+        case 0x87:                                       // BCAA    7
+            AA = AA & 0x7F;
+            break;
+        
+        case 0x88:                                       // BSAA    0
+            AA = AA | 0x01;
+            break;
+        
+        case 0x89:                                       // BSAA    1
+            AA = AA | 0x02;
+            break;
+        
+        case 0x8A:                                       // BSAA    2
+            AA = AA | 0x04;
+            break;
+        
+        case 0x8B:                                       // BSAA    3
+            AA = AA | 0x08;
+            break;
+        
+        case 0x8C:                                       // BSAA    4
+            AA = AA | 0x10;
+            break;
+        
+        case 0x8D:                                       // BSAA    5
+            AA = AA | 0x20;
+            break;
+        
+        case 0x8E:                                       // BSAA    6
+            AA = AA | 0x40;
+            break;
+        
+        case 0x8F:                                       // BSAA    7
+            AA = AA | 0x80;
+            break;
+        
+        case 0x94:                                       // BCFL    4
+            FL = FL & 0xEF;
+            break;
+        
+        case 0x95:                                       // BCFL    5
+            FL = FL & 0xDF;
+            break;
+        
+        case 0x96:                                       // BCFL    6
+            FL = FL & 0xBF;
+            break;
+        
+        case 0x97:                                       // BCFL    7
+            FL = FL & 0x7F;
+            break;
+
+        case 0x9C:                                       // BSFL    4
+            FL = FL | 0x10;
+            break;
+        
+        case 0x9D:                                       // BSFL    5
+            FL = FL | 0x20;
+            break;
+        
+        case 0x9E:                                       // BSFL    6
+            FL = FL | 0x40;
+            break;
+        
+        case 0x9F:                                       // BSFL    7
+            FL = FL | 0x80;
+            break;
+
+        case 0xA0:                                       // LDA0
+            AA = 0x00;
+            break;
+
+        case 0xA1:                                       // LDA1
+            AA = 0x01;
+            break;
+
+        case 0xA3:                                       // LDAF
+            AA = 0xFF;
+            break;
+
+        case 0xA4:                                       // LDB0
+            AB = 0x00;
+            break;
+
+        case 0xA5:                                       // LDB1
+            AB = 0x01;
+            break;
+
+        case 0xA7:                                       // LDBF
+            AB = 0x0F;
+            break;
+
+        case 0xA8:                                       // LDSF
+            SP = 0xFFFF;
+            break;
+
+        case 0xC0:                                       // LOAD (MR)
             AA = memory[getMR()];
             break;
 
-        case 0x10:      // LOAD AA
-//            Commenting this out to clear a compiler warning.
-//            TBD whether the hardware actually implements the move
-//            Either way is the net effect of this is a NOOP
-//            AA = AA;
+        case 0xC1:                                       // LOAD AB
+            AA = AB;
             break;
 
-        case 0x11:      // LOAD FL
-            AA = FL;
-            break;
-
-        case 0x12:      // LOAD SH
-            AA = getSH(); 
-            break;
-
-        case 0x13:      // LOAD SL
+        case 0xC2:                                       // LOAD SL
             AA = getSL();
             break;
 
-        case 0x14:      // LOAD MH
-            AA = MH; 
+        case 0xC3:                                       // LOAD SH
+            AA = getSH();
             break;
 
-        case 0x15:      // LOAD JH
-            AA = JH;
+        case 0xC4:                                       // LOAD ML
+            AA = ML;
             break;
 
-        case 0x16:      // LOAD JL
+        case 0xC5:                                       // LOAD MH
+            AA = MH;
+            break;
+
+        case 0xC6:                                       // LOAD JL
             AA = JL;
             break;
 
-        case 0x18:      // STOR (mm)
+        case 0xC7:                                       // LOAD JH
+            AA = JH;
+            break;
+
+        case 0xC8:                                       // STOR (MR)
             memory[getMR()] = AA;
             break;
 
-        case 0x20:      // STOR AA
-//            Commenting this out to clear a compiler warning.
-//            TBD whether the hardware actually implements the move
-//            Either way is the net effect of this is a NOOP            
-//            AA = AA; 
+        case 0xC9:                                       // STOR AB
+            AB = AA;
             break;
 
-        case 0x21:      // STOR FL
-            FL = AA;
+        case 0xCA:                                       // STOR SL
+            setSL(AA);
             break;
 
-        case 0x22:      // STOR SH
-            setSH(AA); 
+        case 0xCB:                                       // STOR SH
+            setSH(AA);
             break;
 
-        case 0x23:      // STOR SL
-            setSL(AA); 
+        case 0xCC:                                       // STOR ML
+            ML = AA;
             break;
-        
-        case 0x24:      // STOR MH
+
+        case 0xCD:                                       // STOR MH
             MH = AA;
             break;
 
-        case 0x25:      // STOR JH
-            JH = AA; 
-            break;
-
-        case 0x26:      // STOR JL
+        case 0xCE:                                       // STOR JL
             JL = AA;
             break;
 
-        case 0x28:      // PUSH AA
+        case 0xCF:                                       // STOR JH
+            JH = AA;
+            break;
+    
+        case 0xD0:                                       // PUSH AA
             memory[SP--] = AA;
             break;
 
-        case 0x29:      // PUSH FL
-            memory[SP--] = FL;
-            break;
-
-        case 0x2a:      // PUSH SH
-            memory[SP--] = getSH();
-            break;
-
-        case 0x2b:      // PUSH SL
-            memory[SP--] = getSL();
-            break;
-
-        case 0x2c:      // PUSH MH
-            memory[SP--] = MH;
-            break;
-
-        case 0x2d:      // PUSH JH
-            memory[SP--] = JH;
-            break;
-
-        case 0x2e:      // PUSH JL
-            memory[SP--] = JL;
-            break;
-
-        case 0x30:      // PUSH #dd
+        case 0xD1:                                       // PUSH AB
             memory[SP--] = AB;
             break;
 
-        case 0x38:      // POPP AA
+        case 0xD2:                                       // PUSH SL
+            memory[SP--] = getSL();
+            break;
+
+        case 0xD3:                                       // PUSH SH
+            memory[SP--] = getSH();
+            break;
+
+        case 0xD4:                                       // PUSH ML
+            memory[SP--] = ML;
+            break;
+
+        case 0xD5:                                       // PUSH MH
+            memory[SP--] = MH;
+            break;
+
+        case 0xD6:                                       // PUSH JL
+            memory[SP--] = JL;
+            break;
+
+        case 0xD7:                                       // PUSH JH
+            memory[SP--] = JH;
+            break;
+
+        case 0xD8:                                       // POP AA
             AA = memory[SP++];
             break;
 
-        case 0x39:      // POPP FL
-            FL = memory[SP++]; 
+        case 0xD9:                                       // POP AB
+            AB = memory[SP++];
             break;
 
-        case 0x3a:      // POPP SH
-            setSH(memory[SP++]);
-
-        case 0x3b:      // POPP SL
+        case 0xDA:                                       // POP SL
             setSL(memory[SP++]);
             break;
 
-        case 0x3c:      // POPP MH
+        case 0xDB:                                       // POP SH
+            setSH(memory[SP++]);
+            break;
+
+        case 0xDC:                                       // POP ML
+            ML = memory[SP++];
+            break;
+
+        case 0xDD:                                       // POP MH
             MH = memory[SP++];
             break;
 
-        case 0x3d:      // POPP JH
-            JH = memory[SP++];
-            break;
-
-        case 0x3e:      // POPP JL
+        case 0xDE:                                       // POP JL
             JL = memory[SP++];
             break;
 
-        case 0x40:      // COMP #dd - result not saved
+        case 0xDF:                                       // POP JH
+            JH = memory[SP++];
+            break;
+
+        case 0xE0:                                       // COMP #dd - result not saved
             result = AA - AB - testFlag(C_BIT);
             update_Z(result);
             if ((AB + testFlag(C_BIT)) > AA) setFlag(C_BIT);
@@ -186,7 +361,7 @@ void HomemadeCPU::execute() {
             }
             break;
 
-        case 0x42:      // SUBB #dd
+        case 0xE1:                                       // SUBB #dd
             result = AA - AB - testFlag(C_BIT);;
             update_Z(result);
             if ((AB + testFlag(C_BIT)) > AA) setFlag(C_BIT);
@@ -213,7 +388,7 @@ void HomemadeCPU::execute() {
             AA = result;
             break;
 
-        case 0x44:      // ADDD #dd
+        case 0xE2:                                       // ADDD #dd
             result = AA + AB + testFlag(C_BIT);
             update_Z(result);
             if ((AA + AB + testFlag(C_BIT)) & 0x0100) setFlag(C_BIT);
@@ -244,10 +419,10 @@ void HomemadeCPU::execute() {
                         clearFlag(V_BIT);
                 }
             }
-            AA = result;
+            AB = result;
             break;
 
-        case 0x50:      // ANDD #dd
+        case 0xE3:                                       // ANDD #dd
             AA = AA & AB;
             update_Z(AA);
             clearFlag(C_BIT);
@@ -255,7 +430,7 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;  
             
-        case 0x52:      // ORRR #dd
+        case 0xE4:                                       // ORRR #dd
             AA = AA | AB;
             update_Z(AA);
             clearFlag(C_BIT);
@@ -263,7 +438,7 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;
 
-        case 0x54:      // XORR #dd
+        case 0xE5:                                       // XORR #dd
             AA = AA ^ AB;
             update_Z(AA);
             clearFlag(C_BIT);
@@ -271,7 +446,7 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;
 
-        case 0x56:      // NAND #dd
+        case 0xE6:                                       // NAND #dd
             AA = ~(AA & AB);
             update_Z(AA);
             clearFlag(C_BIT);
@@ -279,7 +454,7 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;
 
-        case 0x58:      // NORR #dd
+        case 0xE7:                                       // NORR #dd
             AA = ~(AA | AB);
             update_Z(AA);
             clearFlag(C_BIT);
@@ -287,15 +462,23 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;
 
-        case 0x60:      // NOTT
+        case 0xE8:                                       // NOTT
             AA = ~AA;
             update_Z(AA);
             clearFlag(C_BIT);
             clearFlag(S_BIT);
             clearFlag(V_BIT);
             break;
+            
+        case 0xE9:                                       // NEGG
+            AA = 0 - AA;
+            update_Z(AA);
+            clearFlag(C_BIT);
+            clearFlag(S_BIT);
+            clearFlag(V_BIT);
+            break;
 
-        case 0x70:      // SHRL
+        case 0xEA:                                       // SHRL
             if (AA & 0x01) setFlag(C_BIT);
             else           clearFlag(C_BIT);
             AA = AA >> 1;
@@ -304,7 +487,7 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;
 
-        case 0x72:      // SHLL
+        case 0xEB:                                      // SHLL
             if (AA & 0x80) setFlag(C_BIT);
             else           clearFlag(C_BIT);
             AA = AA << 1;
@@ -313,7 +496,7 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;
 
-        case 0x74:      // SHRA
+        case 0xEC:                                      // SHRA
             if (AA & 0x80) temp_bit = 0x80;
             else           temp_bit = 0x00;
             if (AA & 0x01) setFlag(C_BIT);
@@ -325,221 +508,120 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;
             
-        case 0x78:      // ROTR
+        case 0xED:                                      // SRLC
+            if (testFlag(C_BIT)) temp_bit = 0x80;
+            else                 temp_bit = 0x00;
             if (AA & 0x01) setFlag(C_BIT);
             else           clearFlag(C_BIT);
             AA = AA >> 1;
-            if (FL & C_BIT) AA |= 0x80;
-            update_Z(AA);
-            update_S(AA);
-            clearFlag(V_BIT);
-            break;
-
-        case 0x7a:      // RRTC
-            if (FL & C_BIT) temp_bit = 0x80;
-            else            temp_bit = 0x00;
-            if (AA & 0x01) setFlag(C_BIT);
-            else           clearFlag(C_BIT);
-            AA = AA >> 1;
-            if (temp_bit) AA |= 0x80;
-            update_Z(AA);
-            update_S(AA);
-            clearFlag(V_BIT);
-            break;        
-
-        case 0x7c:      // ROTL
-            if (AA & 0x80) setFlag(C_BIT);
-            else           clearFlag(C_BIT);
-            AA = AA << 1;
-            if (FL & C_BIT) AA |= 0x01;
-            update_Z(AA);
-            update_S(AA);
-            clearFlag(V_BIT);
-            break;            
-
-        case 0x7e:      // RLTC
-            if (FL & C_BIT) temp_bit = 0x01;
-            else            temp_bit = 0x00;
-            if (AA & 0x80) setFlag(C_BIT);
-            else           clearFlag(C_BIT);
-            AA = AA << 1;
-            if (temp_bit) AA |= 0x01;
+            AA = AA | 0x80;
             update_Z(AA);
             update_S(AA);
             clearFlag(V_BIT);
             break; 
-
-        // Note that the BITC/BITS commands may be alternatively be implemented 
-        // with all the same opcode (one for BITC, one for BITS), and the operand
-        // gives the mask for what is set/clear.
-        case 0x80:      // BITC 0
-            AA = AA & 0xFE;
+            
+        case 0xEE:                                      // SLLC
+            if (testFlag(C_BIT)) temp_bit = 0x01;
+            else                 temp_bit = 0x01;
+            if (AA & 0x80) setFlag(C_BIT);
+            else           clearFlag(C_BIT);
+            AA = AA << 1;
+            AA = AA | temp_bit;
+            update_Z(AA);
+            update_S(AA);
+            clearFlag(V_BIT);
             break;
 
-        case 0x82:      // BITC 1
-            AA = AA & 0xFD;
-            break;
-
-        case 0x84:      // BITC 2
-            AA = AA & 0xFB;
-            break;
-
-        case 0x86:      // BITC 3
-            AA = AA & 0xF7;
-            break;
-
-        case 0x88:      // BITC 4
-            AA = AA & 0xEF;
-            break;
-
-        case 0x8a:      // BITC 5
-            AA = AA & 0xDF;
-            break;
-
-        case 0x8c:      // BITC 6
-            AA = AA & 0xBF;
-            break;
-
-        case 0x8e:      // BITC 7
-            AA = AA & 0x7F;
-            break;
-
-        case 0x90:      // BITS 0
-            AA = AA | 0x01;
-            break;
-
-        case 0x92:      // BITS 1
-            AA = AA | 0x02;
-            break;
-
-        case 0x94:      // BITS 2
-            AA = AA | 0x04;
-            break;
-
-        case 0x96:      // BITS 3
-            AA = AA | 0x08;
-            break;
-
-        case 0x98:      // BITS 4
-            AA = AA | 0x10;
-            break;
-
-        case 0x9a:      // BITS 5
-            AA = AA | 0x20;
-            break;
-
-        case 0x9c:      // BITS 6
-            AA = AA | 0x40;
-            break;
-
-        case 0x9e:      // BITS 7
-            AA = AA | 0x80;
-            break;
-
-        case 0xa0:      // CLRV
-            FL = FL & ~(V_BIT);
-            break;
-
-        case 0xa2:      // CLRS
-            FL = FL & ~(S_BIT);
-            break;
-
-        case 0xa4:      // CLRC
-            FL = FL & ~(C_BIT);
-            break;
-
-        case 0xa6:      // CRLZ
-            FL = FL & ~(Z_BIT);
-            break;
-
-        case 0xb0:      // SETV
-            FL = FL | V_BIT;
-            break;
-
-        case 0xb2:      // SETS
-            FL = FL | S_BIT;
-            break;
-
-        case 0xb4:      // SETC
-            FL = FL | C_BIT;
-            break;
-
-        case 0xb6:      // SETZ
-            FL = FL | Z_BIT;
-            break;
 
         // Note that for all jumps, there will need to be a branch delay slot
         // that will be executed after all jumps
-        case 0xc0:      // JPVC #aa
+        case 0xF0:                                      // JPVC
             if (!(FL & V_BIT)) {
-                setPC(JH, AB);
+                setPC(JH, JL);
                 delay_slot = true; 
             }
             break;
 
-        case 0xc2:      // JPSC #aa
-            if (!(FL & S_BIT)) {
-                setPC(JH, AB);
+        case 0xF1:                                      // JPVS
+            if ((FL & V_BIT)) {
+                setPC(JH, JL);
                 delay_slot = true; 
             }
             break;
 
-        case 0xc4:      // JPCC #aa
+        case 0xF2:                                      // JPCC
             if (!(FL & C_BIT)) {
-                setPC(JH, AB);
+                setPC(JH, JL);
                 delay_slot = true; 
             }
             break;
 
-        case 0xc6:      // JPZC #aa
+        case 0xF3:                                      // JPCS
+            if ((FL & C_BIT)) {
+                setPC(JH, JL);
+                delay_slot = true; 
+            }
+            break;
+
+        case 0xF4:                                      // JPZC
             if (!(FL & Z_BIT)) {
-                setPC(JH, AB);
+                setPC(JH, JL);
                 delay_slot = true; 
             }
             break;
 
-        case 0xd0:      // JPVS #aa
-            if (FL & V_BIT) {
-                setPC(JH, AB);
+        case 0xF5:                                      // JPZS
+            if (FL & Z_BIT) {
+                setPC(JH, JL);
                 delay_slot = true; 
             }
             break;
 
-        case 0xd2:      // JPSS #aa
+        case 0xF6:                                      // JPSC
+            if (!(FL & S_BIT)) {
+                setPC(JH, JL);
+                delay_slot = true; 
+            }
+            break;
+
+        case 0xF7:                                      // JPSS
             if (FL & S_BIT) {
                 setPC(JH, AB);
                 delay_slot = true; 
             }
             break;
 
-        case 0xd4:      // JPCS #aa
-            if (FL & C_BIT) {
-                setPC(JH, AB);
-                delay_slot = true; 
-            }
+        case 0xF8:                                      // INCA
+            AA++;
             break;
 
-        case 0xd6:      // JPZS #aa
-            if (FL & Z_BIT) {
-                setPC(JH, AB);
-                delay_slot = true; 
-            }
+        case 0xF9:                                      // DECA
+            AA--;
             break;
 
-        case 0xe0:      // JUMP #aa
-            setPC(JH, AB);
-            delay_slot = true; 
+        case 0xFA:                                      // INCB
+            AB++;
             break;
 
-        case 0xe6:      // JUMP JL
+        case 0xFB:                                      // DECB
+            AB--;
+            break;
+
+        case 0xFC:                                      // INCM
+            result = getMR() + 1;
+            MH = (result & 0xff00) >> 8;
+            ML = result & 0x00ff;
+            break;
+
+        case 0xFD:                                      // JUMP
             setPC(JH, JL);
             delay_slot = true; 
             break;
 
-        case 0xfc:      // NOOP
+        case 0xFE:                                      // NOOP
             break;
 
-        case 0xff:      // HALT
+        case 0xFF:                                      // HALT
             Halt = true;
             break;
 
