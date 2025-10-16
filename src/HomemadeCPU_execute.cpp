@@ -279,12 +279,8 @@ void HomemadeCPU::execute() {
             memory[SP--] = AB;
             break;
 
-        case 0xD2:                                       // PUSH SL
-            memory[SP--] = getSL();
-            break;
-
-        case 0xD3:                                       // PUSH SH
-            memory[SP--] = getSH();
+        case 0xD2:                                       // PUSH FL
+            memory[SP--] = FL;
             break;
 
         case 0xD4:                                       // PUSH ML
@@ -311,12 +307,8 @@ void HomemadeCPU::execute() {
             AB = memory[++SP];
             break;
 
-        case 0xDA:                                       // POP SL
-            setSL(memory[++SP]);
-            break;
-
-        case 0xDB:                                       // POP SH
-            setSH(memory[++SP]);
+        case 0xDA:                                       // POP FL
+            FL = memory[++SP];
             break;
 
         case 0xDC:                                       // POP ML

@@ -242,16 +242,16 @@ const Homemade_CPU_opcodes opcodes[] = {
     {OO, "STOR JH"},                                               // 0xCF
     {OO, "PUSH AA"},                                               // 0xD0
     {OO, "PUSH AB"},                                               // 0xD1
-    {OO, "PUSH SL"},                                               // 0xD2
-    {OO, "PUSH SH"},                                               // 0xD3
+    {OO, "PUSH FL"},                                               // 0xD2
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xD3
     {OO, "PUSH ML"},                                               // 0xD4
     {OO, "PUSH MH"},                                               // 0xD5
     {OO, "PUSH JL"},                                               // 0xD6
     {OO, "PUSH JH"},                                               // 0xD7
     {OO, "POPP AA"},                                               // 0xD8
     {OO, "POPP AB"},                                               // 0xD9
-    {OO, "POPP SL"},                                               // 0xDA
-    {OO, "POPP SH"},                                               // 0xDB
+    {OO, "POPP FL"},                                               // 0xDA
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0xDB
     {OO, "POPP ML"},                                               // 0xDC
     {OO, "POPP MH"},                                               // 0xDD
     {OO, "POPP JL"},                                               // 0xDE
