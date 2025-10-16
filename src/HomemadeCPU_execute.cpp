@@ -38,7 +38,7 @@ void HomemadeCPU::execute() {
         case 0x14: case 0x15: case 0x16: case 0x17:
         case 0x18: case 0x19: case 0x1a: case 0x1b:
         case 0x1c: case 0x1d: case 0x1e: case 0x1f: 
-            AA = (AA & 0x0F) | (IR & 0xF0);
+            AA = (AA & 0x0F) | ((IR & 0x0F) << 4);
             break;
 
         case 0x20: case 0x21: case 0x22: case 0x23:     // LDBL #d
@@ -52,7 +52,7 @@ void HomemadeCPU::execute() {
         case 0x34: case 0x35: case 0x36: case 0x37:
         case 0x38: case 0x39: case 0x3a: case 0x3b:
         case 0x3c: case 0x3d: case 0x3e: case 0x3f:
-            AB = (AB & 0x0F) | (IR & 0xF0);
+            AB = (AB & 0x0F) | ((IR & 0x0F) << 4);
             break;
 
         case 0x40: case 0x41: case 0x42: case 0x43:     // LJLL #d
@@ -66,7 +66,7 @@ void HomemadeCPU::execute() {
         case 0x54: case 0x55: case 0x56: case 0x57:
         case 0x58: case 0x59: case 0x5a: case 0x5b:
         case 0x5c: case 0x5d: case 0x5e: case 0x5f:            
-            JL = (JL & 0x0F) | (IR & 0xF0);
+            JL = (JL & 0x0F) | ((IR & 0x0F) << 4);
             break;
 
         case 0x60: case 0x61: case 0x62: case 0x63:     // LJHL #d
@@ -80,7 +80,7 @@ void HomemadeCPU::execute() {
         case 0x74: case 0x75: case 0x76: case 0x77:
         case 0x78: case 0x79: case 0x7a: case 0x7b:
         case 0x7c: case 0x7d: case 0x7e: case 0x7f:
-            JH = (JH & 0x7F) | (IR & 0xF0);
+            JH = (JH & 0x0F) | ((IR & 0x0F) << 4);
             break;
 
         case 0x80:                                       // BCAA    0
@@ -200,7 +200,7 @@ void HomemadeCPU::execute() {
             break;
 
         case 0xA7:                                       // LDBF
-            AB = 0x0F;
+            AB = 0xFF;
             break;
 
         case 0xA8:                                       // LDSF
@@ -304,35 +304,35 @@ void HomemadeCPU::execute() {
             break;
 
         case 0xD8:                                       // POP AA
-            AA = memory[SP++];
+            AA = memory[++SP];
             break;
 
         case 0xD9:                                       // POP AB
-            AB = memory[SP++];
+            AB = memory[++SP];
             break;
 
         case 0xDA:                                       // POP SL
-            setSL(memory[SP++]);
+            setSL(memory[++SP]);
             break;
 
         case 0xDB:                                       // POP SH
-            setSH(memory[SP++]);
+            setSH(memory[++SP]);
             break;
 
         case 0xDC:                                       // POP ML
-            ML = memory[SP++];
+            ML = memory[++SP];
             break;
 
         case 0xDD:                                       // POP MH
-            MH = memory[SP++];
+            MH = memory[++SP];
             break;
 
         case 0xDE:                                       // POP JL
-            JL = memory[SP++];
+            JL = memory[++SP];
             break;
 
         case 0xDF:                                       // POP JH
-            JH = memory[SP++];
+            JH = memory[++SP];
             break;
 
         case 0xE0:                                       // COMP #dd - result not saved
@@ -514,7 +514,7 @@ void HomemadeCPU::execute() {
             if (AA & 0x01) setFlag(C_BIT);
             else           clearFlag(C_BIT);
             AA = AA >> 1;
-            AA = AA | 0x80;
+            AA = AA | temp_bit;
             update_Z(AA);
             update_S(AA);
             clearFlag(V_BIT);
@@ -522,7 +522,7 @@ void HomemadeCPU::execute() {
             
         case 0xEE:                                      // SLLC
             if (testFlag(C_BIT)) temp_bit = 0x01;
-            else                 temp_bit = 0x01;
+            else                 temp_bit = 0x00;
             if (AA & 0x80) setFlag(C_BIT);
             else           clearFlag(C_BIT);
             AA = AA << 1;
