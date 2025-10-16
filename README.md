@@ -34,16 +34,16 @@ The [Future Functionality](#future-functionality) items listed below may be incl
 ## Usage
 
 ```text
-emulator [-az | -ah] [-h] [input-file]
+emulator [-az | -ah | -ahv1] [-h] [input-file]
 ```
 
-Optional parameters `-az` or `-ah` specify the architecture to emulate: `-az` for Z80, `-ah` for the Homemade CPU. If no architecture parameter is specified, then Z80 is emulated.
+Optional parameters `-az`, `-ah`, or `-ahv1` specify the architecture to emulate: `-az` for Z80, `-ah` for the Homemade CPU (current design), or `ahv1` for the Homemade CPU v1 design. If no architecture parameter is specified, then Z80 is emulated.
 
 `-h` displays a brief help summary, then exits the program.
 
 `input-file` is an optional parameter which is the path of a binary file containing the program code and data. The first byte of the file represents location $0000 in memory, and each successive byte represents the next memory location. If `input-file` is not specified, then the default name `data.bin` is used.
 
-No error checking is performed on the input file, except that a maximum of 65536 bytes are read into memory. If the file is larger than 65536 bytes, then the following bytes are assumed to be processor state information (registers and similar data): 29 bytes for the Z80, or 11 bytes for the Homemade CPU.
+No error checking is performed on the input file, except that a maximum of 65536 bytes are read into memory. If the file is larger than 65536 bytes, then the following bytes are assumed to be processor state information (registers and similar data): 29 bytes for the Z80, 12 bytes for the Homemade CPU (current version) or 11 bytes for the Homemade CPU version 1.
 
 ## Building the Emulator
 
