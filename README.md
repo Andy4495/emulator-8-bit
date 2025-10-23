@@ -126,7 +126,7 @@ The `Z80` class contains:
     - Generate a string containing the disassembled instruction and data
   - Execute the actual instruction (load, store, jump, etc.)
 
-The `HomemadeCPU` class structure is similar to the `Z80` class, but simplified in many areas due to the RISC vs. CISC differences in the processor architectures. One notable difference is that the Homemade CPU has fixed-length 2-byte instructions, and therefore does not need to specify the instruction length in the opcodes array.
+The `HomemadeCPU` class structure is similar to the `Z80` class, but simplified in many areas due to the RISC vs. CISC differences in the processor architectures. One notable difference is that the Homemade CPU has fixed-length 1-byte instructions, and therefore does not need to specify the instruction length in the opcodes array.
 
 ## Z80 Assemblers
 
