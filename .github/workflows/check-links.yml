@@ -31,5 +31,5 @@ jobs:
       # For example, --exclude '43oh.com'
       # Can also add any command line option here; it will be added to the default options when calling check-links
       # Increase timeout to 60 seconds from default of 20
-      exclude: -t 60
+      exclude: -t 60 --exclude 'www.gnu.org'
     
