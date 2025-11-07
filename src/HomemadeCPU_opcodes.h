@@ -32,38 +32,38 @@ struct Homemade_CPU_opcodes {      // The opcode value is implicit in the array 
 
 // The actual opcode value is implicitly represented by the array index
 const Homemade_CPU_opcodes opcodes[] = {
-    {OO, "BCAA 0"},                                                // 0x00
-    {OO, "BCAA 1"},                                                // 0x01
-    {OO, "BCAA 2"},                                                // 0x02
-    {OO, "BCAA 3"},                                                // 0x03
-    {OO, "BCAA 4"},                                                // 0x04
-    {OO, "BCAA 5"},                                                // 0x05
-    {OO, "BCAA 6"},                                                // 0x06
-    {OO, "BCAA 7"},                                                // 0x07
-    {OO, "BSAA 0"},                                                // 0x08
-    {OO, "BSAA 1"},                                                // 0x09
-    {OO, "BSAA 2"},                                                // 0x0A
-    {OO, "BSAA 3"},                                                // 0x0B
-    {OO, "BSAA 4"},                                                // 0x0C
-    {OO, "BSAA 5"},                                                // 0x0D
-    {OO, "BSAA 6"},                                                // 0x0E
-    {OO, "BSAA 7"},                                                // 0x0F
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x10
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x11
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x12
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x13
-    {OO, "BCFL 4               ; or BCFL V"},                      // 0x14
-    {OO, "BCFL 5               ; or BCFL C"},                      // 0x15
-    {OO, "BCFL 6               ; or BCFL Z"},                      // 0x16
-    {OO, "BCFL 7               ; or BCFL S"},                      // 0x17
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x18
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x19
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x1A
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x1B
-    {OO, "BSFL 4               ; or BSFL V"},                      // 0x1C
-    {OO, "BSFL 5               ; or BSFL C"},                      // 0x1D
-    {OO, "BSFL 6               ; or BSFL Z"},                      // 0x1E
-    {OO, "BSFL 7               ; or BSFL S"},                      // 0x1F
+    {OO, "NOOP"},                                                  // 0x00
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x01
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x02
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x03
+    {OO, "BCFL 4               ; or BCFL V"},                      // 0x04
+    {OO, "BCFL 5               ; or BCFL C"},                      // 0x05
+    {OO, "BCFL 6               ; or BCFL Z"},                      // 0x06
+    {OO, "BCFL 7               ; or BCFL S"},                      // 0x07
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x08
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x09
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x0A
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x0B
+    {OO, "BSFL 4               ; or BSFL V"},                      // 0x0C
+    {OO, "BSFL 5               ; or BSFL C"},                      // 0x0D
+    {OO, "BSFL 6               ; or BSFL Z"},                      // 0x0E
+    {OO, "BSFL 7               ; or BSFL S"},                      // 0x0F
+    {OO, "BCAA 0"},                                                // 0x10
+    {OO, "BCAA 1"},                                                // 0x11
+    {OO, "BCAA 2"},                                                // 0x12
+    {OO, "BCAA 3"},                                                // 0x13
+    {OO, "BCAA 4"},                                                // 0x14
+    {OO, "BCAA 5"},                                                // 0x15
+    {OO, "BCAA 6"},                                                // 0x16
+    {OO, "BCAA 7"},                                                // 0x17
+    {OO, "BSAA 0"},                                                // 0x18
+    {OO, "BSAA 1"},                                                // 0x19
+    {OO, "BSAA 2"},                                                // 0x1A
+    {OO, "BSAA 3"},                                                // 0x1B
+    {OO, "BSAA 4"},                                                // 0x1C
+    {OO, "BSAA 5"},                                                // 0x1D
+    {OO, "BSAA 6"},                                                // 0x1E
+    {OO, "BSAA 7"},                                                // 0x1F
     {OO, "LOAD (MR)"},                                             // 0x20
     {OO, "STOR (MR)"},                                             // 0x21
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x22
@@ -158,7 +158,7 @@ const Homemade_CPU_opcodes opcodes[] = {
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x7B
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x7C
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x7D
-    {OO, "NOOP"},                                                  // 0x7E
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x7E
     {OO, "HALT"},                                                  // 0x7F
     {ON, "LDAL #$0"},                                              // 0x80
     {ON, "LDAL #$1"},                                              // 0x81

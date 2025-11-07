@@ -28,102 +28,105 @@ void HomemadeCPU::execute() {
     uint8_t  temp_reg;
 
     switch (IR) {
-        case 0x00:                                       // BCAA    0
-            AA = AA & 0xFE;
+        case 0x00:                                       // NOOP
             break;
-        
-        case 0x01:                                       // BCAA    1
-            AA = AA & 0xFD;
-            break;
-        
-        case 0x02:                                       // BCAA    2
-            AA = AA & 0xFB;
-            break;
-        
-        case 0x03:                                       // BCAA    3
-            AA = AA & 0xF7;
-            break;
-        
-        case 0x04:                                       // BCAA    4
-            AA = AA & 0xEF;
-            break;
-        
-        case 0x05:                                       // BCAA    5
-            AA = AA & 0xDF;
-            break;
-        
-        case 0x06:                                       // BCAA    6
-            AA = AA & 0xBF;
-            break;
-        
-        case 0x07:                                       // BCAA    7
-            AA = AA & 0x7F;
-            break;
-        
-        case 0x08:                                       // BSAA    0
-            AA = AA | 0x01;
-            break;
-        
-        case 0x09:                                       // BSAA    1
-            AA = AA | 0x02;
-            break;
-        
-        case 0x0A:                                       // BSAA    2
-            AA = AA | 0x04;
-            break;
-        
-        case 0x0B:                                       // BSAA    3
-            AA = AA | 0x08;
-            break;
-        
-        case 0x0C:                                       // BSAA    4
-            AA = AA | 0x10;
-            break;
-        
-        case 0x0D:                                       // BSAA    5
-            AA = AA | 0x20;
-            break;
-        
-        case 0x0E:                                       // BSAA    6
-            AA = AA | 0x40;
-            break;
-        
-        case 0x0F:                                       // BSAA    7
-            AA = AA | 0x80;
-            break;
-        
-        case 0x14:                                       // BCFL    4 ; BCFL V
+
+        case 0x04:                                       // BCFL    4 ; BCFL V
             FL = FL & 0xEF;
             break;
         
-        case 0x15:                                       // BCFL    5 ; BCFL V
+        case 0x05:                                       // BCFL    5 ; BCFL V
             FL = FL & 0xDF;
             break;
         
-        case 0x16:                                       // BCFL    6 ; BCFL C
+        case 0x06:                                       // BCFL    6 ; BCFL C
             FL = FL & 0xBF;
             break;
         
-        case 0x17:                                       // BCFL    7 ; BCFL Z
+        case 0x07:                                       // BCFL    7 ; BCFL Z
             FL = FL & 0x7F;
             break;
 
-        case 0x1C:                                       // BSFL    4 ; BSFL S
+        case 0x0C:                                       // BSFL    4 ; BSFL S
             FL = FL | 0x10;
             break;
         
-        case 0x1D:                                       // BSFL    5 ; BSFL C
+        case 0x0D:                                       // BSFL    5 ; BSFL C
             FL = FL | 0x20;
             break;
         
-        case 0x1E:                                       // BSFL    6 ; BSFL Z
+        case 0x0E:                                       // BSFL    6 ; BSFL Z
             FL = FL | 0x40;
             break;
         
-        case 0x1F:                                       // BSFL    7 ; BSFL S
+        case 0x0F:                                       // BSFL    7 ; BSFL S
             FL = FL | 0x80;
             break;
 
+        case 0x10:                                       // BCAA    0
+            AA = AA & 0xFE;
+            break;
+        
+        case 0x11:                                       // BCAA    1
+            AA = AA & 0xFD;
+            break;
+        
+        case 0x12:                                       // BCAA    2
+            AA = AA & 0xFB;
+            break;
+        
+        case 0x13:                                       // BCAA    3
+            AA = AA & 0xF7;
+            break;
+        
+        case 0x14:                                       // BCAA    4
+            AA = AA & 0xEF;
+            break;
+        
+        case 0x15:                                       // BCAA    5
+            AA = AA & 0xDF;
+            break;
+        
+        case 0x16:                                       // BCAA    6
+            AA = AA & 0xBF;
+            break;
+        
+        case 0x17:                                       // BCAA    7
+            AA = AA & 0x7F;
+            break;
+        
+        case 0x18:                                       // BSAA    0
+            AA = AA | 0x01;
+            break;
+        
+        case 0x19:                                       // BSAA    1
+            AA = AA | 0x02;
+            break;
+        
+        case 0x1A:                                       // BSAA    2
+            AA = AA | 0x04;
+            break;
+        
+        case 0x1B:                                       // BSAA    3
+            AA = AA | 0x08;
+            break;
+        
+        case 0x1C:                                       // BSAA    4
+            AA = AA | 0x10;
+            break;
+        
+        case 0x1D:                                       // BSAA    5
+            AA = AA | 0x20;
+            break;
+        
+        case 0x1E:                                       // BSAA    6
+            AA = AA | 0x40;
+            break;
+        
+        case 0x1F:                                       // BSAA    7
+            AA = AA | 0x80;
+            break;
+        
         case 0x20:                                       // LOAD (MR)
             AA = memory[getMR()];
             break;
@@ -514,9 +517,6 @@ void HomemadeCPU::execute() {
 
         case 0x6F:                                       // LDBF
             AB = 0xFF;
-            break;
-
-        case 0x7E:                                       // NOOP
             break;
 
         case 0x7F:                                       // HALT
