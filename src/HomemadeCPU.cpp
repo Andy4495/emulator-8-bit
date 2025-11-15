@@ -185,10 +185,10 @@ void HomemadeCPU::print_registers() {
 }
 
 void HomemadeCPU::print_flags() {
-    cout << "ZCSV: "
+    cout << "SZCV: "
+    << (unsigned int) testFlag(HomemadeCPU::S_BIT)
     << (unsigned int) testFlag(HomemadeCPU::Z_BIT)
     << (unsigned int) testFlag(HomemadeCPU::C_BIT)
-    << (unsigned int) testFlag(HomemadeCPU::S_BIT)
     << (unsigned int) testFlag(HomemadeCPU::V_BIT)
     << endl;
 }

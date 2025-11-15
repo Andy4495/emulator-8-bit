@@ -59,7 +59,7 @@ class HomemadeCPU : public abstract_CPU {
 
    bool delay_slot = false; 
 
-   enum FLAG_BITS { Z_BIT = 0x80, C_BIT = 0x40, S_BIT = 0x20, V_BIT = 0x10};
+   enum FLAG_BITS { S_BIT = 0x80, Z_BIT = 0x40, C_BIT = 0x20, V_BIT = 0x10};
 
    // State variables
    bool Halt;
