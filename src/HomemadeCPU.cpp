@@ -55,6 +55,7 @@ void HomemadeCPU::load_memory(const char* fname) {
             // Add registers to end of file.
             memfile >> AA;
             memfile >> AB;
+            memfile >> AC;
             memfile >> FL;
             memfile >> msb;
             setSH(msb);
@@ -82,6 +83,7 @@ void HomemadeCPU::dump_memory_to_file(const char* fname) {
     // Add registers to end of file.
     memfile << AA;
     memfile << AB;
+    memfile << AC;
     memfile << FL;
     memfile << getSH();
     memfile << getSL();
@@ -118,6 +120,7 @@ void HomemadeCPU::warm_reset() {
 void HomemadeCPU::init_registers() {
     AA  = 0x00;
     AB  = 0x00;
+    AC  = 0x00;
     FL  = 0x00;
     setSH(0x00);
     setSL(0x00);
@@ -171,6 +174,7 @@ void HomemadeCPU::print_registers() {
     cout << hex 
     <<  "AA:  "  << setw(2) << (uint16_t) AA
     <<  " AB:  " << setw(2) << (uint16_t) AB
+    <<  " AC:  " << setw(2) << (uint16_t) AC
     <<  " FL:  "  << setw(2) << (uint16_t) FL
     <<  " SH:  "  << setw(2) << (uint16_t) getSH()
     <<  " SL:  "  << setw(2) << (uint16_t) getSL()
@@ -236,7 +240,7 @@ void HomemadeCPU::set_register() {
     cout << endl;
 
     cout << "Enter the register number to update: " << endl;
-    cout << " 1: AA     2: AB     3: FL     4: SH     5: SL     6: MH     7: ML     8: JH     9: JL "  << endl;
+    cout << " 1: AA     2: AB     3: AC     4: FL     5: SH     6: SL     7: MH     8: ML     9: JH    10: JL "  << endl;
     cout << "11: PC    12: IR"                                           << endl;
     cin >> regno; 
     cout << "Enter new value in hex: 0x";
@@ -253,21 +257,24 @@ void HomemadeCPU::set_register() {
             FL = val;
             break;
         case 4:
-            setSH(val);
+            FL = val;
             break;
         case 5:
-            setSL(val);
+            setSH(val);
             break;
         case 6:
-            MH = val;
+            setSL(val);
             break;
         case 7:
-            ML = val;
+            MH = val;
             break;
         case 8:
-            JH = val;
+            ML = val;
             break;
         case 9:
+            JH = val;
+            break;
+        case 10:
             JL = val;
             break;
         case 11:

@@ -48,22 +48,22 @@ const Homemade_CPU_opcodes opcodes[] = {
     {OO, "BSFL 5               ; or BSFL C"},                      // 0x0D
     {OO, "BSFL 6               ; or BSFL Z"},                      // 0x0E
     {OO, "BSFL 7               ; or BSFL S"},                      // 0x0F
-    {OO, "BCAA 0"},                                                // 0x10
-    {OO, "BCAA 1"},                                                // 0x11
-    {OO, "BCAA 2"},                                                // 0x12
-    {OO, "BCAA 3"},                                                // 0x13
-    {OO, "BCAA 4"},                                                // 0x14
-    {OO, "BCAA 5"},                                                // 0x15
-    {OO, "BCAA 6"},                                                // 0x16
-    {OO, "BCAA 7"},                                                // 0x17
-    {OO, "BSAA 0"},                                                // 0x18
-    {OO, "BSAA 1"},                                                // 0x19
-    {OO, "BSAA 2"},                                                // 0x1A
-    {OO, "BSAA 3"},                                                // 0x1B
-    {OO, "BSAA 4"},                                                // 0x1C
-    {OO, "BSAA 5"},                                                // 0x1D
-    {OO, "BSAA 6"},                                                // 0x1E
-    {OO, "BSAA 7"},                                                // 0x1F
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x10
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x11
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x12
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x13
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x14
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x15
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x16
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x17
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x18
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x19
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x1A
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x1B
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x1C
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x1D
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x1E
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x1F
     {OO, "LOAD (MR)"},                                             // 0x20
     {OO, "STOR (MR)"},                                             // 0x21
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x22
@@ -81,31 +81,31 @@ const Homemade_CPU_opcodes opcodes[] = {
     {OO, "JPSC"},                                                  // 0x2E
     {OO, "JPSS"},                                                  // 0x2F
     {OO, "PUSH AA"},                                               // 0x30
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x31
-    {OO, "PUSH FL"},                                               // 0x32
+    {OO, "PUSH FL"},                                               // 0x31
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x32
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x33
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x34
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x35
+    {OO, "POPP AA"},                                               // 0x34
+    {OO, "POPP FL"},                                               // 0x35
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x36
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x37
-    {OO, "POPP AA"},                                               // 0x38
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x38
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x39
-    {OO, "POPP FL"},                                               // 0x3A
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x3A
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x3B
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x3C
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x3D
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x3E
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x3F
-    {OO, "EXCH"},                                                  // 0x40
-    {OO, "MOVE AB->AA"},                                           // 0x41
+    {OO, "MOVE AB->AA"},                                           // 0x40
+    {OO, "MOVE AC->AA"},                                           // 0x41
     {OO, "MOVE SL->AA"},                                           // 0x42
     {OO, "MOVE SH->AA"},                                           // 0x43
     {OO, "MOVE ML->AA"},                                           // 0x44
     {OO, "MOVE MH->AA"},                                           // 0x45
     {OO, "MOVE JL->AA"},                                           // 0x46
     {OO, "MOVE JH->AA"},                                           // 0x47
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x48
-    {OO, "MOVE AA->AB"},                                           // 0x49
+    {OO, "MOVE AA->AB"},                                           // 0x48
+    {OO, "MOVE AA->AC"},                                           // 0x49
     {OO, "MOVE AA->SL"},                                           // 0x4A
     {OO, "MOVE AA->SH"},                                           // 0x4B
     {OO, "MOVE AA->ML"},                                           // 0x4C
@@ -122,28 +122,28 @@ const Homemade_CPU_opcodes opcodes[] = {
     {OO, "NORR"},                                                  // 0x57
     {OO, "NOTT"},                                                  // 0x58
     {OO, "NEGA"},                                                  // 0x59
-    {OO, "SHRL"},                                                  // 0x5A
-    {OO, "SHLL"},                                                  // 0x5B
-    {OO, "SHRA"},                                                  // 0x5C
-    {OO, "SRLC"},                                                  // 0x5D
-    {OO, "SLLC"},                                                  // 0x5E
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x5F
+    {OO, "XNOR"},                                                  // 0x5A
+    {OO, "SHRL"},                                                  // 0x5B
+    {OO, "SHLL"},                                                  // 0x5C
+    {OO, "SHRA"},                                                  // 0x5D
+    {OO, "SRLC"},                                                  // 0x5E
+    {OO, "SLLC"},                                                  // 0x5F
     {OO, "INCA"},                                                  // 0x60
     {OO, "DECA"},                                                  // 0x61
     {OO, "INCB"},                                                  // 0x62
-    {OO, "DECB"},                                                  // 0x63
+    {OO, "INCC"},                                                  // 0x63
     {OO, "INCM"},                                                  // 0x64
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x65
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x66
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x67
     {OO, "LDA0"},                                                  // 0x68
-    {OO, "LDA1"},                                                  // 0x69
-    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x6A
-    {OO, "LDAF"},                                                  // 0x6B
-    {OO, "LDB0"},                                                  // 0x6C
-    {OO, "LDB1"},                                                  // 0x6D
+    {OO, "LDB0"},                                                  // 0x69
+    {OO, "LDC0"},                                                  // 0x6A
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x6B
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x6C
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x6D
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x6E
-    {OO, "LDBF"},                                                  // 0x6F
+    {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x6F
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x70
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x71
     {NN, "DEFB $%02x           ;Invalid opcode"},                  // 0x72

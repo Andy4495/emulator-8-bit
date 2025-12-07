@@ -25,7 +25,6 @@ using std::setw;
 void HomemadeCPU::execute() {
     uint16_t result;
     uint8_t  temp_bit;
-    uint8_t  temp_reg;
 
     switch (IR) {
         case 0x00:                                       // NOOP
@@ -47,7 +46,7 @@ void HomemadeCPU::execute() {
             FL = FL & 0x7F;
             break;
 
-        case 0x0C:                                       // BSFL    4 ; BSFL S
+        case 0x0C:                                       // BSFL    4 ; BSFL V
             FL = FL | 0x10;
             break;
         
@@ -63,70 +62,6 @@ void HomemadeCPU::execute() {
             FL = FL | 0x80;
             break;
 
-        case 0x10:                                       // BCAA    0
-            AA = AA & 0xFE;
-            break;
-        
-        case 0x11:                                       // BCAA    1
-            AA = AA & 0xFD;
-            break;
-        
-        case 0x12:                                       // BCAA    2
-            AA = AA & 0xFB;
-            break;
-        
-        case 0x13:                                       // BCAA    3
-            AA = AA & 0xF7;
-            break;
-        
-        case 0x14:                                       // BCAA    4
-            AA = AA & 0xEF;
-            break;
-        
-        case 0x15:                                       // BCAA    5
-            AA = AA & 0xDF;
-            break;
-        
-        case 0x16:                                       // BCAA    6
-            AA = AA & 0xBF;
-            break;
-        
-        case 0x17:                                       // BCAA    7
-            AA = AA & 0x7F;
-            break;
-        
-        case 0x18:                                       // BSAA    0
-            AA = AA | 0x01;
-            break;
-        
-        case 0x19:                                       // BSAA    1
-            AA = AA | 0x02;
-            break;
-        
-        case 0x1A:                                       // BSAA    2
-            AA = AA | 0x04;
-            break;
-        
-        case 0x1B:                                       // BSAA    3
-            AA = AA | 0x08;
-            break;
-        
-        case 0x1C:                                       // BSAA    4
-            AA = AA | 0x10;
-            break;
-        
-        case 0x1D:                                       // BSAA    5
-            AA = AA | 0x20;
-            break;
-        
-        case 0x1E:                                       // BSAA    6
-            AA = AA | 0x40;
-            break;
-        
-        case 0x1F:                                       // BSAA    7
-            AA = AA | 0x80;
-            break;
-        
         case 0x20:                                       // LOAD (MR)
             AA = memory[getMR()];
             break;
@@ -202,26 +137,24 @@ void HomemadeCPU::execute() {
             memory[SP--] = AA;
             break;
 
-        case 0x32:                                       // PUSH FL
+        case 0x31:                                       // PUSH FL
             memory[SP--] = FL & 0xF0;
             break;
 
-        case 0x38:                                       // POP AA
+        case 0x34:                                       // POP AA
             AA = memory[++SP];
             break;
 
-        case 0x3A:                                       // POP FL
+        case 0x35:                                       // POP FL
             FL = memory[++SP] & 0xF0;
             break;
 
-        case 0x40:                                       // EXCH
-            temp_reg = AB;
-            AB = AA;
-            AA = temp_reg;
+        case 0x40:                                       // MOVE AB->AA
+            AA = AB;
             break;
 
-        case 0x41:                                       // MOVE AB->AA
-            AA = AB;
+        case 0x41:                                       // MOVE AC->AA
+            AA = AC;
             break;
 
         case 0x42:                                       // MOVE SL->AA
@@ -248,8 +181,12 @@ void HomemadeCPU::execute() {
             AA = JH;
             break;
 
-        case 0x49:                                       // MOVE AA->AB
+        case 0x48:                                       // MOVE AA->AB
             AB = AA;
+            break;
+
+        case 0x49:                                       // MOVE AA->AC
+            AC = AA;
             break;
 
         case 0x4A:                                       // MOVE AA->SL
@@ -276,30 +213,12 @@ void HomemadeCPU::execute() {
             JH = AA;
             break;
     
-        case 0x50:                                       // COMP
-            result = AA - AB - testFlag(C_BIT);
+        case 0x50:                                       // COMP (same as XOR, but discard result)
+            result = AA ^ AB;
+            clearFlag(S_BIT);
             update_Z(result);
-            if ((AB + testFlag(C_BIT)) > AA) setFlag(C_BIT);
-            else                             clearFlag(C_BIT);
-            update_S(result);
-            // Overflow algorithm:
-            // Subtraction: minuend - subtrahend = difference
-            //   - If the minuend and subtrahend are the same sign, then there is no overlow
-            //   - If the minuend and subtrahend have different signs, then:
-            //     - If difference is the same sign as the subtrahend, then overflow
-            //     - If difference is different sign than subtrahend, then no overflow
-            //
-            // operands are same signs, no overflow
-            if ((AA & 0x80) == (AB & 0x80)) {
-                clearFlag(V_BIT);
-            // different signs, compare subtrahend and difference signs
-            // same sign -> overflow
-            } else {
-                if ( ((AA - AB - testFlag(C_BIT)) & 0x80) == (AB & 0x80) )
-                        setFlag(V_BIT);
-                else
-                        clearFlag(V_BIT);
-            }
+            clearFlag(C_BIT);
+            clearFlag(V_BIT);
             break;
 
         case 0x51:                                       // SUBB
@@ -419,7 +338,15 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;
 
-        case 0x5A:                                       // SHRL
+        case 0x5A:                                       // XNOR
+            AA = ~(AA ^ AB);
+            update_Z(AA);
+            clearFlag(C_BIT);
+            clearFlag(S_BIT);
+            clearFlag(V_BIT);
+            break;
+
+        case 0x5B:                                       // SHRL
             if (AA & 0x01) setFlag(C_BIT);
             else           clearFlag(C_BIT);
             AA = AA >> 1;
@@ -428,7 +355,7 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;
 
-        case 0x5B:                                       // SHLL
+        case 0x5C:                                       // SHLL
             if (AA & 0x80) setFlag(C_BIT);
             else           clearFlag(C_BIT);
             AA = AA << 1;
@@ -437,7 +364,7 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;
 
-        case 0x5C:                                       // SHRA
+        case 0x5D:                                       // SHRA
             if (AA & 0x80) temp_bit = 0x80;
             else           temp_bit = 0x00;
             if (AA & 0x01) setFlag(C_BIT);
@@ -449,7 +376,7 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break;
             
-        case 0x5D:                                       // SRLC
+        case 0x5E:                                       // SRLC
             if (testFlag(C_BIT)) temp_bit = 0x80;
             else                 temp_bit = 0x00;
             if (AA & 0x01) setFlag(C_BIT);
@@ -461,7 +388,7 @@ void HomemadeCPU::execute() {
             clearFlag(V_BIT);
             break; 
             
-        case 0x5E:                                       // SLLC
+        case 0x5F:                                       // SLLC
             if (testFlag(C_BIT)) temp_bit = 0x01;
             else                 temp_bit = 0x00;
             if (AA & 0x80) setFlag(C_BIT);
@@ -485,8 +412,9 @@ void HomemadeCPU::execute() {
             AB++;
             break;
 
-        case 0x63:                                       // DECB
-            AB--;
+        case 0x63:                                       // INCC
+            AC++;
+            update_Z(AC);
             break;
 
         case 0x64:                                       // INCM
@@ -499,24 +427,12 @@ void HomemadeCPU::execute() {
             AA = 0x00;
             break;
 
-        case 0x69:                                       // LDA1
-            AA = 0x01;
-            break;
-
-        case 0x6B:                                       // LDAF
-            AA = 0xFF;
-            break;
-
-        case 0x6C:                                       // LDB0
+        case 0x69:                                       // LDB0
             AB = 0x00;
             break;
 
-        case 0x6D:                                       // LDB1
-            AB = 0x01;
-            break;
-
-        case 0x6F:                                       // LDBF
-            AB = 0xFF;
+        case 0x6A:                                       // LDC0
+            AC = 0x00;
             break;
 
         case 0x7F:                                       // HALT

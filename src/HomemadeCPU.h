@@ -69,6 +69,8 @@ class HomemadeCPU : public abstract_CPU {
    uint8_t AA;
    // Accumulator B
    uint8_t AB;   
+   // Accumulator C
+   uint8_t AC;
    // Flags
    uint8_t FL;
 
