@@ -234,7 +234,7 @@ The other software and files in this repository are released under what is commo
 [2]: https://www.gnu.org/software/make/manual/make.html
 [3]: https://nicomedes.codia.space/app/makefilegen/c
 [4]: https://clrhome.org/table/
-[5]: http://z80.info/index.html
+[5]: http://z80.info
 [6]: http://k1.spdns.de/cgi-bin/zasm.cgi
 [7]: https://k1.spdns.de/Develop/Projects/zasm/Distributions/
 [10]: https://hex2bin.sourceforge.net
