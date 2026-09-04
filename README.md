@@ -243,7 +243,7 @@ The other software and files in this repository are released under what is commo
 [13]: https://www.zilog.com/docs/z80/um0080.pdf
 [14]: https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps
 [15]: https://devblogs.microsoft.com/commandline/the-windows-subsystem-for-linux-in-the-microsoft-store-is-now-generally-available-on-windows-10-and-11/
-[18]: http://www.myquest.nl/z80undocumented/z80-documented-v0.91.pdf
+[18]: http://ebook.pldworld.com/_eBook/Z80/www.myquest.nl/z80undocumented/z80-documented-v0.91.pdf
 [19]: https://github.com/redcode/Z80
 [20]: https://github.com/Megatokio/zasm
 [22]: ./tools/zasm/zasm_LICENSE.txt
@@ -266,4 +266,5 @@ The other software and files in this repository are released under what is commo
 [101]: ./LICENSE.txt
 [//]: # ([200]: https://github.com/Andy4495/emulator-8-bit)
 
+[//]: # ([18]: http://www.myquest.nl/z80undocumented/z80-documented-v0.91.pdf)
 [//]: # (This is a way to hack a comment in Markdown. This will not be displayed when rendered.)
